@@ -1,4 +1,4 @@
-package org.konkuk.common.json;
+package org.konkuk.common.criteria;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author 이현령
  * @since 2024-05-24T15:56:16.565Z
  */
-public class LectureCriteriaData {
+public class LectureCriteria {
     public static final String DEFAULT_MINIMUM_GRADE = "D-";
     public static final Boolean DEFAULT_NON_EXCLUSIVE = false;
 
@@ -42,7 +42,7 @@ public class LectureCriteriaData {
         return nonExclusive == null ? DEFAULT_NON_EXCLUSIVE : nonExclusive;
     }
 
-    protected LectureCriteriaData(LectureCriteriaData toCopy) {
+    protected LectureCriteria(LectureCriteria toCopy) {
         lectureName = toCopy.lectureName;
         minimumGrade = toCopy.minimumGrade;
         nonExclusive = toCopy.nonExclusive;

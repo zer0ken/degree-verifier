@@ -1,4 +1,4 @@
-package org.konkuk.common.json;
+package org.konkuk.common.criteria;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -25,12 +25,12 @@ public class DegreeCriteria {
     /**
      * 이 학위를 인정받기 위해 통과해야 하는 검사 조건을 나타냅니다.
      */
-    @SerializedName("criteria")
-    protected Criteria criteria;
+    @SerializedName("recursiveCriteria")
+    protected RecursiveCriteria recursiveCriteria;
 
     protected DegreeCriteria(DegreeCriteria toCopy) {
         degreeName = toCopy.degreeName;
-        criteria = toCopy.criteria;
+        recursiveCriteria = toCopy.recursiveCriteria;
         minimumCredit = toCopy.minimumCredit;
     }
 }

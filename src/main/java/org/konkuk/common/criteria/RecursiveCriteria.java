@@ -1,4 +1,4 @@
-package org.konkuk.common.json;
+package org.konkuk.common.criteria;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author 이현령
  * @since 2024-05-24T15:59:05.955Z
  */
-public class CriteriaData {
+public class RecursiveCriteria {
     /**
      * 검사 기준에 대한 짧은 설명입니다.
      */
@@ -36,7 +36,7 @@ public class CriteriaData {
      * </p>
      */
     @SerializedName("lecture")
-    protected LectureCriteriaData lectureCriteriaData;
+    protected LectureCriteria lectureCriteria;
 
     /**
      * <p>
@@ -51,7 +51,7 @@ public class CriteriaData {
      * </p>
      */
     @SerializedName("all")
-    protected Boolean needAllPass;
+    private Boolean needAllPass;
 
     /**
      * <p>
@@ -72,14 +72,18 @@ public class CriteriaData {
      * 하위 검사 기준의 배열입니다.
      */
     @SerializedName("subcriteria")
-    protected CriteriaData[] subcriteria;
+    protected RecursiveCriteria[] subcriteria;
 
-    protected CriteriaData(CriteriaData toCopy) {
+    protected RecursiveCriteria(RecursiveCriteria toCopy) {
         label = toCopy.label;
         important = toCopy.important;
-        lectureCriteriaData = toCopy.lectureCriteriaData;
+        lectureCriteria = toCopy.lectureCriteria;
         needAllPass = toCopy.needAllPass;
         minimumPass = toCopy.minimumPass;
         subcriteria = toCopy.subcriteria;
+    }
+
+    public boolean needsAllPass() {
+        return needAllPass != null && needAllPass;
     }
 }
