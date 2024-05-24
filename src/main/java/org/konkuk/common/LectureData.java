@@ -1,6 +1,6 @@
 package org.konkuk.common;
 
-public class Lecture {
+public class LectureData {
     public final int year;
     public final int semester;
     public final String classification;
@@ -9,9 +9,7 @@ public class Lecture {
     public final int credit;
     public final String grade;
 
-    private boolean used = false;
-
-    public Lecture(int year, int semester, String classification, String code, String name, int credit, String grade) {
+    public LectureData(int year, int semester, String classification, String code, String name, int credit, String grade) {
         this.year = year;
         this.semester = semester;
         this.classification = classification;
@@ -21,15 +19,15 @@ public class Lecture {
         this.grade = grade;
     }
 
-    public void use() {
-        used = true;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void clear() {
-        used = false;
+    public LectureData(LectureData toCopy) {
+        this(
+                toCopy.year,
+                toCopy.semester,
+                toCopy.classification,
+                toCopy.code,
+                toCopy.name,
+                toCopy.credit,
+                toCopy.grade
+        );
     }
 }
