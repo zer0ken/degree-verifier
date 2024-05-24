@@ -2,7 +2,6 @@ package org.konkuk.common.verifier;
 
 import org.konkuk.common.Lecture;
 import org.konkuk.common.criteria.LectureCriteria;
-import org.konkuk.common.snapshot.LectureSnapshot;
 import org.konkuk.common.snapshot.Snapshot;
 
 import java.util.LinkedList;
