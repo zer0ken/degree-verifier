@@ -82,7 +82,7 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
         if (lectureVerifier != null) {
             credit = lectureVerifier.creditize();
         } else {
-            credit = (int) subRecursiveVerifiers.stream()
+            credit = subRecursiveVerifiers.stream()
                     .filter(recursiveVerifier -> !recursiveVerifier.isPruned())
                     .reduce(0, (acc, recursiveVerifier) -> acc + recursiveVerifier.creditize(), Integer::sum);
         }
