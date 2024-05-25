@@ -14,12 +14,12 @@ class RecursiveCriteriaTest {
     @Test
     void load_correct_fields_from_json() {
         assertEquals("최소 3개 영역의 교과목 1개 이상 필수 이수", recursiveCriteria.label);
-        assertEquals(3, recursiveCriteria.minimumPass);
+        assertEquals(3, recursiveCriteria.getMinimumPass());
         assertEquals(4, recursiveCriteria.subcriteria.length);
 
-        assertNull(recursiveCriteria.important);
         assertNull(recursiveCriteria.lectureCriteria);
 
+        assertFalse(recursiveCriteria.isImportant());
         assertFalse(recursiveCriteria.needsAllPass());
     }
 
@@ -28,9 +28,10 @@ class RecursiveCriteriaTest {
         RecursiveCriteria subcriteria = recursiveCriteria.subcriteria[3];
 
         assertEquals("비즈니스 영역(택 1~2)", subcriteria.label);
-        assertEquals(true, subcriteria.important);
-        assertEquals(1, subcriteria.minimumPass);
+        assertEquals(1, subcriteria.getMinimumPass());
         assertEquals(3, subcriteria.subcriteria.length);
+
+        assertTrue(subcriteria.isImportant());
 
         assertNull(subcriteria.lectureCriteria);
 
@@ -45,8 +46,9 @@ class RecursiveCriteriaTest {
 
         assertNull(terminalRecursiveCriteria.subcriteria);
         assertNull(terminalRecursiveCriteria.label);
-        assertNull(terminalRecursiveCriteria.important);
-        assertNull(terminalRecursiveCriteria.minimumPass);
+
+        assertFalse(terminalRecursiveCriteria.isImportant());
+        assertEquals(0, terminalRecursiveCriteria.getMinimumPass());
 
         assertFalse(recursiveCriteria.needsAllPass());
     }

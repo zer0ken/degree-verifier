@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileUtilTest {
     List<String[]> rawLectures = FileUtil.fromTsvFile(
-            FileUtil.getAbsolutePathOfResource(FileUtilTest.class, "LecturesExample.tsv")
+            FileUtil.getAbsolutePathOfResource(FileUtilTest.class, "LecturesExample1.tsv")
     );
 
     @Test
     public void fromTsvFile_returns_correct_value() {
         assertArrayEquals(
-                new String[]{"2019", "1학기", "지교", "BBAA57369", "C프로그래밍", "3", "A+"},
+                new String[]{"2019", "1학기", "지교", "BBAA57369", "C프로그래밍", "3", "A+", "건국대"},
                 rawLectures.get(0)
         );
     }
