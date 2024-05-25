@@ -9,7 +9,6 @@
       },
       {
         "label": "택 1",
-        "important": true,
         "min": 1,
         "subcriteria": [
           {"lecture": {"name": "디지털스토리텔링실습"}},

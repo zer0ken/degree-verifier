@@ -15,7 +15,6 @@
       },
       {
         "label": "택 1",
-        "important": true,
         "min": 1,
         "subcriteria": [
           {"lecture": {"name": "게임공학"}},
@@ -24,7 +23,6 @@
       },
       {
         "label": "택 1",
-        "important": true,
         "min": 1,
         "subcriteria": [
           {"lecture": {"name": "게임프로젝트"}},
