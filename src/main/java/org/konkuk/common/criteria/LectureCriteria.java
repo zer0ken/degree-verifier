@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LectureCriteria {
     public static final String DEFAULT_MINIMUM_GRADE = "D-";
-    public static final Boolean DEFAULT_NON_EXCLUSIVE = false;
+    public static final Boolean DEFAULT_NON_EXCLUSIVE = true;
 
     /**
      * 대상 교과목의 이름입니다.
@@ -29,7 +29,7 @@ public class LectureCriteria {
 
     /**
      * 이 검사의 대상 교과목이 다른 검사에 중복으로 사용될 수 있는지를 나타냅니다.
-     * 이 값이 명시되지 않으면 기본값은 false입니다.
+     * 이 값이 명시되지 않으면 기본값은 true입니다.
      */
     @SerializedName("non_exclusive")
     protected Boolean nonExclusive;

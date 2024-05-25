@@ -25,7 +25,7 @@ public class DegreeCriteria {
     /**
      * 이 학위를 인정받기 위해 통과해야 하는 검사 조건을 나타냅니다.
      */
-    @SerializedName("recursiveCriteria")
+    @SerializedName("criteria")
     protected RecursiveCriteria recursiveCriteria;
 
     protected DegreeCriteria(DegreeCriteria toCopy) {

@@ -7,6 +7,13 @@ import org.konkuk.common.snapshot.Snapshot;
 import java.util.LinkedList;
 import java.util.List;
 
+
+/**
+ * 이 클래스는 주어진 상태에서 특정 교과목을 이수했는지 검증합니다.
+ *
+ * @author 이현령
+ * @since 2024-05-25T15:39:55.673Z
+ */
 public class LectureVerifier extends LectureCriteria implements Verifiable, Creditizable, Snapshotable {
     protected Lecture matchedLecture = null;
 
@@ -27,7 +34,7 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
                 matchedLectureVerifiers.add(this);
             }
         }
-        pruned = true;
+        pruned = matchedLecture == null;
         return matchedLectureVerifiers;
     }
 
@@ -52,10 +59,10 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
             holding = true;
             return;
         }
-        if (nonExclusive || !matchedLecture.isUsed()) {
+        if (isNonExclusive() || !matchedLecture.isUsed()) {
             holding = true;
         }
-        if (!nonExclusive) {
+        if (isNonExclusive()) {
             matchedLecture.use();
         }
     }

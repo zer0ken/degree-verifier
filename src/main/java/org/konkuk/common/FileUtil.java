@@ -3,6 +3,7 @@ package org.konkuk.common;
 import com.google.gson.Gson;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +42,16 @@ public class FileUtil {
         return tokenizedLines;
     }
 
+    /**
+     * 이 메소드는 테스트 목적으로만 사용됩니다.
+     */
     public static <T> String getAbsolutePathOfResource(Class<T> requester, String resourceName) {
-        return (new File(requester.getResource(resourceName).getFile())).getAbsolutePath();
+        String asciiFileName = requester.getResource(resourceName).getFile();
+        try {
+            String utf8FileName = URLDecoder.decode(asciiFileName, "UTF-8");
+            return (new File(URLDecoder.decode(utf8FileName, "UTF-8"))).getPath();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

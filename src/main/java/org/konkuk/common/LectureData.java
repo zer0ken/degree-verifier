@@ -1,15 +1,17 @@
 package org.konkuk.common;
 
 public class LectureData {
-    public final int year;
-    public final int semester;
+    public final String year;
+    public final String semester;
     public final String classification;
     public final String code;
     public final String name;
     public final int credit;
     public final String grade;
 
-    public LectureData(int year, int semester, String classification, String code, String name, int credit, String grade) {
+    public final String university;
+
+    public LectureData(String year, String semester, String classification, String code, String name, int credit, String grade, String university) {
         this.year = year;
         this.semester = semester;
         this.classification = classification;
@@ -17,6 +19,7 @@ public class LectureData {
         this.name = name;
         this.credit = credit;
         this.grade = grade;
+        this.university = university;
     }
 
     public LectureData(LectureData toCopy) {
@@ -27,7 +30,8 @@ public class LectureData {
                 toCopy.code,
                 toCopy.name,
                 toCopy.credit,
-                toCopy.grade
+                toCopy.grade,
+                toCopy.university
         );
     }
 }

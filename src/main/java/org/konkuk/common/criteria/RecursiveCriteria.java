@@ -3,7 +3,7 @@ package org.konkuk.common.criteria;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 이 클래스는 하위 검사 기준을 가질 수 있는 복잡한 검사 기준의 정의를 나타냅니다.
+ * 이 클래스는 재귀적으로 하위 검사 기준을 가질 수 있는 복잡한 검사 기준의 정의를 나타냅니다.
  * 이 클래스 객체는 JSON 형식으로 전환될 수 있습니다.
  *
  * @author 이현령
@@ -20,7 +20,7 @@ public class RecursiveCriteria {
      * 검사 기준의 중요도를 나타냅니다. 이 값이 True이면 이 검사가 실패했을 때 이 검사를 포함하는 학위를 이수할 수 없습니다.
      */
     @SerializedName("important")
-    protected Boolean important;
+    private Boolean important;
 
     /**
      * <p>
@@ -54,19 +54,12 @@ public class RecursiveCriteria {
     private Boolean needAllPass;
 
     /**
-     * <p>
      * 하위 검사 기준 중 통과해야 하는 기준의 최소값을 의미합니다.
      * 이 값이 true이면 통과한 하위 검사 기준의 개수가 이 값 이상이어야 이 검사를 통과합니다.
-     * </p>
-     * <p>
-     * 이 값이 true이면 다음의 필드 값은 무시됩니다.
-     * <ul>
-     *     <li>needAllPass</li>
-     * </ul>
-     * </p>
+     * 이 값이 명시되지 않으면 기본값은 0입니다.
      */
     @SerializedName("min")
-    protected Integer minimumPass;
+    private Integer minimumPass;
 
     /**
      * 하위 검사 기준의 배열입니다.
@@ -83,7 +76,15 @@ public class RecursiveCriteria {
         subcriteria = toCopy.subcriteria;
     }
 
+    public Boolean isImportant() {
+        return important != null && important;
+    }
+
     public boolean needsAllPass() {
         return needAllPass != null && needAllPass;
+    }
+
+    public Integer getMinimumPass() {
+        return minimumPass != null ? minimumPass : 0;
     }
 }

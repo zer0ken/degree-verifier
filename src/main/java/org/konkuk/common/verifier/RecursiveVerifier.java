@@ -4,10 +4,15 @@ import org.konkuk.common.Lecture;
 import org.konkuk.common.criteria.RecursiveCriteria;
 import org.konkuk.common.snapshot.Snapshot;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+
+/**
+ * 이 클래스는 주어진 상태에서 재귀적으로 정의된 복잡한 검사 기준을 통과할 수 있는지 검증합니다.
+ *
+ * @author 이현령
+ * @since 2024-05-25T15:41:30.622Z
+ */
 public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, Creditizable, Snapshotable {
     private final LectureVerifier lectureVerifier;
     private final List<RecursiveVerifier> subRecursiveVerifiers;
@@ -16,20 +21,15 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
 
     protected RecursiveVerifier(RecursiveCriteria toCopy) {
         super(toCopy);
-        subRecursiveVerifiers = new ArrayList<>();
-
-        if (lectureCriteria != null) {
-            lectureVerifier = new LectureVerifier(lectureCriteria);
-        } else {
-            lectureVerifier = null;
-            for (RecursiveCriteria subcriterion : subcriteria) {
-                subRecursiveVerifiers.add(new RecursiveVerifier(subcriterion));
-            }
+        lectureVerifier = lectureCriteria == null ? null : new LectureVerifier(lectureCriteria);
+        subRecursiveVerifiers = new LinkedList<>();
+        if (subcriteria != null) {
+            Arrays.stream(subcriteria).forEach(criteria -> subRecursiveVerifiers.add(new RecursiveVerifier(criteria)));
         }
     }
 
     @Override
-    public List<LectureVerifier> match(List<Lecture> lectures) {
+    public List<LectureVerifier> match(List<Lecture> lectures) throws RuntimeException {
         List<LectureVerifier> matchedLectureVerifiers;
         clear();
         if (lectureVerifier != null) {
@@ -40,7 +40,10 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
             subRecursiveVerifiers.forEach(
                     recursiveVerifier -> matchedLectureVerifiers.addAll(recursiveVerifier.match(lectures)));
             int prunedCount = (int) subRecursiveVerifiers.stream().filter(RecursiveVerifier::isPruned).count();
-            pruned = needsAllPass() ? prunedCount > 0 : subRecursiveVerifiers.size() - prunedCount < minimumPass;
+            pruned = needsAllPass() ? prunedCount > 0 : subRecursiveVerifiers.size() - prunedCount < getMinimumPass();
+        }
+        if (pruned && isImportant()) {
+            throw new RuntimeException("Important recursiveCriteria pruned: " + (label != null ? label : toString()));
         }
         return matchedLectureVerifiers;
     }
@@ -56,10 +59,10 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
                     .filter(recursiveVerifier -> !recursiveVerifier.isPruned())
                     .filter(RecursiveVerifier::verify)
                     .count();
-            verified = needsAllPass() ? passedCount == subRecursiveVerifiers.size() : passedCount >= minimumPass;
+            verified = needsAllPass() ? passedCount == subRecursiveVerifiers.size() : passedCount >= getMinimumPass();
         }
 
-        if (important && !verified) {
+        if (isImportant() && !verified) {
             throw new RuntimeException("Important recursiveCriteria did not verified: " + (label != null ? label : toString()));
         }
 

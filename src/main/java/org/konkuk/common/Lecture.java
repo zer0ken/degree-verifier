@@ -1,24 +1,19 @@
 package org.konkuk.common;
 
-public class Lecture {
-    public final int year;
-    public final int semester;
-    public final String classification;
-    public final String code;
-    public final String name;
-    public final int credit;
-    public final String grade;
-
+/**
+ * 이 클래스 객체는 사용자가 수강한 교과목 정보와 검사 도중의 참조 여부를 저장합니다.
+ *
+ * @author 이현령
+ * @since 2024-05-25T15:45:31.013Z
+ */
+public class Lecture extends LectureData {
+    /**
+     * 주어진 상태에서 이 교과목이 일치를 위해 참조되었는지를 나타냅니다.
+     */
     private boolean used = false;
 
-    public Lecture(int year, int semester, String classification, String code, String name, int credit, String grade) {
-        this.year = year;
-        this.semester = semester;
-        this.classification = classification;
-        this.code = code;
-        this.name = name;
-        this.credit = credit;
-        this.grade = grade;
+    public Lecture(String year, String semester, String classification, String code, String name, int credit, String grade, String university) {
+        super(year, semester, classification, code, name, credit, grade, university);
     }
 
     public void use() {
