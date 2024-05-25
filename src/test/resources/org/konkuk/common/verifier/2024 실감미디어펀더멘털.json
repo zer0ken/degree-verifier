@@ -11,9 +11,7 @@
       },
       {
         "label": "디자인 영역",
-        "lecture": {
-          "name": "실감디자인씽킹",
-          "non_exclusive" : true}
+        "lecture": {"name": "실감디자인씽킹"}
       },
       {
         "label": "콘텐츠 영역",
