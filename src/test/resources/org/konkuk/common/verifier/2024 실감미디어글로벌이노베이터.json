@@ -1,0 +1,21 @@
+{
+  "degree_name": "2024 실감미디어글로벌이노베이터",
+  "min_credit": 9,
+  "criteria": {
+    "min": 3,
+    "subcriteria": [
+      {
+        "lecture": {"name": "글로벌학제간프로젝트기획"}
+      },
+      {
+        "lecture": {"name": "글로벌학제간융합프로젝트"}
+      },
+      {
+        "lecture": {"name": "글로벌리빙랩프로젝트"}
+      },
+      {
+        "lecture": {"name": "컴퓨터공학산학연구프로젝트"}
+      }
+    ]
+  }
+}

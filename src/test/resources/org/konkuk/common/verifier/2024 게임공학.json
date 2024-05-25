@@ -18,15 +18,23 @@
         "min": 1,
         "subcriteria": [
           {"lecture": {"name": "게임공학"}},
-          {"lecture": {"name": "컴퓨터그래픽스"}}
+          {"lecture": {
+            "name": "컴퓨터그래픽스",
+            "non_exclusive" : true}}
         ]
       },
       {
         "label": "택 1",
         "min": 1,
         "subcriteria": [
-          {"lecture": {"name": "게임프로젝트"}},
-          {"lecture": {"name": "게임캡스톤디자인"}}
+          {"lecture": {
+            "name": "게임프로젝트",
+            "non_exclusive" : true}
+          },
+          {"lecture": {
+            "name": "게임캡스톤디자인",
+            "non_exclusive" : true}
+          }
         ]
       }
     ]

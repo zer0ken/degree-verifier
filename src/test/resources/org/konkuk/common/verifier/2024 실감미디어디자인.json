@@ -11,10 +11,12 @@
         "lecture": {"name": "ICT경험디자인"}
       },
       {
-        "lecture": {"name": "AR/VR콘텐츠실무"}
+        "lecture": {
+          "name": "AR/VR콘텐츠실무",
+          "non_exclusive" : true}
       },
       {
-        "lecture": {"name": "UI/UX디자인인"}
+        "lecture": {"name": "UI/UX디자인"}
       }
     ]
   }

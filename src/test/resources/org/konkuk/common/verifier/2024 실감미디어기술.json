@@ -11,7 +11,9 @@
         "lecture": {"name": "UI/UX프로그래밍"}
       },
       {
-        "lecture": {"name": "컴퓨터그래픽스"}
+        "lecture": {
+          "name": "컴퓨터그래픽스",
+          "non_exclusive" : true}
       },
       {
         "lecture": {"name": "실감미디어프로젝트"}

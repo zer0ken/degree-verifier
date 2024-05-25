@@ -11,7 +11,9 @@
         "lecture": {"name": "디지털리빙랩프로젝트"}
       },
       {
-        "lecture": {"name": "VR/AR프로그래밍"}
+        "lecture": {
+          "name": "VR/AR프로그래밍",
+          "non_exclusive" : true}
       },
       {
         "lecture": {"name": "인공지능"}
