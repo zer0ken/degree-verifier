@@ -1,7 +1,7 @@
 package org.konkuk.common;
 
 import org.junit.jupiter.api.Test;
-import org.konkuk.common.verifier.DegreeVerifier;
+import org.konkuk.common.snapshot.DegreeSnapshot;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,7 @@ class DegreeManagerTest {
         manager.loadLectures(FileUtil.getAbsolutePathOfResource(DegreeManagerTest.class, "LecturesExample2.tsv"));
 
         manager.verify();
-        for (Map.Entry<String, List<DegreeVerifier>> entry : manager.getVerifiedDegreeMap().entrySet()) {
+        for (Map.Entry<String, List<DegreeSnapshot>> entry : manager.getVerifiedDegreeMap().entrySet()) {
             assertEquals(4, entry.getValue().size());
             return;
         }

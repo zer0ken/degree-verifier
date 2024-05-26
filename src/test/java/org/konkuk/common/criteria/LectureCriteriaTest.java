@@ -5,9 +5,9 @@ import org.konkuk.common.FileUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LectureRecursiveCriteriaTest {
+class LectureCriteriaTest {
     LectureCriteria lectureCriteria = FileUtil.fromJsonFile(
-            FileUtil.getAbsolutePathOfResource(LectureRecursiveCriteriaTest.class, "LectureCriteriaExample.json"),
+            FileUtil.getAbsolutePathOfResource(LectureCriteriaTest.class, "LectureCriteriaExample.json"),
             LectureCriteria.class
     );
 
