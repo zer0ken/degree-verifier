@@ -1,11 +1,8 @@
 package org.konkuk.common.verifier;
 
-import org.junit.jupiter.api.Test;
 import org.konkuk.common.FileUtil;
 import org.konkuk.common.FileUtilTest;
 import org.konkuk.common.criteria.DegreeCriteria;
-
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
