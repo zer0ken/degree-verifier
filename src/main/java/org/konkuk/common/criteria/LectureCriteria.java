@@ -42,7 +42,7 @@ public class LectureCriteria {
         return nonExclusive == null ? DEFAULT_NON_EXCLUSIVE : nonExclusive;
     }
 
-    protected LectureCriteria(LectureCriteria toCopy) {
+    public LectureCriteria(LectureCriteria toCopy) {
         lectureName = toCopy.lectureName;
         minimumGrade = toCopy.minimumGrade;
         nonExclusive = toCopy.nonExclusive;

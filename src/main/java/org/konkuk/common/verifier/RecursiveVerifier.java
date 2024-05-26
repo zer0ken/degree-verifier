@@ -2,6 +2,8 @@ package org.konkuk.common.verifier;
 
 import org.konkuk.common.Lecture;
 import org.konkuk.common.criteria.RecursiveCriteria;
+import org.konkuk.common.snapshot.LectureSnapshot;
+import org.konkuk.common.snapshot.RecursiveSnapshot;
 import org.konkuk.common.snapshot.Snapshot;
 
 import java.util.*;
@@ -18,8 +20,9 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
     private final List<RecursiveVerifier> subRecursiveVerifiers;
 
     private boolean pruned = false;
+    private boolean verified = false;
 
-    protected RecursiveVerifier(RecursiveCriteria toCopy) {
+    public RecursiveVerifier(RecursiveCriteria toCopy) {
         super(toCopy);
         lectureVerifier = lectureCriteria == null ? null : new LectureVerifier(lectureCriteria);
         subRecursiveVerifiers = new LinkedList<>();
@@ -50,8 +53,6 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
 
     @Override
     public boolean verify() throws RuntimeException {
-        boolean verified;
-
         if (lectureVerifier != null) {
             verified = lectureVerifier.verify();
         } else {
@@ -72,6 +73,13 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
     @Override
     public void clear() {
         pruned = false;
+        verified = false;
+
+        if (lectureVerifier != null) {
+            lectureVerifier.clear();
+        } else {
+            subRecursiveVerifiers.forEach(RecursiveVerifier::clear);
+        }
     }
 
     public boolean isPruned() {
@@ -95,6 +103,18 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
 
     @Override
     public Snapshot takeSnapshot() {
-        return null;
+        if (lectureVerifier != null) {
+            return new RecursiveSnapshot(
+                    new RecursiveCriteria(this),
+                    verified,
+                    (LectureSnapshot) lectureVerifier.takeSnapshot()
+            );
+        }
+
+        RecursiveSnapshot[] subSnapshot = new RecursiveSnapshot[subRecursiveVerifiers.size()];
+        for (int i = 0; i < subRecursiveVerifiers.size(); i++) {
+            subSnapshot[i] = (RecursiveSnapshot) subRecursiveVerifiers.get(i).takeSnapshot();
+        }
+        return new RecursiveSnapshot(new RecursiveCriteria(this), verified, subSnapshot);
     }
 }

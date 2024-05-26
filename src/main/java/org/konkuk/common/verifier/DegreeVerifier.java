@@ -2,6 +2,8 @@ package org.konkuk.common.verifier;
 
 import org.konkuk.common.Lecture;
 import org.konkuk.common.criteria.DegreeCriteria;
+import org.konkuk.common.snapshot.DegreeSnapshot;
+import org.konkuk.common.snapshot.RecursiveSnapshot;
 import org.konkuk.common.snapshot.Snapshot;
 
 import java.util.Collections;
@@ -18,6 +20,7 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     private final RecursiveVerifier recursiveVerifier;
 
     private boolean pruned = false;
+    private boolean verified = false;
 
     public DegreeVerifier(DegreeCriteria toCopy) {
         super(toCopy);
@@ -39,7 +42,6 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
 
     @Override
     public boolean verify() {
-        boolean verified;
         try {
             verified = recursiveVerifier.verify() && creditize() >= minimumCredit;
         } catch (RuntimeException e) {
@@ -51,6 +53,9 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     @Override
     public void clear() {
         pruned = false;
+        verified = false;
+
+        recursiveVerifier.clear();
     }
 
     @Override
@@ -60,7 +65,11 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
 
     @Override
     public Snapshot takeSnapshot() {
-        return null;
+        return new DegreeSnapshot(
+                new DegreeCriteria(this),
+                verified,
+                (RecursiveSnapshot) recursiveVerifier.takeSnapshot()
+        );
     }
 
     public boolean isPruned() {

@@ -1,7 +1,9 @@
 package org.konkuk.common.verifier;
 
 import org.konkuk.common.Lecture;
+import org.konkuk.common.LectureData;
 import org.konkuk.common.criteria.LectureCriteria;
+import org.konkuk.common.snapshot.LectureSnapshot;
 import org.konkuk.common.snapshot.Snapshot;
 
 import java.util.LinkedList;
@@ -15,12 +17,12 @@ import java.util.List;
  * @since 2024-05-25T15:39:55.673Z
  */
 public class LectureVerifier extends LectureCriteria implements Verifiable, Creditizable, Snapshotable {
-    protected Lecture matchedLecture = null;
+    private Lecture matchedLecture = null;
 
-    protected boolean pruned = false;
-    protected boolean holding = false;
+    private boolean pruned = false;
+    private boolean holding = false;
 
-    protected LectureVerifier(LectureCriteria toCopy) {
+    public LectureVerifier(LectureCriteria toCopy) {
         super(toCopy);
     }
 
@@ -82,7 +84,10 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
 
     @Override
     public Snapshot takeSnapshot() {
-
-        return null;
+        return new LectureSnapshot(
+                new LectureCriteria(this),
+                new LectureData(matchedLecture),
+                holding
+        );
     }
 }

@@ -28,7 +28,7 @@ public class DegreeCriteria {
     @SerializedName("criteria")
     protected RecursiveCriteria recursiveCriteria;
 
-    protected DegreeCriteria(DegreeCriteria toCopy) {
+    public DegreeCriteria(DegreeCriteria toCopy) {
         degreeName = toCopy.degreeName;
         recursiveCriteria = toCopy.recursiveCriteria;
         minimumCredit = toCopy.minimumCredit;

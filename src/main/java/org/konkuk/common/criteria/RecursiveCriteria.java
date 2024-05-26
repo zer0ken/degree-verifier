@@ -14,13 +14,13 @@ public class RecursiveCriteria {
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
-    protected String label;
+    public final String label;
 
     /**
      * 검사 기준의 중요도를 나타냅니다. 이 값이 True이면 이 검사가 실패했을 때 이 검사를 포함하는 학위를 이수할 수 없습니다.
      */
     @SerializedName("important")
-    private Boolean important;
+    public final Boolean important;
 
     /**
      * <p>
@@ -32,11 +32,12 @@ public class RecursiveCriteria {
      * <ul>
      *     <li>needAllPass</li>
      *     <li>minimumPass</li>
+     *     <li>subcriteria</li>
      * </ul>
      * </p>
      */
     @SerializedName("lecture")
-    protected LectureCriteria lectureCriteria;
+    public final LectureCriteria lectureCriteria;
 
     /**
      * <p>
@@ -51,7 +52,7 @@ public class RecursiveCriteria {
      * </p>
      */
     @SerializedName("all")
-    private Boolean needAllPass;
+    public final Boolean needAllPass;
 
     /**
      * 하위 검사 기준 중 통과해야 하는 기준의 최소값을 의미합니다.
@@ -59,15 +60,15 @@ public class RecursiveCriteria {
      * 이 값이 명시되지 않으면 기본값은 0입니다.
      */
     @SerializedName("min")
-    private Integer minimumPass;
+    private final Integer minimumPass;
 
     /**
      * 하위 검사 기준의 배열입니다.
      */
     @SerializedName("subcriteria")
-    protected RecursiveCriteria[] subcriteria;
+    protected final RecursiveCriteria[] subcriteria;
 
-    protected RecursiveCriteria(RecursiveCriteria toCopy) {
+    public RecursiveCriteria(RecursiveCriteria toCopy) {
         label = toCopy.label;
         important = toCopy.important;
         lectureCriteria = toCopy.lectureCriteria;
