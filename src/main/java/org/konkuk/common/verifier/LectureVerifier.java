@@ -52,6 +52,7 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         holding = false;
     }
 
+    // todo: minimumGrade를 고려하도록 수정
     private boolean match(Lecture lecture) {
         return lectureName.equals(lecture.name);
     }
@@ -86,7 +87,7 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
     public Snapshot takeSnapshot() {
         return new LectureSnapshot(
                 new LectureCriteria(this),
-                new LectureData(matchedLecture),
+                matchedLecture != null ? new LectureData(matchedLecture) : null,
                 holding
         );
     }

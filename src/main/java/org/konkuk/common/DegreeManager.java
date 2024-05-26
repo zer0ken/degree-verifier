@@ -1,6 +1,7 @@
 package org.konkuk.common;
 
 import org.konkuk.common.criteria.DegreeCriteria;
+import org.konkuk.common.snapshot.DegreeSnapshot;
 import org.konkuk.common.verifier.DegreeVerifier;
 import org.konkuk.common.verifier.LectureVerifier;
 import org.paukov.combinatorics3.Generator;
@@ -18,7 +19,7 @@ import java.util.*;
 public class DegreeManager {
     private final List<DegreeVerifier> degreeVerifiers;
     private final List<Lecture> lectures;
-    private final Map<String, List<DegreeVerifier>> verifiedDegreeMap;
+    private final Map<String, List<DegreeSnapshot>> verifiedDegreeMap;
 
     public DegreeManager() {
         degreeVerifiers = new ArrayList<>();
@@ -78,14 +79,14 @@ public class DegreeManager {
                         .filter(verifier -> !toRelease.contains(verifier))
                         .forEach(LectureVerifier::hold);
 
-                List<DegreeVerifier> verifiedDegrees = new LinkedList<>();
+                List<DegreeSnapshot> verifiedDegrees = new LinkedList<>();
                 StringBuilder sb = new StringBuilder();
 
                 degreeVerifiers.forEach(verifier -> {
                     boolean verified = !verifier.isPruned() && verifier.verify();
                     sb.append(verified ? "T" : "F");
                     if (verified) {
-                        verifiedDegrees.add(verifier);
+                        verifiedDegrees.add((DegreeSnapshot) verifier.takeSnapshot());
                     }
                 });
 
@@ -104,7 +105,7 @@ public class DegreeManager {
         return lectures;
     }
 
-    public Map<String, List<DegreeVerifier>> getVerifiedDegreeMap() {
+    public Map<String, List<DegreeSnapshot>> getVerifiedDegreeMap() {
         return verifiedDegreeMap;
     }
 }

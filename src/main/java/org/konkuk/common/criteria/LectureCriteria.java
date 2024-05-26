@@ -17,7 +17,7 @@ public class LectureCriteria {
      * 대상 교과목의 이름입니다.
      */
     @SerializedName("name")
-    protected String lectureName;
+    public final String lectureName;
 
     /**
      * 대상 교과목에서 받아야 하는 성적의 최소값을 나타내는 문자열입니다.
@@ -25,14 +25,14 @@ public class LectureCriteria {
      * 이 값이 명시되지 않으면 기본 값은 "D-"입니다.
      */
     @SerializedName("min_grade")
-    protected String minimumGrade;
+    protected final String minimumGrade;
 
     /**
      * 이 검사의 대상 교과목이 다른 검사에 중복으로 사용될 수 있는지를 나타냅니다.
      * 이 값이 명시되지 않으면 기본값은 true입니다.
      */
     @SerializedName("non_exclusive")
-    protected Boolean nonExclusive;
+    protected final Boolean nonExclusive;
 
     public String getMinimumGrade() {
         return minimumGrade == null ? DEFAULT_MINIMUM_GRADE : minimumGrade;

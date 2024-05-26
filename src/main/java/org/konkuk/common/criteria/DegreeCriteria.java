@@ -14,19 +14,19 @@ public class DegreeCriteria {
      * 이 학위의 이름입니다.
      */
     @SerializedName("degree_name")
-    protected String degreeName;
+    public final String degreeName;
 
     /**
      * 이 학위를 인정받기 위해 이수해야 하는 학점의 최소값을 나타냅니다.
      */
     @SerializedName("min_credit")
-    protected Integer minimumCredit;
+    public final Integer minimumCredit;
 
     /**
      * 이 학위를 인정받기 위해 통과해야 하는 검사 조건을 나타냅니다.
      */
     @SerializedName("criteria")
-    protected RecursiveCriteria recursiveCriteria;
+    public final RecursiveCriteria recursiveCriteria;
 
     public DegreeCriteria(DegreeCriteria toCopy) {
         degreeName = toCopy.degreeName;
