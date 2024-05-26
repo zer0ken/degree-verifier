@@ -117,4 +117,12 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
         }
         return new RecursiveSnapshot(new RecursiveCriteria(this), verified, subSnapshot);
     }
+
+    public LectureVerifier getLectureVerifier() {
+        return lectureVerifier;
+    }
+
+    public List<RecursiveVerifier> getSubRecursiveVerifiers() {
+        return subRecursiveVerifiers;
+    }
 }

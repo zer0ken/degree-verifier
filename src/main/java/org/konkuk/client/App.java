@@ -3,6 +3,7 @@ package org.konkuk.client;
 import org.konkuk.client.component.MenuBar;
 import org.konkuk.client.component.VerifiedDegreePanel;
 import org.konkuk.client.component.VerifierPanel;
+import org.konkuk.client.model.AppModel;
 
 import javax.swing.*;
 
@@ -24,12 +25,17 @@ public class App extends JFrame {
         innerPanel.add(new VerifierPanel(), BorderLayout.WEST);
 
         add(new VerifiedDegreePanel(), BorderLayout.WEST);
-//        add(innerPanel, BorderLayout.CENTER);
+        add(innerPanel, BorderLayout.CENTER);
 
         setVisible(true);
     }
 
     public static void main(String[] args) {
         new App();
+
+        AppModel model = AppModel.getInstance();
+
+        model.loadLectures();
+        model.loadVerifiers();
     }
 }

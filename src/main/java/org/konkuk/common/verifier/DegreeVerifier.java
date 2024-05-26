@@ -74,4 +74,8 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     public boolean isPruned() {
         return pruned;
     }
+
+    public RecursiveVerifier getRecursiveVerifier() {
+        return recursiveVerifier;
+    }
 }

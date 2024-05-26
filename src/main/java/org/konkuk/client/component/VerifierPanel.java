@@ -19,6 +19,8 @@ public class VerifierPanel extends JPanel {
 
         add(new TitlePanel(VERIFIER_PANEL_TITLE), BorderLayout.NORTH);
         add(verifierTree, BorderLayout.CENTER);
+
+        new VerifierPanelController(this);
     }
 
     public JTree getVerifierTree() {
