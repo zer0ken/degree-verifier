@@ -1,26 +1,13 @@
 {
-  "degree_name": "2024 실감미디어콘텐츠제작",
+  "degree_name": "2024 실감미디어기술",
   "min_credit": 9,
   "criteria": {
-    "min": 3,
     "subcriteria": [
-      {
-        "lecture": {"name": "객체지향프로그래밍"}
-      },
-      {
-        "lecture": {"name": "UI/UX프로그래밍"}
-      },
-      {
-        "lecture": {
-          "name": "컴퓨터그래픽스",
-          "non_exclusive" : true}
-      },
-      {
-        "lecture": {"name": "실감미디어프로젝트"}
-      },
-      {
-        "lecture": {"name": "실감응용인공지능"}
-      }
+      {"lecture": {"name": "객체지향프로그래밍"}},
+      {"lecture": {"name": "UI/UX프로그래밍"}},
+      {"lecture": {"name": "컴퓨터그래픽스"}},
+      {"lecture": {"name": "실감미디어프로젝트"}},
+      {"lecture": {"name": "실감응용인공지능"}}
     ]
   }
 }

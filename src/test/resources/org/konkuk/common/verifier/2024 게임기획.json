@@ -2,6 +2,7 @@
   "degree_name": "2024 게임기획",
   "min_credit": 9,
   "criteria": {
+
     "subcriteria": [
       {"lecture": {"name": "디지털스토리텔링"}},
       {"lecture": {"name": "게임컨셉디자인"}},

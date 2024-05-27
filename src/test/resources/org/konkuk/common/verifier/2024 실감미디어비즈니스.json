@@ -2,7 +2,6 @@
   "degree_name": "2024 실감미디어비즈니스",
   "min_credit": 9,
   "criteria": {
-    "min": 3,
     "subcriteria": [
       {
         "label": "택 1",
@@ -28,12 +27,8 @@
           {"lecture": {"name": "마케팅"}}
         ]
       },
-      {
-        "lecture": {"name": "국제경영학"}
-      },
-      {
-        "lecture": {"name": "스마트경영"}
-      }
+      {"lecture": {"name": "국제경영학"}},
+      {"lecture": {"name": "스마트경영"}}
     ]
   }
 }

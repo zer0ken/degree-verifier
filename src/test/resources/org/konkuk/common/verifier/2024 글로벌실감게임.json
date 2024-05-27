@@ -2,20 +2,11 @@
   "degree_name": "2024 글로벌실감게임",
   "min_credit": 9,
   "criteria": {
-    "min": 3,
     "subcriteria": [
-      {
-        "lecture": {"name": "COMPUTER GRAPHICS1"}
-      },
-      {
-        "lecture": {"name": "COMPUTER GRAPHICS2"}
-      },
-      {
-        "lecture": {"name": "게임인공지능"}
-      },
-      {
-        "lecture": {"name": "VR/AR게임프로그래밍"}
-      },
+      {"lecture": {"name": "COMPUTER GRAPHICS1"}},
+      {"lecture": {"name": "COMPUTER GRAPHICS2"}},
+      {"lecture": {"name": "게임인공지능"}},
+      {"lecture": {"name": "VR/AR게임프로그래밍"}},
       {
         "label": "택 1",
         "min": 1,

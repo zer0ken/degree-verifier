@@ -4,20 +4,10 @@
   "criteria": {
     "min": 3,
     "subcriteria": [
-      {
-        "lecture": {"name": "실감디지털드로잉"}
-      },
-      {
-        "lecture": {"name": "ICT경험디자인"}
-      },
-      {
-        "lecture": {
-          "name": "AR/VR콘텐츠실무",
-          "non_exclusive" : true}
-      },
-      {
-        "lecture": {"name": "UI/UX디자인"}
-      }
+      {"lecture": {"name": "실감디지털드로잉"}},
+      {"lecture": {"name": "ICT경험디자인"}},
+      {"lecture": {"name": "AR/VR콘텐츠실무"}},
+      {"lecture": {"name": "UI/UX디자인"}}
     ]
   }
 }

@@ -2,7 +2,6 @@
   "degree_name": "2024 체감기술",
   "min_credit": 12,
   "criteria": {
-    "min": 4,
     "subcriteria": [
       {
         "label": "택 1",
@@ -22,12 +21,8 @@
           {"lecture": {"name": "HCI특론(대학원 연계)"}}
         ]
       },
-      {
-        "lecture": {"name": "체감형기술이론및실습"}
-      },
-      {
-        "lecture": {"name": "혼합현실특론"}
-      }
+      {"lecture": {"name": "체감형기술이론및실습"}},
+      {"lecture": {"name": "혼합현실특론"}}
     ]
   }
 }
