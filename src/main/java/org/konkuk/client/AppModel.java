@@ -1,41 +1,23 @@
-package org.konkuk.client.model;
+package org.konkuk.client;
 
 import org.konkuk.common.DegreeManager;
 
+import javax.swing.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class AppModel {
     private static AppModel instance = null;
-
-    public static AppModel getInstance() {
-        return instance != null ? instance : new AppModel();
-    }
-
     private final DegreeManager degreeManager;
-
+    private final java.util.List<Runnable> onStartVerifierLoad;
+    private final java.util.List<Runnable> onVerifierLoaded;
+    private final java.util.List<Runnable> onStartLectureLoad;
+    private final java.util.List<Runnable> onLectureLoaded;
+    private final java.util.List<Runnable> onStartVerify;
+    private final List<Runnable> onVerified;
     private Thread verifierLoaderThread;
     private Thread lectureLoaderThread;
     private Thread verifierThread;
-
-    public enum Observer {
-        ON_START_VERIFIER_LOAD,
-        ON_VERIFIER_LOADED,
-        ON_START_LECTURE_LOAD,
-        ON_LECTURE_LOADED,
-        ON_START_VERIFY,
-        ON_VERIFIED
-    }
-
-    private final List<Runnable> onStartVerifierLoad;
-    private final List<Runnable> onVerifierLoaded;
-    private final List<Runnable> onStartLectureLoad;
-    private final List<Runnable> onLectureLoaded;
-    private final List<Runnable> onStartVerify;
-    private final List<Runnable> onVerified;
-
     private AppModel() {
         instance = this;
 
@@ -47,6 +29,10 @@ public class AppModel {
         onLectureLoaded = new ArrayList<>();
         onStartVerify = new ArrayList<>();
         onVerified = new ArrayList<>();
+    }
+
+    public static AppModel getInstance() {
+        return instance != null ? instance : new AppModel();
     }
 
     public void observe(Observer observer, Runnable runnable) {
@@ -74,19 +60,21 @@ public class AppModel {
             return;
         }
 
-        if (observer == Observer.ON_START_VERIFIER_LOAD) {
-            onStartVerifierLoad.forEach(Runnable::run);
-        } else if (observer == Observer.ON_VERIFIER_LOADED) {
-            onVerifierLoaded.forEach(Runnable::run);
-        } else if (observer == Observer.ON_START_LECTURE_LOAD) {
-            onStartLectureLoad.forEach(Runnable::run);
-        } else if (observer == Observer.ON_LECTURE_LOADED) {
-            onLectureLoaded.forEach(Runnable::run);
-        } else if (observer == Observer.ON_START_VERIFY) {
-            onStartVerify.forEach(Runnable::run);
-        } else if (observer == Observer.ON_VERIFIED) {
-            onVerified.forEach(Runnable::run);
-        }
+        SwingUtilities.invokeLater(() -> {
+            if (observer == Observer.ON_START_VERIFIER_LOAD) {
+                onStartVerifierLoad.forEach(Runnable::run);
+            } else if (observer == Observer.ON_VERIFIER_LOADED) {
+                onVerifierLoaded.forEach(Runnable::run);
+            } else if (observer == Observer.ON_START_LECTURE_LOAD) {
+                onStartLectureLoad.forEach(Runnable::run);
+            } else if (observer == Observer.ON_LECTURE_LOADED) {
+                onLectureLoaded.forEach(Runnable::run);
+            } else if (observer == Observer.ON_START_VERIFY) {
+                onStartVerify.forEach(Runnable::run);
+            } else if (observer == Observer.ON_VERIFIED) {
+                onVerified.forEach(Runnable::run);
+            }
+        });
     }
 
     public void loadVerifiers() {
@@ -95,7 +83,7 @@ public class AppModel {
         }
         notify(Observer.ON_START_VERIFIER_LOAD);
         verifierLoaderThread = new Thread(() -> {
-            degreeManager.loadAllVerifier("C:\\Users\\a3759\\IdeaProjects\\degree-verifier\\src\\test\\resources\\org\\konkuk\\common\\verifier");
+            degreeManager.loadAllVerifier("./src/test/resources/org/konkuk/common/verifier");
             notify(Observer.ON_VERIFIER_LOADED);
         });
         verifierLoaderThread.start();
@@ -107,7 +95,7 @@ public class AppModel {
         }
         notify(Observer.ON_START_LECTURE_LOAD);
         lectureLoaderThread = new Thread(() -> {
-            degreeManager.loadLectures("C:\\Users\\a3759\\IdeaProjects\\degree-verifier\\src\\test\\resources\\org\\konkuk\\common\\LecturesExample2.tsv");
+            degreeManager.loadLectures("./src/main/resources/LecturesExample.tsv");
             notify(Observer.ON_LECTURE_LOADED);
         });
         lectureLoaderThread.start();
@@ -127,5 +115,14 @@ public class AppModel {
 
     public DegreeManager getDegreeManager() {
         return degreeManager;
+    }
+
+    public enum Observer {
+        ON_START_VERIFIER_LOAD,
+        ON_VERIFIER_LOADED,
+        ON_START_LECTURE_LOAD,
+        ON_LECTURE_LOADED,
+        ON_START_VERIFY,
+        ON_VERIFIED
     }
 }

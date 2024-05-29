@@ -1,4 +1,4 @@
-package org.konkuk.client.component;
+package org.konkuk.client.component.menus;
 
 import org.konkuk.client.component.menus.FileMenu;
 import org.konkuk.client.component.menus.VerifyMenu;

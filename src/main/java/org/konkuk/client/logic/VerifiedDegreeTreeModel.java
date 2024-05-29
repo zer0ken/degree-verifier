@@ -1,5 +1,6 @@
-package org.konkuk.client.model;
+package org.konkuk.client.logic;
 
+import org.konkuk.client.AppModel;
 import org.konkuk.common.snapshot.DegreeSnapshot;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -12,26 +13,32 @@ import static org.konkuk.client.ui.Strings.VERIFING;
 
 public class VerifiedDegreeTreeModel extends DefaultTreeModel {
     private final AppModel appModel = AppModel.getInstance();
+    private final DefaultMutableTreeNode rootNode;
     private final DefaultMutableTreeNode pendingNode;
 
     public VerifiedDegreeTreeModel() {
         super(new DefaultMutableTreeNode("/"));
 
+        rootNode = (DefaultMutableTreeNode) getRoot();
         pendingNode = new DefaultMutableTreeNode(VERIFING);
 
-        appModel.observe(AppModel.Observer.ON_START_VERIFY, this::clearTree);
+        appModel.observe(AppModel.Observer.ON_START_VERIFY, this::displayPendingTree);
         appModel.observe(AppModel.Observer.ON_VERIFIED, this::updateTree);
     }
 
     public void clearTree() {
-        ((DefaultMutableTreeNode) getRoot()).removeAllChildren();
-        insertNodeInto(pendingNode, (MutableTreeNode) getRoot(), getChildCount(getRoot()));
+        rootNode.removeAllChildren();
+        reload();
+    }
 
+    public void displayPendingTree() {
+        clearTree();
+        insertNodeInto(pendingNode, rootNode, rootNode.getChildCount());
         reload();
     }
 
     public void updateTree() {
-        removeNodeFromParent(pendingNode);
+        clearTree();
 
         Map<String, List<DegreeSnapshot>> verifiedDegreeMap = appModel.getDegreeManager().getVerifiedDegreeMap();
 
@@ -41,13 +48,12 @@ public class VerifiedDegreeTreeModel extends DefaultTreeModel {
                 label += " 등 " + degreeSnapshotList.size() + "건";
             }
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(label);
+            insertNodeInto(node, rootNode, rootNode.getChildCount());
 
             degreeSnapshotList.forEach(degreeSnapshot -> {
                 DefaultMutableTreeNode child = new DefaultMutableTreeNode(degreeSnapshot.criteria.degreeName);
                 node.add(child);
             });
-
-            insertNodeInto(node, (MutableTreeNode) getRoot(), getChildCount(getRoot()));
         });
 
         reload();

@@ -125,4 +125,22 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
     public List<RecursiveVerifier> getSubRecursiveVerifiers() {
         return subRecursiveVerifiers;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (isImportant()) {
+            sb.append("필수 ");
+        }
+        if (lectureCriteria != null) {
+            sb.append("교과목: ").append(lectureVerifier.lectureName);
+        } else if (needsAllPass()) {
+            sb.append("검사 그룹: 모두 통과");
+        } else if (getMinimumPass() == 0) {
+            sb.append("검사 그룹");
+        } else {
+            sb.append("검사 그룹: ").append(getMinimumPass()).append("개 이상 통과");
+        }
+        return sb.toString();
+    }
 }
