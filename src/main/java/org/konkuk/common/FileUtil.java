@@ -23,7 +23,8 @@ public class FileUtil {
         try {
             String json = new String(Files.readAllBytes(path));
             return gson.fromJson(json, classOfT);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println("Exception occurred while reading json file: " + fileName);
             throw new RuntimeException(e);
         }
     }
@@ -36,7 +37,8 @@ public class FileUtil {
                 BufferedReader br = new BufferedReader(new InputStreamReader(fis))
         ) {
             br.lines().forEach(line -> tokenizedLines.add(line.split("\t")));
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println("Exception occurred while reading TSV file: " + fileName);
             throw new RuntimeException(e);
         }
         return tokenizedLines;
