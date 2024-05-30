@@ -5,7 +5,15 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Dimensions {
-    public static final Dimension DEFAULT_APP_SIZE = new Dimension(1240, 860);
+    public static final Dimension DEFAULT_APP_SIZE = new Dimension(1240, 720);
+
+    public static final Dimension MINIMUM_APP_SIZE = new Dimension(400, 150);
+    public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(120, 120);
+    public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(240, 180);
+
+    public static final Dimension MINIMUM_PROGRESS_LABEL_SIZE = new Dimension(120, 18);
 
     public static final Border TITLE_PANEL_PADDING = new EmptyBorder(4, 8, 4, 8);
+
+    public static final Insets PROGRESS_GRID_INSETS = new Insets(4, 8, 4, 8);
 }

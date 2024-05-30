@@ -5,10 +5,12 @@ import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static org.konkuk.client.ui.Dimensions.MINIMUM_COMMITTED_DEGREE_SIZE;
 
 public class CommittedDegreePanel extends JPanel {
     public CommittedDegreePanel() {
         setLayout(new BorderLayout());
+        setMinimumSize(MINIMUM_COMMITTED_DEGREE_SIZE);
 
         JTree tree = new JTree();
 

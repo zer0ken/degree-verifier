@@ -1,6 +1,5 @@
 package org.konkuk.client.component;
 
-import org.konkuk.client.logic.VerifiedDegreePanelPresenter;
 import org.konkuk.client.logic.VerifiedDegreeTreeModel;
 
 import javax.swing.*;

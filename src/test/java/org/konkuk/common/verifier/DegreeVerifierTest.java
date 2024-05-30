@@ -2,9 +2,8 @@ package org.konkuk.common.verifier;
 
 import org.konkuk.common.FileUtil;
 import org.konkuk.common.FileUtilTest;
-import org.konkuk.common.criteria.DegreeCriteria;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.konkuk.common.verify.criteria.DegreeCriteria;
+import org.konkuk.common.verify.verifier.DegreeVerifier;
 
 class DegreeVerifierTest extends FileUtilTest {
     DegreeVerifier degreeVerifier1 = new DegreeVerifier(FileUtil.fromJsonFile(

@@ -4,9 +4,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.konkuk.common.FileUtil;
 import org.konkuk.common.FileUtilTest;
-import org.konkuk.common.Lecture;
-import org.konkuk.common.criteria.LectureCriteria;
-import org.konkuk.common.verifier.LectureVerifier;
+import org.konkuk.common.student.Lecture;
+import org.konkuk.common.verify.criteria.LectureCriteria;
+import org.konkuk.common.verify.snapshot.LectureSnapshot;
+import org.konkuk.common.verify.verifier.LectureVerifier;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,128 +1,189 @@
 package org.konkuk.client;
 
-import org.konkuk.common.DegreeManager;
+import com.sun.media.sound.InvalidFormatException;
+import org.konkuk.client.logic.ProgressTracker;
+import org.konkuk.common.student.Student;
+import org.konkuk.common.verify.Verifier;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
+import static org.konkuk.client.ui.Strings.STUDENTS_LOADING_MESSAGE;
+import static org.konkuk.client.ui.Strings.VERIFIER_LOADING_MESSAGE;
+import static org.konkuk.common.DefaultPaths.STUDENTS_PATH;
 
 public class AppModel {
     private static AppModel instance = null;
-    private final DegreeManager degreeManager;
-    private final java.util.List<Runnable> onStartVerifierLoad;
-    private final java.util.List<Runnable> onVerifierLoaded;
-    private final java.util.List<Runnable> onStartLectureLoad;
-    private final java.util.List<Runnable> onLectureLoaded;
-    private final java.util.List<Runnable> onStartVerify;
-    private final List<Runnable> onVerified;
-    private Thread verifierLoaderThread;
-    private Thread lectureLoaderThread;
-    private Thread verifierThread;
+    private final Map<ObserveOf, List<Runnable>> runnableObserverMap;
+    private final Map<ObserveOf, List<Consumer>> consumerObserverMap;
+    private final ExecutorService executorService;
+    private final Verifier verifier;
+    private final List<ProgressTracker> trackers;
+    private final List<Student> students;
+
     private AppModel() {
         instance = this;
 
-        degreeManager = new DegreeManager();
+        verifier = new Verifier();
+        runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
+        consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
 
-        onStartVerifierLoad = new ArrayList<>();
-        onVerifierLoaded = new ArrayList<>();
-        onStartLectureLoad = new ArrayList<>();
-        onLectureLoaded = new ArrayList<>();
-        onStartVerify = new ArrayList<>();
-        onVerified = new ArrayList<>();
+        executorService = Executors.newCachedThreadPool();
+        trackers = Collections.synchronizedList(new LinkedList<>());
+        students = Collections.synchronizedList(new LinkedList<>());
     }
 
     public static AppModel getInstance() {
         return instance != null ? instance : new AppModel();
     }
 
-    public void observe(Observer observer, Runnable runnable) {
-        if (observer == null) {
+    public void observe(ObserveOf observeOf, Runnable callback) {
+        if (observeOf == null) {
             return;
         }
+        if (!runnableObserverMap.containsKey(observeOf)) {
+            runnableObserverMap.put(observeOf, new LinkedList<>());
+        }
+        runnableObserverMap.get(observeOf).add(callback);
+    }
 
-        if (observer == Observer.ON_START_VERIFIER_LOAD) {
-            onStartVerifierLoad.add(runnable);
-        } else if (observer == Observer.ON_VERIFIER_LOADED) {
-            onVerifierLoaded.add(runnable);
-        } else if (observer == Observer.ON_START_LECTURE_LOAD) {
-            onStartLectureLoad.add(runnable);
-        } else if (observer == Observer.ON_LECTURE_LOADED) {
-            onLectureLoaded.add(runnable);
-        } else if (observer == Observer.ON_START_VERIFY) {
-            onStartVerify.add(runnable);
-        } else if (observer == Observer.ON_VERIFIED) {
-            onVerified.add(runnable);
+    public void observe(ObserveOf observeOf, Consumer<Object> callback) {
+        if (observeOf == null) {
+            return;
+        }
+        if (!consumerObserverMap.containsKey(observeOf)) {
+            consumerObserverMap.put(observeOf, new LinkedList<>());
+        }
+        consumerObserverMap.get(observeOf).add(callback);
+    }
+
+    private void notify(ObserveOf observeOf) {
+        if (observeOf == null) {
+            return;
+        }
+        List<Runnable> observers = runnableObserverMap.get(observeOf);
+        if (observers != null) {
+            observers.forEach(SwingUtilities::invokeLater);
+        }
+        if (observeOf.parent != null) {
+            notify(observeOf.parent);
         }
     }
 
-    private void notify(Observer observer) {
-        if (observer == null) {
+    private void notify(ObserveOf observeOf, Object o) {
+        if (observeOf == null) {
             return;
         }
+        List<Consumer> observers = consumerObserverMap.get(observeOf);
+        if (observers != null) {
+            observers.forEach(observer -> SwingUtilities.invokeLater(() -> observer.accept(o)));
+        }
+        if (observeOf.parent != null) {
+            notify(observeOf.parent, o);
+        }
+    }
 
-        SwingUtilities.invokeLater(() -> {
-            if (observer == Observer.ON_START_VERIFIER_LOAD) {
-                onStartVerifierLoad.forEach(Runnable::run);
-            } else if (observer == Observer.ON_VERIFIER_LOADED) {
-                onVerifierLoaded.forEach(Runnable::run);
-            } else if (observer == Observer.ON_START_LECTURE_LOAD) {
-                onStartLectureLoad.forEach(Runnable::run);
-            } else if (observer == Observer.ON_LECTURE_LOADED) {
-                onLectureLoaded.forEach(Runnable::run);
-            } else if (observer == Observer.ON_START_VERIFY) {
-                onStartVerify.forEach(Runnable::run);
-            } else if (observer == Observer.ON_VERIFIED) {
-                onVerified.forEach(Runnable::run);
-            }
-        });
+    private ProgressTracker getTracker(String message) {
+        ProgressTracker tracker = new ProgressTracker(message);
+        trackers.add(tracker);
+        tracker.addOnFinishedListener(() -> trackers.remove(tracker));
+        return tracker;
     }
 
     public void loadVerifiers() {
-        if (verifierLoaderThread != null && verifierLoaderThread.isAlive()) {
-            verifierLoaderThread.interrupt();
-        }
-        notify(Observer.ON_START_VERIFIER_LOAD);
-        verifierLoaderThread = new Thread(() -> {
-            degreeManager.loadAllVerifier("./src/test/resources/org/konkuk/common/verifier");
-            notify(Observer.ON_VERIFIER_LOADED);
+        submitTask(
+                ObserveOf.ON_START_VERIFIER_LOAD,
+                ObserveOf.ON_VERIFIER_LOADED,
+                VERIFIER_LOADING_MESSAGE,
+                verifier::loadAllVerifiers
+        );
+    }
+
+    public void loadStudents() {
+        submitTask(
+                ObserveOf.ON_START_STUDENT_LOAD,
+                ObserveOf.ON_STUDENT_LOADED,
+                STUDENTS_LOADING_MESSAGE,
+                (tracker) -> {
+                    File directory = new File(STUDENTS_PATH);
+                    File[] studentDirectories = directory.listFiles();
+                    if (studentDirectories == null) {
+                        tracker.finish();
+                        return;
+                    }
+                    tracker.setMaximum(studentDirectories.length);
+                    for (File studentDirectory : studentDirectories) {
+                        try {
+                            students.add(new Student(studentDirectory.getName()));
+                        } catch (InvalidFormatException ignored) {
+                        } finally {
+                            tracker.increment();
+                        }
+                    }
+                    tracker.finish();
+                }
+        );
+    }
+
+    public void submitTask(ObserveOf startObserver, ObserveOf endObserver, String message,
+                           Consumer<ProgressTracker> consumer) {
+        ProgressTracker tracker = getTracker(message);
+        notify(ObserveOf.ON_TASK_START, tracker);
+        notify(startObserver);
+        executorService.submit(() -> {
+            consumer.accept(tracker);
+            notify(endObserver);
+            notify(ObserveOf.ON_TASK_END, tracker);
         });
-        verifierLoaderThread.start();
     }
 
-    public void loadLectures() {
-        if (lectureLoaderThread != null && lectureLoaderThread.isAlive()) {
-            lectureLoaderThread.interrupt();
-        }
-        notify(Observer.ON_START_LECTURE_LOAD);
-        lectureLoaderThread = new Thread(() -> {
-            degreeManager.loadLectures("./src/main/resources/LecturesExample.tsv");
-            notify(Observer.ON_LECTURE_LOADED);
-        });
-        lectureLoaderThread.start();
+    public Verifier getVerifier() {
+        return verifier;
     }
 
-    public void verify() {
-        if (verifierThread != null && verifierThread.isAlive()) {
-            verifierThread.interrupt();
-        }
-        notify(Observer.ON_START_VERIFY);
-        verifierThread = new Thread(() -> {
-            degreeManager.verify();
-            notify(Observer.ON_VERIFIED);
-        });
-        verifierThread.start();
+    public List<ProgressTracker> getTrackers() {
+        return trackers;
     }
 
-    public DegreeManager getDegreeManager() {
-        return degreeManager;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public enum Observer {
+    public enum ObserveOf {
+        ON_TASK_START,
+        ON_TASK_END,
+
         ON_START_VERIFIER_LOAD,
         ON_VERIFIER_LOADED,
-        ON_START_LECTURE_LOAD,
-        ON_LECTURE_LOADED,
+
         ON_START_VERIFY,
-        ON_VERIFIED
+        ON_VERIFIED,
+
+        ON_START_STUDENT_LOAD,
+        ON_STUDENT_LOADED;
+
+        private final ObserveOf parent;
+
+        ObserveOf() {
+            this.parent = null;
+        }
+
+        ObserveOf(ObserveOf parent) {
+            this.parent = parent;
+        }
+
+        public boolean isIn(ObserveOf other) {
+            if (this == other) {
+                return true;
+            }
+            if (parent != null) {
+                return parent.isIn(other);
+            }
+            return false;
+        }
     }
 }

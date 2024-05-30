@@ -1,0 +1,22 @@
+{
+  "degree_name": "2024 XR입출력기술",
+  "min_credit": 12,
+  "criteria": {
+    "subcriteria": [
+      {"lecture": {"name": "가상현실"}},
+      {"lecture": {"name": "고급컴퓨터그래픽스"}},
+      {
+        "label": "택 1",
+        "min": 1,
+        "important": true,
+        "subcriteria": [
+          {"lecture": {"name": "영상처리"}},
+          {"lecture": {"name": "컴퓨터비전"}},
+          {"lecture": {"name": "고급컴퓨터비전(대학원 연계)"}}
+        ]
+      },
+      {"lecture": {"name": "풀스택서비스네트워킹"}},
+      {"lecture": {"name": "XR기술PBL"}}
+    ]
+  }
+}

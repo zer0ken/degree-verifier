@@ -1,14 +1,14 @@
 package org.konkuk.client.logic;
 
 import org.konkuk.client.AppModel;
-import org.konkuk.common.verifier.DegreeVerifier;
-import org.konkuk.common.verifier.RecursiveVerifier;
+import org.konkuk.common.verify.verifier.DegreeVerifier;
+import org.konkuk.common.verify.verifier.RecursiveVerifier;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
 
-import static org.konkuk.client.ui.Strings.VERIFIER_LOADING;
+import static org.konkuk.client.ui.Strings.VERIFIER_LOADING_MESSAGE;
 
 public class VerifierTreeModel extends DefaultTreeModel {
     private final AppModel appModel = AppModel.getInstance();
@@ -19,10 +19,10 @@ public class VerifierTreeModel extends DefaultTreeModel {
         super(new DefaultMutableTreeNode("/"));
 
         rootNode = (DefaultMutableTreeNode) getRoot();
-        pendingNode = new DefaultMutableTreeNode(VERIFIER_LOADING);
+        pendingNode = new DefaultMutableTreeNode(VERIFIER_LOADING_MESSAGE);
 
-        appModel.observe(AppModel.Observer.ON_START_VERIFIER_LOAD, this::displayLoadingTree);
-        appModel.observe(AppModel.Observer.ON_VERIFIER_LOADED, this::updateTree);
+        appModel.observe(AppModel.ObserveOf.ON_START_VERIFIER_LOAD, this::displayLoadingTree);
+        appModel.observe(AppModel.ObserveOf.ON_VERIFIER_LOADED, this::updateTree);
     }
 
     private void clearTree() {
@@ -38,7 +38,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
     private void updateTree() {
         clearTree();
 
-        List<DegreeVerifier> degreeVerifierList = appModel.getDegreeManager().getDegreeVerifiers();
+        List<DegreeVerifier> degreeVerifierList = appModel.getVerifier().getDegreeVerifiers();
         degreeVerifierList.forEach(degreeVerifier -> {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(degreeVerifier.toString());
             node.add(new DefaultMutableTreeNode("최소 학점: "+degreeVerifier.minimumCredit));

@@ -2,6 +2,7 @@ package org.konkuk.common.criteria;
 
 import org.junit.jupiter.api.Test;
 import org.konkuk.common.FileUtil;
+import org.konkuk.common.verify.criteria.RecursiveCriteria;
 
 import static org.junit.jupiter.api.Assertions.*;
 

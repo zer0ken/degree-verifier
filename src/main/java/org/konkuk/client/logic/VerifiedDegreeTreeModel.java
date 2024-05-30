@@ -1,11 +1,10 @@
 package org.konkuk.client.logic;
 
 import org.konkuk.client.AppModel;
-import org.konkuk.common.snapshot.DegreeSnapshot;
+import org.konkuk.common.verify.snapshot.DegreeSnapshot;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +21,8 @@ public class VerifiedDegreeTreeModel extends DefaultTreeModel {
         rootNode = (DefaultMutableTreeNode) getRoot();
         pendingNode = new DefaultMutableTreeNode(VERIFING);
 
-        appModel.observe(AppModel.Observer.ON_START_VERIFY, this::displayPendingTree);
-        appModel.observe(AppModel.Observer.ON_VERIFIED, this::updateTree);
+        appModel.observe(AppModel.ObserveOf.ON_START_VERIFY, this::displayPendingTree);
+        appModel.observe(AppModel.ObserveOf.ON_VERIFIED, this::updateTree);
     }
 
     public void clearTree() {
@@ -38,24 +37,24 @@ public class VerifiedDegreeTreeModel extends DefaultTreeModel {
     }
 
     public void updateTree() {
-        clearTree();
-
-        Map<String, List<DegreeSnapshot>> verifiedDegreeMap = appModel.getDegreeManager().getVerifiedDegreeMap();
-
-        verifiedDegreeMap.forEach((key, degreeSnapshotList) -> {
-            String label = degreeSnapshotList.get(0).criteria.degreeName;
-            if (degreeSnapshotList.size() > 1) {
-                label += " 등 " + degreeSnapshotList.size() + "건";
-            }
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(label);
-            insertNodeInto(node, rootNode, rootNode.getChildCount());
-
-            degreeSnapshotList.forEach(degreeSnapshot -> {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(degreeSnapshot.criteria.degreeName);
-                node.add(child);
-            });
-        });
-
-        reload();
+//        clearTree();
+//
+//        Map<String, List<DegreeSnapshot>> verifiedDegreeMap = appModel.getVerifier().getVerifiedDegreeMap();
+//
+//        verifiedDegreeMap.forEach((key, degreeSnapshotList) -> {
+//            String label = degreeSnapshotList.get(0).criteria.degreeName;
+//            if (degreeSnapshotList.size() > 1) {
+//                label += " 등 " + degreeSnapshotList.size() + "건";
+//            }
+//            DefaultMutableTreeNode node = new DefaultMutableTreeNode(label);
+//            insertNodeInto(node, rootNode, rootNode.getChildCount());
+//
+//            degreeSnapshotList.forEach(degreeSnapshot -> {
+//                DefaultMutableTreeNode child = new DefaultMutableTreeNode(degreeSnapshot.criteria.degreeName);
+//                node.add(child);
+//            });
+//        });
+//
+//        reload();
     }
 }

@@ -2,25 +2,25 @@ package org.konkuk.client;
 
 import org.konkuk.client.component.*;
 import org.konkuk.client.component.menus.MenuBar;
+import org.konkuk.client.component.statusbar.StatusPanel;
 import org.konkuk.client.ui.Themes;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.konkuk.client.ui.Dimensions.DEFAULT_APP_SIZE;
+import static org.konkuk.client.ui.Dimensions.MINIMUM_APP_SIZE;
 import static org.konkuk.client.ui.Strings.APP_TITLE;
 
 public class App extends JFrame {
     public App() {
         initIcons();
         setTitle(APP_TITLE);
+        setMinimumSize(MINIMUM_APP_SIZE);
         setSize(DEFAULT_APP_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -53,16 +53,15 @@ public class App extends JFrame {
         setIconImages(icons);
     }
 
+    public void afterLaunched() {
+        AppModel.getInstance().loadVerifiers();
+        AppModel.getInstance().loadStudents();
+    }
+
     public static void main(String[] args) {
         Themes.init();
 
-        new App();
-
-        AppModel model = AppModel.getInstance();
-
-        model.loadLectures();
-        model.observe(AppModel.Observer.ON_LECTURE_LOADED, model::loadVerifiers);
-        model.observe(AppModel.Observer.ON_VERIFIER_LOADED, model::verify);
+        App app = new App();
+//        app.afterLaunched();
     }
-
 }
