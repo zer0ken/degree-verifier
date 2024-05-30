@@ -21,6 +21,7 @@
         "label": "비즈니스 영역(택 1~2)",
         "important": true,
         "min": 1,
+        "max": 2,
         "subcriteria": [
           {"lecture": {"name": "XR비즈니스입문"}},
           {"lecture": {"name": "XR창업비즈니스모델"}},

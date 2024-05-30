@@ -10,8 +10,7 @@
       {"lecture": {"name": "게임기획실무"}},
       {
         "label": "택 1",
-        "min": 1,
-        "important": true,
+        "max": 1,
         "subcriteria": [
           {"lecture": {"name": "게임프로젝트"}},
           {"lecture": {"name": "게임캡스톤디자인"}}
