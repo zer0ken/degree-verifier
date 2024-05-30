@@ -62,6 +62,6 @@ public class App extends JFrame {
         Themes.init();
 
         App app = new App();
-//        app.afterLaunched();
+        app.afterLaunched();
     }
 }

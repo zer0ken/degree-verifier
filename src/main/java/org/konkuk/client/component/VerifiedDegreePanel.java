@@ -7,11 +7,13 @@ import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static org.konkuk.client.ui.Dimensions.MINIMUM_VERIFIED_DEGREE_SIZE;
 import static org.konkuk.client.ui.Strings.VERIFIED_DEGREE_PANEL_TITLE;
 
 public class VerifiedDegreePanel extends JPanel {
     public VerifiedDegreePanel() {
         setLayout(new BorderLayout());
+        setMinimumSize(MINIMUM_VERIFIED_DEGREE_SIZE);
 
         JTree tree = new JTree();
         tree.setRootVisible(false);
