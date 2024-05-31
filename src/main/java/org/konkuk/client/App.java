@@ -36,11 +36,11 @@ public class App extends JFrame {
 
     private void initIcons() {
         String[] iconNames = {
-                "icons/icon_16.png",
-                "icons/icon_24.png",
-                "icons/icon_36.png",
-                "icons/icon_48.png",
-                "icons/icon_64.png",
+                "/org/konkuk/icons/app_icon_16.png",
+                "/org/konkuk/icons/app_icon_24.png",
+                "/org/konkuk/icons/app_icon_36.png",
+                "/org/konkuk/icons/app_icon_48.png",
+                "/org/konkuk/icons/app_icon_64.png",
         };
         List<Image> icons = new ArrayList<>();
         for (String iconName : iconNames) {

@@ -28,33 +28,26 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
 
     @Override
     public List<LectureVerifier> match(List<Lecture> lectures) {
-        clear();
-        List<LectureVerifier> matchedLectureVerifiers = null;
+        List<LectureVerifier> exclusiveLectureVerifiers = null;
         try {
-            matchedLectureVerifiers = recursiveVerifier.match(lectures);
-            pruned = recursiveVerifier.isPruned();
-        } catch (RuntimeException e) {
+            exclusiveLectureVerifiers = recursiveVerifier.match(lectures);
+            int test = recursiveVerifier.estimateCredit();
+            pruned = recursiveVerifier.isPruned() ||
+                    recursiveVerifier.estimateCredit() < minimumCredit;
+        } catch (ImportantCriteriaFailedException e) {
             pruned = true;
         }
-        return pruned ? Collections.emptyList() : matchedLectureVerifiers;
+        return pruned ? Collections.emptyList() : exclusiveLectureVerifiers;
     }
 
     @Override
     public boolean verify() {
         try {
             verified = recursiveVerifier.verify() && creditize() >= minimumCredit;
-        } catch (RuntimeException e) {
+        } catch (ImportantCriteriaFailedException e) {
             verified = false;
         }
         return verified;
-    }
-
-    @Override
-    public void clear() {
-        pruned = false;
-        verified = false;
-
-        recursiveVerifier.clear();
     }
 
     @Override

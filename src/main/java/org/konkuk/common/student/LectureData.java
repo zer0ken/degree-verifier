@@ -34,4 +34,14 @@ public class LectureData {
                 toCopy.university
         );
     }
+
+    @Override
+    public int hashCode() {
+        return (year+semester+name).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return hashCode() == obj.hashCode();
+    }
 }

@@ -29,7 +29,7 @@ public class Lecture extends LectureData {
         return used;
     }
 
-    public void clear() {
+    public void disuse() {
         used = false;
     }
 }

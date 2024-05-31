@@ -7,6 +7,7 @@ import org.konkuk.common.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.common.verify.snapshot.Snapshot;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.*;
  * @author 이현령
  * @since 2024-05-25T15:41:30.622Z
  */
-public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, Creditizable, Snapshotable {
+public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, Creditizable, Estimable, Snapshotable {
     private final LectureVerifier lectureVerifier;
     private final List<RecursiveVerifier> subRecursiveVerifiers;
 
@@ -32,9 +33,8 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
     }
 
     @Override
-    public List<LectureVerifier> match(List<Lecture> lectures) throws RuntimeException {
+    public List<LectureVerifier> match(List<Lecture> lectures) throws ImportantCriteriaFailedException {
         List<LectureVerifier> matchedLectureVerifiers;
-        clear();
         if (lectureVerifier != null) {
             matchedLectureVerifiers = lectureVerifier.match(lectures);
             pruned = lectureVerifier.isPruned();
@@ -46,13 +46,13 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
             pruned = needsAllPass() ? prunedCount > 0 : subRecursiveVerifiers.size() - prunedCount < getMinimumPass();
         }
         if (pruned && isImportant()) {
-            throw new RuntimeException("Important recursiveCriteria pruned: " + (label != null ? label : toString()));
+            throw new ImportantCriteriaFailedException("Important recursiveCriteria pruned: " + (label != null ? label : toString()));
         }
         return matchedLectureVerifiers;
     }
 
     @Override
-    public boolean verify() throws RuntimeException {
+    public boolean verify() throws ImportantCriteriaFailedException {
         if (lectureVerifier != null) {
             verified = lectureVerifier.verify();
         } else {
@@ -64,22 +64,10 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
         }
 
         if (isImportant() && !verified) {
-            throw new RuntimeException("Important recursiveCriteria did not verified: " + (label != null ? label : toString()));
+            throw new ImportantCriteriaFailedException("Important recursiveCriteria did not verified: " + (label != null ? label : toString()));
         }
 
         return verified;
-    }
-
-    @Override
-    public void clear() {
-        pruned = false;
-        verified = false;
-
-        if (lectureVerifier != null) {
-            lectureVerifier.clear();
-        } else {
-            subRecursiveVerifiers.forEach(RecursiveVerifier::clear);
-        }
     }
 
     public boolean isPruned() {
@@ -88,18 +76,34 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
 
     @Override
     public int creditize() {
-        int credit;
-
         if (lectureVerifier != null) {
-            credit = lectureVerifier.creditize();
-        } else {
-            credit = subRecursiveVerifiers.stream()
+            return lectureVerifier.creditize();
+        } else if (maximumPass != null) {
+            return subRecursiveVerifiers.stream()
                     .filter(recursiveVerifier -> recursiveVerifier.verified)
+                    .sorted((o1, o2) -> o2.estimateCredit() - o1.estimateCredit())
                     .limit(maximumPass)
                     .reduce(0, (acc, recursiveVerifier) -> acc + recursiveVerifier.creditize(), Integer::sum);
+        } else {
+            return subRecursiveVerifiers.stream()
+                    .filter(recursiveVerifier -> recursiveVerifier.verified)
+                    .reduce(0, (acc, recursiveVerifier) -> acc + recursiveVerifier.creditize(), Integer::sum);
         }
+    }
 
-        return credit;
+    @Override
+    public int estimateCredit() {
+        if (lectureVerifier != null) {
+            return lectureVerifier.estimateCredit();
+        } else if (maximumPass != null) {
+            return subRecursiveVerifiers.stream()
+                    .sorted((o1, o2) -> o2.estimateCredit() - o1.estimateCredit())
+                    .limit(maximumPass)
+                    .reduce(0, (acc, recursiveVerifier) -> acc + recursiveVerifier.estimateCredit(), Integer::sum);
+        } else {
+            return subRecursiveVerifiers.stream()
+                    .reduce(0, (acc, recursiveVerifier) -> acc + recursiveVerifier.estimateCredit(), Integer::sum);
+        }
     }
 
     @Override

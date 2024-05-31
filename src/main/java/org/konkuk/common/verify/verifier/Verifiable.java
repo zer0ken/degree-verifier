@@ -4,7 +4,6 @@ import org.konkuk.common.student.Lecture;
 
 import java.util.List;
 
-
 /**
  * 이 인터페이스는 검증에 필요한 메소드의 구현을 강제합니다.
  *
@@ -13,6 +12,6 @@ import java.util.List;
  */
 public interface Verifiable {
     List<LectureVerifier> match(List<Lecture> lectures);
+
     boolean verify();
-    void clear();
 }

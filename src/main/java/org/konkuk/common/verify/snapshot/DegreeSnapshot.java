@@ -18,4 +18,9 @@ public class DegreeSnapshot implements Snapshot, Creditizable {
     public int creditize() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return criteria.degreeName;
+    }
 }
