@@ -1,6 +1,9 @@
-package org.konkuk.client.component;
+package org.konkuk.client.components.studentlist;
 
-import org.konkuk.client.logic.StudentListModel;
+import org.konkuk.client.logic.studentlist.StudentListEnable;
+import org.konkuk.client.logic.studentlist.StudentListModel;
+import org.konkuk.client.logic.studentlist.StudentListSelectionListener;
+import org.konkuk.common.student.Student;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +17,10 @@ public class StudentListPanel extends JPanel {
         setLayout(new BorderLayout());
         setMinimumSize(MINIMUM_STUDENT_LIST_SIZE);
 
-        JList<String> studentList = new JList<>(new StudentListModel());
+        JList<Student> studentList = new JList<>(new StudentListModel());
+        studentList.setEnabled(false);
+        studentList.setComponentPopupMenu(new StudentListPopupMenu());
+        studentList.addListSelectionListener(new StudentListSelectionListener());
 
         JScrollPane scrollPane = new JScrollPane(
                 studentList,
@@ -22,7 +28,9 @@ public class StudentListPanel extends JPanel {
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        add(new TitlePanel("학생 목록"), BorderLayout.NORTH);
+        add(new StudentToolbar(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+
+        new StudentListEnable(studentList);
     }
 }

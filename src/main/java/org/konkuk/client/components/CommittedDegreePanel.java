@@ -1,21 +1,18 @@
-package org.konkuk.client.component;
-
-import org.konkuk.client.logic.VerifierTreeModel;
+package org.konkuk.client.components;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static org.konkuk.client.ui.Strings.VERIFIER_LIST_PANEL_TITLE;
+import static org.konkuk.client.ui.Dimensions.MINIMUM_COMMITTED_DEGREE_SIZE;
 
-public class VerifierListPanel extends JPanel {
-    public VerifierListPanel() {
+public class CommittedDegreePanel extends JPanel {
+    public CommittedDegreePanel() {
         setLayout(new BorderLayout());
+        setMinimumSize(MINIMUM_COMMITTED_DEGREE_SIZE);
 
         JTree tree = new JTree();
-        tree.setRootVisible(false);
-        tree.setModel(new VerifierTreeModel());
 
         JScrollPane scrollPane = new JScrollPane(
                 tree,
@@ -23,7 +20,7 @@ public class VerifierListPanel extends JPanel {
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        add(new TitlePanel(VERIFIER_LIST_PANEL_TITLE), BorderLayout.NORTH);
+        add(new TitledToolbar("인정된 학위 목록"), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 }

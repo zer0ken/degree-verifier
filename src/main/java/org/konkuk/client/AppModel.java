@@ -3,7 +3,9 @@ package org.konkuk.client;
 import com.sun.media.sound.InvalidFormatException;
 import org.konkuk.client.logic.ProgressTracker;
 import org.konkuk.common.student.Student;
-import org.konkuk.common.verify.Verifier;
+import org.konkuk.common.verify.VerifierFactory;
+import org.konkuk.common.verify.snapshot.DegreeSnapshot;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.swing.*;
 import java.io.File;
@@ -12,29 +14,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import static org.konkuk.client.ui.Strings.STUDENTS_LOADING_MESSAGE;
-import static org.konkuk.client.ui.Strings.VERIFIER_LOADING_MESSAGE;
+import static org.konkuk.client.ui.Strings.*;
 import static org.konkuk.common.DefaultPaths.STUDENTS_PATH;
 
 public class AppModel {
     private static AppModel instance = null;
-    private final Map<ObserveOf, List<Runnable>> runnableObserverMap;
-    private final Map<ObserveOf, List<Consumer>> consumerObserverMap;
-    private final ExecutorService executorService;
-    private final Verifier verifier;
-    private final List<ProgressTracker> trackers;
-    private final List<Student> students;
+    private final Map<ObserveOf, List<Runnable>> runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
+    private final Map<ObserveOf, List<Consumer>> consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final VerifierFactory verifierFactory = new VerifierFactory();
+    private final List<ProgressTracker> trackers = Collections.synchronizedList(new LinkedList<>());
+    private final List<Student> students = Collections.synchronizedList(new LinkedList<>());
+    private final List<Student> selectedStudents = Collections.synchronizedList(new LinkedList<>());
+    private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new LinkedList<>());
 
-    private AppModel() {
+    private Student committingStudent = null;
+
+    private boolean isStudentListLoaded = false;
+
+    public AppModel() {
         instance = this;
-
-        verifier = new Verifier();
-        runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
-        consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
-
-        executorService = Executors.newCachedThreadPool();
-        trackers = Collections.synchronizedList(new LinkedList<>());
-        students = Collections.synchronizedList(new LinkedList<>());
     }
 
     public static AppModel getInstance() {
@@ -87,28 +86,43 @@ public class AppModel {
         }
     }
 
-    private ProgressTracker getTracker(String message) {
+    private ProgressTracker newTracker(String message) {
         ProgressTracker tracker = new ProgressTracker(message);
         trackers.add(tracker);
-        tracker.addOnFinishedListener(() -> trackers.remove(tracker));
+        notify(ObserveOf.ON_TASK_STARTED, tracker);
+        tracker.addOnFinishedListener(() -> {
+            trackers.remove(tracker);
+            notify(ObserveOf.ON_TASK_FINISHED, tracker);
+        });
         return tracker;
     }
 
-    public void loadVerifiers() {
-        submitTask(
-                ObserveOf.ON_START_VERIFIER_LOAD,
-                ObserveOf.ON_VERIFIER_LOADED,
-                VERIFIER_LOADING_MESSAGE,
-                verifier::loadAllVerifiers
-        );
+    public void submitTask(
+            Runnable beforeSubmit,
+            Runnable afterFinished,
+            String message,
+            Consumer<ProgressTracker> trackableTask) {
+        ProgressTracker tracker = newTracker(message);
+        beforeSubmit.run();
+        executorService.submit(() -> {
+            try {
+                trackableTask.accept(tracker);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } finally {
+                tracker.finish();
+                afterFinished.run();
+            }
+        });
     }
 
-    public void loadStudents() {
+    public void loadStudentList() {
         submitTask(
-                ObserveOf.ON_START_STUDENT_LOAD,
-                ObserveOf.ON_STUDENT_LOADED,
+                () -> notify(ObserveOf.ON_STUDENT_LOAD_STARTED),
+                () -> notify(ObserveOf.ON_STUDENT_LOADED),
                 STUDENTS_LOADING_MESSAGE,
                 (tracker) -> {
+                    students.clear();
                     File directory = new File(STUDENTS_PATH);
                     File[] studentDirectories = directory.listFiles();
                     if (studentDirectories == null) {
@@ -118,31 +132,81 @@ public class AppModel {
                     tracker.setMaximum(studentDirectories.length);
                     for (File studentDirectory : studentDirectories) {
                         try {
-                            students.add(new Student(studentDirectory.getName()));
+                            students.add(new Student(studentDirectory.getAbsolutePath()));
                         } catch (InvalidFormatException ignored) {
                         } finally {
                             tracker.increment();
                         }
                     }
+                    isStudentListLoaded = true;
                     tracker.finish();
                 }
         );
     }
 
-    public void submitTask(ObserveOf startObserver, ObserveOf endObserver, String message,
-                           Consumer<ProgressTracker> consumer) {
-        ProgressTracker tracker = getTracker(message);
-        notify(ObserveOf.ON_TASK_START, tracker);
-        notify(startObserver);
+    public void loadVerifier() {
+        submitTask(
+                () -> notify(ObserveOf.ON_VERIFIER_LOAD_STARTED),
+                () -> notify(ObserveOf.ON_VERIFIER_LOADED),
+                VERIFIER_LOADING_MESSAGE,
+                verifierFactory::loadAllVerifiers
+        );
+    }
+
+    public void verifyStudent(Student student) throws RuntimeException {
+        if (!isStudentListLoaded) {
+            throw new RuntimeException("Student list not loaded yet");
+        }
+        if (!verifierFactory.isLoaded()) {
+            throw new RuntimeException("Verifier not loaded yet");
+        }
+
         executorService.submit(() -> {
-            consumer.accept(tracker);
-            notify(endObserver);
-            notify(ObserveOf.ON_TASK_END, tracker);
+            if (!student.isLoaded()) {
+                student.loadLectures(newTracker(String.format(LECTURES_LOADING_MESSAGES, student)));
+            }
+            submitTask(
+                    () -> notify(ObserveOf.ON_VERIFY_STARTED, student),
+                    () -> notify(ObserveOf.ON_VERIFIED, student),
+                    String.format(VERIFYING, student),
+                    (tracker) -> verifierFactory.newVerifier().verify(student, tracker)
+            );
         });
     }
 
-    public Verifier getVerifier() {
-        return verifier;
+    public void setSelectedStudents(Collection<Student> selectedStudents) {
+        this.selectedStudents.clear();
+        this.selectedStudents.addAll(selectedStudents);
+        notify(ObserveOf.ON_STUDENT_SELECTED, selectedStudents);
+    }
+
+    public void setCommittingStudent(Student student) {
+        committingStudent = student;
+        notify(ObserveOf.ON_COMMIT_STARTED, student);
+        if (!committingStudent.isVerified()) {
+            verifyStudent(student);
+        }
+    }
+
+    public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
+        selectedVerifiedDegree.clear();
+        selectedVerifiedDegree.addAll(selectedDegrees);
+    }
+
+    public void commit() {
+        if (committingStudent == null || selectedVerifiedDegree.isEmpty()) {
+            return;
+        }
+        for (DegreeSnapshot degreeSnapshot : selectedVerifiedDegree) {
+            if (degreeSnapshot != null) {
+                committingStudent.commit(degreeSnapshot);
+            }
+        }
+        notify(ObserveOf.ON_COMMIT_UPDATED, committingStudent);
+    }
+
+    public VerifierFactory getVerifierFactory() {
+        return verifierFactory;
     }
 
     public List<ProgressTracker> getTrackers() {
@@ -153,18 +217,34 @@ public class AppModel {
         return students;
     }
 
-    public enum ObserveOf {
-        ON_TASK_START,
-        ON_TASK_END,
+    public List<Student> getSelectedStudents() {
+        return selectedStudents;
+    }
 
-        ON_START_VERIFIER_LOAD,
+    public Student getCommittingStudent() {
+        return committingStudent;
+    }
+
+    public List<DegreeSnapshot> getSelectedVerifiedDegree() {
+        return selectedVerifiedDegree;
+    }
+
+    public enum ObserveOf {
+        ON_TASK_STARTED,
+        ON_TASK_FINISHED,
+
+        ON_VERIFIER_LOAD_STARTED,
         ON_VERIFIER_LOADED,
 
-        ON_START_VERIFY,
+        ON_VERIFY_STARTED,
         ON_VERIFIED,
 
-        ON_START_STUDENT_LOAD,
-        ON_STUDENT_LOADED;
+        ON_STUDENT_LOAD_STARTED,
+        ON_STUDENT_LOADED,
+
+        ON_STUDENT_SELECTED,
+        ON_COMMIT_STARTED,
+        ON_COMMIT_UPDATED;
 
         private final ObserveOf parent;
 

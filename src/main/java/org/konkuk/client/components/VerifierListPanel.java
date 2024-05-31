@@ -1,18 +1,21 @@
-package org.konkuk.client.component;
+package org.konkuk.client.components;
+
+import org.konkuk.client.logic.VerifierTreeModel;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static org.konkuk.client.ui.Dimensions.MINIMUM_LECTURE_LIST_SIZE;
+import static org.konkuk.client.ui.Strings.VERIFIER_LIST_PANEL_TITLE;
 
-public class LectureListPanel extends JPanel {
-    public LectureListPanel() {
+public class VerifierListPanel extends JPanel {
+    public VerifierListPanel() {
         setLayout(new BorderLayout());
-        setMinimumSize(MINIMUM_LECTURE_LIST_SIZE);
 
         JTree tree = new JTree();
+        tree.setRootVisible(false);
+        tree.setModel(new VerifierTreeModel());
 
         JScrollPane scrollPane = new JScrollPane(
                 tree,
@@ -20,7 +23,7 @@ public class LectureListPanel extends JPanel {
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        add(new TitlePanel("교과목 성적"), BorderLayout.NORTH);
-        add(scrollPane);
+        add(new TitledToolbar(VERIFIER_LIST_PANEL_TITLE), BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
     }
 }

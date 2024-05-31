@@ -21,7 +21,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
         rootNode = (DefaultMutableTreeNode) getRoot();
         pendingNode = new DefaultMutableTreeNode(VERIFIER_LOADING_MESSAGE);
 
-        appModel.observe(AppModel.ObserveOf.ON_START_VERIFIER_LOAD, this::displayLoadingTree);
+        appModel.observe(AppModel.ObserveOf.ON_VERIFIER_LOAD_STARTED, this::displayLoadingTree);
         appModel.observe(AppModel.ObserveOf.ON_VERIFIER_LOADED, this::updateTree);
     }
 
@@ -38,7 +38,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
     private void updateTree() {
         clearTree();
 
-        List<DegreeVerifier> degreeVerifierList = appModel.getVerifier().getDegreeVerifiers();
+        List<DegreeVerifier> degreeVerifierList = appModel.getVerifierFactory();
         degreeVerifierList.forEach(degreeVerifier -> {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(degreeVerifier.toString());
             node.add(new DefaultMutableTreeNode("최소 학점: "+degreeVerifier.minimumCredit));

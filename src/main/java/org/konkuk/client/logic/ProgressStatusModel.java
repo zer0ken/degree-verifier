@@ -1,7 +1,7 @@
 package org.konkuk.client.logic;
 
 import org.konkuk.client.AppModel;
-import org.konkuk.client.component.statusbar.ProgressStatusPanel;
+import org.konkuk.client.components.statusbar.progress.ProgressStatusPanel;
 
 import javax.swing.*;
 
@@ -21,8 +21,8 @@ public class ProgressStatusModel {
 
         panel.getProgressBar().setModel(trackAll);
 
-        appModel.observe(AppModel.ObserveOf.ON_TASK_START, this::taskStarted);
-        appModel.observe(AppModel.ObserveOf.ON_TASK_END, this::taskFinished);
+        appModel.observe(AppModel.ObserveOf.ON_TASK_STARTED, this::taskStarted);
+        appModel.observe(AppModel.ObserveOf.ON_TASK_FINISHED, this::taskFinished);
     }
 
     public void taskStarted(Object _tracker) {
@@ -65,6 +65,6 @@ public class ProgressStatusModel {
 
     public void updateLabel(String label) {
         panel.getLabel().setText(label);
-        panel.getPopup().getInnerLabel().setText(label);
+        panel.getPopup().setTitle(label);
     }
 }

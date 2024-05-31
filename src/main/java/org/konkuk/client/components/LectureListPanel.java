@@ -1,16 +1,16 @@
-package org.konkuk.client.component;
+package org.konkuk.client.components;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static org.konkuk.client.ui.Dimensions.MINIMUM_COMMITTED_DEGREE_SIZE;
+import static org.konkuk.client.ui.Dimensions.MINIMUM_LECTURE_LIST_SIZE;
 
-public class CommittedDegreePanel extends JPanel {
-    public CommittedDegreePanel() {
+public class LectureListPanel extends JPanel {
+    public LectureListPanel() {
         setLayout(new BorderLayout());
-        setMinimumSize(MINIMUM_COMMITTED_DEGREE_SIZE);
+        setMinimumSize(MINIMUM_LECTURE_LIST_SIZE);
 
         JTree tree = new JTree();
 
@@ -20,7 +20,7 @@ public class CommittedDegreePanel extends JPanel {
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        add(new TitlePanel("인정된 학위 목록"), BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new TitledToolbar("교과목 성적"), BorderLayout.NORTH);
+        add(scrollPane);
     }
 }

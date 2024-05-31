@@ -1,7 +1,4 @@
-package org.konkuk.client.component.menus;
-
-import org.konkuk.client.component.menus.FileMenu;
-import org.konkuk.client.component.menus.VerifyMenu;
+package org.konkuk.client.components.menubar;
 
 import javax.swing.*;
 

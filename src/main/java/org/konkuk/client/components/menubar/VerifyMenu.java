@@ -1,6 +1,4 @@
-package org.konkuk.client.component.menus;
-
-import org.konkuk.client.ui.Strings;
+package org.konkuk.client.components.menubar;
 
 import javax.swing.*;
 

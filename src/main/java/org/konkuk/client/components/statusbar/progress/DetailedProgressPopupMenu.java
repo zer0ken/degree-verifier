@@ -1,27 +1,21 @@
-package org.konkuk.client.component.statusbar;
+package org.konkuk.client.components.statusbar.progress;
 
+import org.konkuk.client.components._popupmenus.TitledGridBagPopupMenu;
 import org.konkuk.client.logic.ProgressTracker;
 
 import javax.swing.*;
-import java.awt.*;
 
 import static org.konkuk.client.ui.Dimensions.PROGRESS_GRID_INSETS;
 import static org.konkuk.client.ui.Strings.NO_TASK;
 
-public class DetailedProgressPopup extends JPopupMenu {
-    private final GridBagConstraints constraints;
+public class DetailedProgressPopupMenu extends TitledGridBagPopupMenu {
+    public DetailedProgressPopupMenu() {
+        setTitle(NO_TASK);
 
-    private final JLabel innerLabel;
-
-    public DetailedProgressPopup() {
-        setLayout(new GridBagLayout());
-
-        constraints = new GridBagConstraints();
         constraints.insets = PROGRESS_GRID_INSETS;
 
-        innerLabel = new JLabel(NO_TASK);
         constraints.gridwidth = 2;
-        add(innerLabel, constraints);
+        add(titleLabel, constraints);
         constraints.gridwidth = 1;
     }
 
@@ -38,9 +32,5 @@ public class DetailedProgressPopup extends JPopupMenu {
             remove(progressBarComponent);
             pack();
         });
-    }
-
-    public JLabel getInnerLabel() {
-        return innerLabel;
     }
 }

@@ -1,8 +1,9 @@
 package org.konkuk.client;
 
-import org.konkuk.client.component.*;
-import org.konkuk.client.component.menus.MenuBar;
-import org.konkuk.client.component.statusbar.StatusPanel;
+import com.formdev.flatlaf.extras.FlatInspector;
+import org.konkuk.client.components.*;
+import org.konkuk.client.components.menubar.MenuBar;
+import org.konkuk.client.components.statusbar.StatusPanel;
 import org.konkuk.client.ui.Themes;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.konkuk.client.ui.Dimensions.DEFAULT_APP_SIZE;
 import static org.konkuk.client.ui.Dimensions.MINIMUM_APP_SIZE;
 import static org.konkuk.client.ui.Strings.APP_TITLE;
+import static org.konkuk.client.ui.Strings.COMMITTING_TITLE;
 
 public class App extends JFrame {
     public App() {
@@ -25,9 +27,13 @@ public class App extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        AppModel.getInstance().observe(AppModel.ObserveOf.ON_COMMIT_STARTED, (o) -> {
+            setTitle(String.format(COMMITTING_TITLE, o));
+        });
+
         setJMenuBar(new MenuBar());
 
-        add(new CommitPanel());
+        add(new CommittingPanel());
 //        add(new JLabel("✔➖❌"), BorderLayout.SOUTH);
         add(new StatusPanel(), BorderLayout.SOUTH);
 
@@ -54,8 +60,9 @@ public class App extends JFrame {
     }
 
     public void afterLaunched() {
-        AppModel.getInstance().loadVerifiers();
-        AppModel.getInstance().loadStudents();
+        AppModel.getInstance().loadVerifier();
+        AppModel.getInstance().loadStudentList();
+        FlatInspector.install( "ctrl shift alt X" );
     }
 
     public static void main(String[] args) {
