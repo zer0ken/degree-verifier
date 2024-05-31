@@ -2,8 +2,8 @@ package org.konkuk.client;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-import org.konkuk.common.student.Student;
+import org.konkuk.degreeverifier.business.AppModel;
+import org.konkuk.degreeverifier.business.student.Student;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +46,7 @@ class AppModelTest {
             appModel.verifyStudent(student);
             Thread.sleep(2000);
             assertTrue(student.isVerified());
-            assertEquals(4, student.getFlattenVerifiedDegree().size());
+            assertEquals(4, student.getSufficientDegrees().size());
         }
 
         @Test
