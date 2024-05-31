@@ -8,8 +8,7 @@
       {"lecture": {"name": "게임알고리즘"}},
       {
         "label": "택 1",
-        "min": 1,
-        "important": true,
+        "max": 1,
         "subcriteria": [
           {"lecture": {"name": "게임공학"}},
           {"lecture": {"name": "컴퓨터그래픽스"}}
@@ -17,8 +16,7 @@
       },
       {
         "label": "택 1",
-        "min": 1,
-        "important": true,
+        "max": 1,
         "subcriteria": [
           {"lecture": {"name": "게임프로젝트"}},
           {"lecture": {"name": "게임캡스톤디자인"}}

@@ -4,6 +4,7 @@
   "criteria": {
     "label": "최소 3개 영역의 교과목 1개 이상 필수 이수",
     "min": 3,
+    "important": true,
     "subcriteria": [
       {
         "label": "기술 영역",
@@ -19,8 +20,7 @@
       },
       {
         "label": "비즈니스 영역(택 1~2)",
-        "important": true,
-        "min": 1,
+        "max": 2,
         "subcriteria": [
           {"lecture": {"name": "XR비즈니스입문"}},
           {"lecture": {"name": "XR창업비즈니스모델"}},
