@@ -29,6 +29,7 @@ public class Strings {
     public static final String COMMIT_RECOMMENDED_VERIFIED_DEGREE = "권장 조합으로 인정하기";
     public static final String OPEN_VERIFIER_DIRECTORY = "검사 기준 위치 열기";
     public static final String INSUFFICIENT_DEGREES = "충돌이 발생하는 학위";
+    public static final String SUFFICIENT_DEGREES = "인정 가능한 학위";
 
     public static final String COMMITTED_DEGREE_LIST = "인정한 학위 목록";
     public static final String DECOMMIT_DEGREE = "인정 취소하기";

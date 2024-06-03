@@ -1,12 +1,14 @@
 package org.konkuk.degreeverifier.logic.verifiedlist;
 
 import org.konkuk.degreeverifier.business.AppModel;
-import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListItem;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListSeparatorItem;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class VerifiedDegreeListSelectionListener implements ListSelectionListener {
     final private AppModel appModel = AppModel.getInstance();
@@ -16,15 +18,19 @@ public class VerifiedDegreeListSelectionListener implements ListSelectionListene
         if (e.getValueIsAdjusting()) {
             return;
         }
-        JList<DegreeSnapshot> list = (JList<DegreeSnapshot>) e.getSource();
+        JList<VerifiedDegreeListItem> list = (JList<VerifiedDegreeListItem>) e.getSource();
 
-        if (list.getSelectedValuesList().contains(null)) {
-            list.setSelectedIndices(
-                    Arrays.stream(list.getSelectedIndices()).filter(i -> list.getModel().getElementAt(i) != null).toArray()
+        if (list.getSelectedValuesList().stream().anyMatch(item -> item instanceof VerifiedDegreeListSeparatorItem)) {
+            list.setSelectedIndices(Arrays.stream(list.getSelectedIndices())
+                    .filter(i -> !(list.getModel().getElementAt(i) instanceof VerifiedDegreeListSeparatorItem))
+                    .toArray()
             );
             return;
         }
 
-        appModel.setSelectedVerifiedDegree(list.getSelectedValuesList());
+        appModel.setSelectedVerifiedDegree(list.getSelectedValuesList().stream()
+                .map(VerifiedDegreeListItem::getDegreeSnapshot)
+                .collect(Collectors.toList())
+        );
     }
 }

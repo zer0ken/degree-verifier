@@ -22,15 +22,14 @@ public class InformationTreeCellRenderer extends DefaultTreeCellRenderer {
         if (data instanceof DegreeSnapshot) {
             setText("<html><b>" + getText() + "</b></html>");
             setIcon("icons/verified_icon.svg");
-        } else if (data instanceof LectureSnapshot) {
         } else if (data instanceof RecursiveSnapshot) {
             RecursiveSnapshot recursive = (RecursiveSnapshot) data;
             if (recursive.lectureSnapshot != null) {
                 LectureSnapshot lecture = recursive.lectureSnapshot;
                 if (lecture.matched == null) {
                     component.setForeground(PRUNED_NODE_FOREGROUND);
-                } else if (!lecture.verified) {
-                    component.setForeground(MATCHED_NODE_FOREGROUND);
+                } else if (lecture.duplicatedDegrees.length > 0) {
+                    component.setForeground(DUPLICATED_NODE_FOREGROUND);
                 } else {
                     component.setForeground(VERIFIED_NODE_FOREGROUND);
                 }

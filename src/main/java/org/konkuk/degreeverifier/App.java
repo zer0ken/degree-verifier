@@ -29,9 +29,7 @@ public class App extends JFrame {
 
         setLayout(new BorderLayout());
 
-        AppModel.getInstance().observe(AppModel.ObserveOn.ON_COMMIT_UPDATED, (o) -> {
-            setTitle(String.format(COMMITTING_TITLE, o));
-        });
+        AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, (o) -> setTitle(String.format(COMMITTING_TITLE, o)));
 
         setJMenuBar(new MenuBar());
 

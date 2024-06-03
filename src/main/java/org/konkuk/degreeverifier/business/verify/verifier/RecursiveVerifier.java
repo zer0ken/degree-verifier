@@ -121,6 +121,16 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
         return subRecursiveVerifiers;
     }
 
+    public void setDegreeName(String degreeName) {
+        if (lectureVerifier!= null) {
+            lectureVerifier.setDegreeName(degreeName);
+        }else{
+            for (RecursiveVerifier subRecursiveVerifier : subRecursiveVerifiers) {
+                subRecursiveVerifier.setDegreeName(degreeName);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

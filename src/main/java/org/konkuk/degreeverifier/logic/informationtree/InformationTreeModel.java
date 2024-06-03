@@ -1,6 +1,6 @@
 package org.konkuk.degreeverifier.logic.informationtree;
 
-import org.konkuk.degreeverifier.business.AppModel;
+import org.konkuk.degreeverifier.business.InformationModel;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
@@ -11,7 +11,7 @@ import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
 
 public class InformationTreeModel extends DefaultTreeModel {
-    private final AppModel appModel = AppModel.getInstance();
+    private final InformationModel informationModel = InformationModel.getInstance();
 
     private final DefaultMutableTreeNode root;
     private final InformationTree tree;
@@ -21,7 +21,7 @@ public class InformationTreeModel extends DefaultTreeModel {
         this.tree = tree;
         root = (DefaultMutableTreeNode) getRoot();
 
-        appModel.observe(AppModel.ObserveOn.ON_INFORMATION_TARGET_UPDATED, this::_updateTree);
+        informationModel.observe(InformationModel.On.INFORMATION_TARGET_UPDATED, this::_updateTree);
     }
 
     private void _updateTree(Object o) {
@@ -101,6 +101,14 @@ public class InformationTreeModel extends DefaultTreeModel {
         if (!validPeriod.isEmpty()) {
             parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod + validPeriodPostfix));
         }
-        parent.add(new DefaultMutableTreeNode("타 학위 중복: 인정 " + (snapshot.criteria.isNonExclusive() ? "가능" : "불가")));
+        parent.add(new DefaultMutableTreeNode("다른 학위에서 사용: " + (snapshot.criteria.isNonExclusive() ? "허가" : "불허")));
+        if (snapshot.duplicatedDegrees.length > 0) {
+            DefaultMutableTreeNode duplicated = new DefaultMutableTreeNode("사용 요청: " + snapshot.duplicatedDegrees.length + "건");
+            parent.add(duplicated);
+
+            for (String duplicatedDegree : snapshot.duplicatedDegrees) {
+                duplicated.add(new DefaultMutableTreeNode(duplicatedDegree));
+            }
+        }
     }
 }

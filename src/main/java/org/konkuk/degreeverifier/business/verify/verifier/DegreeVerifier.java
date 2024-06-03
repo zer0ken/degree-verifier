@@ -22,13 +22,12 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     public DegreeVerifier(DegreeCriteria toCopy) {
         super(toCopy);
         recursiveVerifier = new RecursiveVerifier(recursiveCriteria);
+        recursiveVerifier.setDegreeName(toCopy.degreeName);
     }
 
     @Override
     public List<LectureVerifier> match(List<Lecture> lectures) {
-        List<LectureVerifier> exclusiveLectureVerifiers = null;
-        exclusiveLectureVerifiers = recursiveVerifier.match(lectures);
-        return exclusiveLectureVerifiers;
+        return recursiveVerifier.match(lectures);
     }
 
     @Override

@@ -6,18 +6,18 @@ import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
 
-import javax.swing.*;
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
-import static org.konkuk.degreeverifier.business.AppModel.ObserveOn.ON_INFORMATION_TARGET_UPDATED;
 import static org.konkuk.degreeverifier.business.DefaultPaths.STUDENTS_PATH;
 import static org.konkuk.degreeverifier.ui.Strings.STUDENTS_LOADING_MESSAGE;
 
-public class AppModel {
+public class AppModel extends Observable {
     protected static final AppModel instance = new AppModel();
 
     protected AppModel() {
@@ -27,59 +27,15 @@ public class AppModel {
         return instance;
     }
 
-    private final Map<ObserveOn, List<Runnable>> runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
-    private final Map<ObserveOn, List<Consumer<Object>>> consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
+    private Student committingStudent = null;
+    private boolean isStudentListLoaded = false;
+
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final VerifierFactory verifierFactory = new VerifierFactory();
     private final List<Student> students = Collections.synchronizedList(new LinkedList<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new LinkedList<>());
     private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new LinkedList<>());
     private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new LinkedList<>());
-    private final List<DegreeSnapshot> informationTargets = Collections.synchronizedList(new LinkedList<>());
-
-    private Student committingStudent = null;
-
-    private boolean isStudentListLoaded = false;
-
-    public void observe(ObserveOn observeOn, Runnable callback) {
-        if (observeOn == null) {
-            return;
-        }
-        if (!runnableObserverMap.containsKey(observeOn)) {
-            runnableObserverMap.put(observeOn, Collections.synchronizedList(new LinkedList<>()));
-        }
-        runnableObserverMap.get(observeOn).add(callback);
-    }
-
-    public void observe(ObserveOn observeOn, Consumer<Object> callback) {
-        if (observeOn == null) {
-            return;
-        }
-        if (!consumerObserverMap.containsKey(observeOn)) {
-            consumerObserverMap.put(observeOn, Collections.synchronizedList(new LinkedList<>()));
-        }
-        consumerObserverMap.get(observeOn).add(callback);
-    }
-
-    private void notify(ObserveOn observeOn) {
-        if (observeOn == null) {
-            return;
-        }
-        List<Runnable> observers = runnableObserverMap.get(observeOn);
-        if (observers != null) {
-            observers.forEach(SwingUtilities::invokeLater);
-        }
-    }
-
-    private void notify(ObserveOn observeOn, Object o) {
-        if (observeOn == null) {
-            return;
-        }
-        List<Consumer<Object>> observers = consumerObserverMap.get(observeOn);
-        if (observers != null) {
-            observers.forEach(observer -> SwingUtilities.invokeLater(() -> observer.accept(o)));
-        }
-    }
 
     public void submitTask(
             Runnable beforeSubmit,
@@ -94,8 +50,8 @@ public class AppModel {
 
     public void loadStudentList() {
         submitTask(
-                () -> notify(ObserveOn.ON_STUDENT_LOAD_STARTED),
-                () -> notify(ObserveOn.ON_STUDENT_LOADED),
+                () -> notify(On.STUDENT_LOAD_STARTED, students),
+                () -> notify(On.STUDENT_LOADED, students),
                 () -> {
                     students.clear();
                     File directory = new File(STUDENTS_PATH);
@@ -122,8 +78,8 @@ public class AppModel {
 
     public void loadVerifier() {
         submitTask(
-                () -> notify(ObserveOn.ON_VERIFIER_LOAD_STARTED),
-                () -> notify(ObserveOn.ON_VERIFIER_LOADED),
+                () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
+                () -> notify(On.VERIFIER_LOADED, verifierFactory),
                 verifierFactory::loadAllVerifiers
         );
     }
@@ -141,15 +97,15 @@ public class AppModel {
                     if (!student.isLoaded()) {
                         student.loadLectures();
                         if (student.equals(committingStudent)) {
-                            notify(ObserveOn.ON_LECTURE_UPDATED, student);
+                            notify(On.LECTURE_UPDATED, student);
                         }
                     }
                     submitTask(
-                            () -> notify(ObserveOn.ON_VERIFY_STARTED, student),
+                            () -> notify(On.VERIFY_STARTED, student),
                             () -> {
-                                notify(ObserveOn.ON_VERIFIED, student);
+                                notify(On.VERIFIED, student);
                                 if (student.equals(committingStudent)) {
-                                    notify(ObserveOn.ON_COMMIT_UPDATED, student);
+                                    notify(On.COMMIT_UPDATED, student);
                                 }
                             },
                             () -> verifierFactory.newVerifier().verify(student)
@@ -158,16 +114,10 @@ public class AppModel {
         );
     }
 
-    public void setInformationTargets(Collection<DegreeSnapshot> degreeSnapshots) {
-        informationTargets.clear();
-        informationTargets.addAll(degreeSnapshots);
-        notify(ON_INFORMATION_TARGET_UPDATED, informationTargets);
-    }
-
     public void setSelectedStudents(Collection<Student> selectedStudents) {
         this.selectedStudents.clear();
         this.selectedStudents.addAll(selectedStudents);
-        notify(ObserveOn.ON_STUDENT_SELECTED, selectedStudents);
+        notify(On.STUDENT_SELECTED, selectedStudents);
     }
 
     public void startCommit() {
@@ -175,8 +125,8 @@ public class AppModel {
             return;
         }
         committingStudent = selectedStudents.get(0);
-        notify(ObserveOn.ON_LECTURE_UPDATED, committingStudent);
-        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
+        notify(On.LECTURE_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, committingStudent);
         if (!committingStudent.isVerified()) {
             verifyStudent(committingStudent);
         }
@@ -185,14 +135,13 @@ public class AppModel {
     public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
         selectedVerifiedDegree.clear();
         selectedVerifiedDegree.addAll(selectedDegrees);
-        notify(ObserveOn.ON_VERIFIED_DEGREE_SELECTED, selectedDegrees);
+        notify(On.VERIFIED_DEGREE_SELECTED, selectedDegrees);
     }
 
     public void setSelectedCommittedDegree(Collection<DegreeSnapshot> selectedDegrees) {
         selectedCommittedDegree.clear();
         selectedCommittedDegree.addAll(selectedDegrees);
-        notify(ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selectedDegrees);
-        notify(ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selectedDegrees);
+        notify(On.COMMITTED_DEGREE_SELECTED, selectedDegrees);
     }
 
     public void commitDegrees() {
@@ -200,7 +149,7 @@ public class AppModel {
             return;
         }
         committingStudent.commitAll(selectedVerifiedDegree);
-        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, committingStudent);
     }
 
     public void commitRecommendedDegrees() {
@@ -209,7 +158,7 @@ public class AppModel {
         }
 
         committingStudent.commitFirstBundle();
-        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, committingStudent);
     }
 
     public void decommitDegrees() {
@@ -217,7 +166,7 @@ public class AppModel {
             return;
         }
         committingStudent.decommitAll(selectedCommittedDegree);
-        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, committingStudent);
     }
 
     public void clearCommittedDegrees() {
@@ -225,7 +174,7 @@ public class AppModel {
             return;
         }
         committingStudent.clearCommit();
-        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, committingStudent);
     }
 
     public List<Student> getStudents() {
@@ -248,25 +197,23 @@ public class AppModel {
         return selectedCommittedDegree;
     }
 
-    public enum ObserveOn {
-        ON_VERIFIER_LOAD_STARTED,
-        ON_VERIFIER_LOADED,
+    public enum On implements Event {
+        VERIFIER_LOAD_STARTED,
+        VERIFIER_LOADED,
 
-        ON_VERIFY_STARTED,
-        ON_VERIFIED,
+        VERIFY_STARTED,
+        VERIFIED,
 
-        ON_STUDENT_LOAD_STARTED,
-        ON_STUDENT_LOADED,
+        STUDENT_LOAD_STARTED,
+        STUDENT_LOADED,
 
-        ON_STUDENT_SELECTED,
+        STUDENT_SELECTED,
 
-        ON_VERIFIED_DEGREE_SELECTED,
-        ON_COMMITTED_DEGREE_SELECTED,
+        VERIFIED_DEGREE_SELECTED,
+        COMMITTED_DEGREE_SELECTED,
 
-        ON_COMMIT_UPDATED,
+        COMMIT_UPDATED,
 
-        ON_LECTURE_UPDATED,
-
-        ON_INFORMATION_TARGET_UPDATED
+        LECTURE_UPDATED
     }
 }

@@ -21,7 +21,7 @@ public class StartCommitAction extends AbstractAction {
 
         setEnabled(!appModel.getSelectedStudents().isEmpty());
 
-        appModel.observe(AppModel.ObserveOn.ON_STUDENT_SELECTED, students ->
+        appModel.observe(AppModel.On.STUDENT_SELECTED, students ->
                 setEnabled(((List<Student>) students).size() == 1)
         );
     }

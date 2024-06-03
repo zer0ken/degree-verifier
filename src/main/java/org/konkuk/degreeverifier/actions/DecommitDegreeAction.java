@@ -21,8 +21,8 @@ public class DecommitDegreeAction extends AbstractAction {
 
         setEnabled(!appModel.getSelectedCommittedDegree().isEmpty());
 
-        appModel.observe(AppModel.ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selected ->
-                setEnabled(((List<DegreeSnapshot>)selected).size() >= 1)
+        appModel.observe(AppModel.On.COMMITTED_DEGREE_SELECTED, selected ->
+                setEnabled(!((List<DegreeSnapshot>) selected).isEmpty())
         );
     }
 

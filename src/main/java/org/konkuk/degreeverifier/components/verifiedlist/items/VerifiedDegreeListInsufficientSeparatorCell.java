@@ -1,17 +1,17 @@
-package org.konkuk.degreeverifier.components.verifiedlist;
+package org.konkuk.degreeverifier.components.verifiedlist.items;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static org.konkuk.degreeverifier.ui.Colors.COMMON_RED;
+import static org.konkuk.degreeverifier.ui.Colors.INSUFFICIENT_SEPARATOR_FOREGROUND;
 import static org.konkuk.degreeverifier.ui.Strings.INSUFFICIENT_DEGREES;
 
-public class VerifiedDegreeListNullCell extends JPanel {
-    public VerifiedDegreeListNullCell() {
+public class VerifiedDegreeListInsufficientSeparatorCell extends JPanel {
+    public VerifiedDegreeListInsufficientSeparatorCell() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(UIManager.getColor("List.background"));
-        setForeground(COMMON_RED);
+        setForeground(INSUFFICIENT_SEPARATOR_FOREGROUND);
         setBorder(new EmptyBorder(3, 16, 3, 16));
 
         addSeparator();

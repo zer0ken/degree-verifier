@@ -1,6 +1,10 @@
 package org.konkuk.degreeverifier.logic.verifiedlist;
 
-import org.konkuk.degreeverifier.components.verifiedlist.VerifiedDegreeListNullCell;
+import org.konkuk.degreeverifier.components.verifiedlist.items.VerifiedDegreeListInsufficientSeparatorCell;
+import org.konkuk.degreeverifier.components.verifiedlist.items.VerifiedDegreeListSufficientSeparatorCell;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListInsufficientItem;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListInsufficientSeparatorItem;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListSufficientSeparatorItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,18 +15,19 @@ public class VerifiedListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value == null) {
-            return new VerifiedDegreeListNullCell();
+        if (value instanceof VerifiedDegreeListInsufficientSeparatorItem) {
+            return new VerifiedDegreeListInsufficientSeparatorCell();
         }
-        setHorizontalAlignment(LEFT);
-        VerifiedDegreeListModel model = (VerifiedDegreeListModel) list.getModel();
-        int nullIndex = model.indexOf(null);
-        if (nullIndex != -1 && index > nullIndex) {
+        if (value instanceof VerifiedDegreeListSufficientSeparatorItem) {
+            return new VerifiedDegreeListSufficientSeparatorCell();
+        }
+        if (value instanceof VerifiedDegreeListInsufficientItem){
             if (isSelected) {
                 setBackground(UIManager.getColor("List.selectionInactiveBackground"));
             }
             setForeground(INSUFFICIENT_DEGREE_FOREGROUND);
+            return this;
         }
-        return this;
+        return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     }
 }

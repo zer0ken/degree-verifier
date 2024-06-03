@@ -2,15 +2,15 @@ package org.konkuk.degreeverifier.logic.verifiedlist;
 
 import org.konkuk.degreeverifier.business.AppModel;
 import org.konkuk.degreeverifier.business.student.Student;
-import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
+import org.konkuk.degreeverifier.logic.verifiedlist.items.*;
 
 import javax.swing.*;
 
-public class VerifiedDegreeListModel extends DefaultListModel<DegreeSnapshot> {
+public class VerifiedDegreeListModel extends DefaultListModel<VerifiedDegreeListItem> {
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListModel() {
-        appModel.observe(AppModel.ObserveOn.ON_COMMIT_UPDATED, this::_updateTree);
+        appModel.observe(AppModel.On.COMMIT_UPDATED, this::_updateTree);
     }
 
     private void _updateTree(Object o) {
@@ -22,10 +22,13 @@ public class VerifiedDegreeListModel extends DefaultListModel<DegreeSnapshot> {
 
     private void updateTree(Student student) {
         removeAllElements();
-        student.getSufficientDegrees().values().forEach(this::addElement);
+        addElement(new VerifiedDegreeListSufficientSeparatorItem());
+        student.getSufficientDegrees().values()
+                .forEach(element -> addElement(new VerifiedDegreeListSufficientItem(element)));
         if (!student.getInsufficientDegrees().isEmpty()) {
-            addElement(null);
-            student.getInsufficientDegrees().values().forEach(this::addElement);
+            addElement(new VerifiedDegreeListInsufficientSeparatorItem());
+            student.getInsufficientDegrees().values()
+                    .forEach(element -> addElement(new VerifiedDegreeListInsufficientItem(element)));
         }
     }
 }

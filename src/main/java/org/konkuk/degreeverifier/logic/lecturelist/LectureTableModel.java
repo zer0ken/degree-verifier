@@ -11,7 +11,7 @@ public class LectureTableModel extends DefaultTableModel {
 
     public LectureTableModel() {
         setColumnIdentifiers(LectureData.getColumns());
-        appModel.observe(AppModel.ObserveOn.ON_LECTURE_UPDATED, this::_updateTable);
+        appModel.observe(AppModel.On.LECTURE_UPDATED, this::_updateTable);
     }
 
     private void _updateTable(Object o) {

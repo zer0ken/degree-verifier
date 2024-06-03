@@ -21,7 +21,7 @@ public class CommitDegreeAction extends AbstractAction {
 
         setEnabled(!appModel.getSelectedVerifiedDegree().isEmpty());
 
-        appModel.observe(AppModel.ObserveOn.ON_VERIFIED_DEGREE_SELECTED, selected ->
+        appModel.observe(AppModel.On.VERIFIED_DEGREE_SELECTED, selected ->
                 setEnabled(!((List<DegreeSnapshot>) selected).isEmpty())
         );
     }

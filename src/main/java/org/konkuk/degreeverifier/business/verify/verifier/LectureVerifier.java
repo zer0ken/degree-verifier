@@ -21,6 +21,9 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
 
     private boolean holding = false;
 
+    private String degreeName;
+    private final List<String> duplicatedDegrees = new LinkedList<>();
+
     public LectureVerifier(LectureCriteria toCopy) {
         super(toCopy);
     }
@@ -96,11 +99,25 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         return new LectureSnapshot(
                 new LectureCriteria(this),
                 matchedLecture != null ? new LectureData(matchedLecture) : null,
-                holding
+                holding,
+                degreeName,
+                duplicatedDegrees.toArray(new String[0])
         );
     }
 
     public Lecture getMatchedLecture() {
         return matchedLecture;
+    }
+
+    public void addDuplicatedDegree(String degreeName) {
+        duplicatedDegrees.add(degreeName);
+    }
+
+    public void setDegreeName(String degreeName) {
+        this.degreeName = degreeName;
+    }
+
+    public String getDegreeName() {
+        return degreeName;
     }
 }

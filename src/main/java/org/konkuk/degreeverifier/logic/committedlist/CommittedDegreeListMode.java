@@ -10,7 +10,7 @@ public class CommittedDegreeListMode extends DefaultListModel<DegreeSnapshot> {
     private final AppModel appModel = AppModel.getInstance();
 
     public CommittedDegreeListMode() {
-        appModel.observe(AppModel.ObserveOn.ON_COMMIT_UPDATED, this::_updateTree);
+        appModel.observe(AppModel.On.COMMIT_UPDATED, this::_updateTree);
     }
 
     private void _updateTree(Object o) {

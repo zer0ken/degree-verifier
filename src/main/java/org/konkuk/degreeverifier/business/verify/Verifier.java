@@ -41,6 +41,10 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             if (group.size() == 1) {
                 group.get(0).hold();
                 notDuplicated.add(k);
+            } else {
+                for (LectureVerifier lectureVerifier : group) {
+                    group.forEach(_lectureVerifier -> lectureVerifier.addDuplicatedDegree(_lectureVerifier.getDegreeName()));
+                }
             }
         });
         for (String key : notDuplicated) {
@@ -64,12 +68,10 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             }
             tracker.setMaximum(size);
 
-            List<List<LectureVerifier>> groups = new LinkedList<>();
-            groups.addAll(groupedExclusiveVerifiers.values());
+            List<List<LectureVerifier>> groups = new LinkedList<>(groupedExclusiveVerifiers.values());
 
             snapshotBundles.addAll(pickAndVerify(groups, tracker));
             snapshotBundles.sort((a, b) -> b.size() - a.size());
-
         }
 
         // 3. Finish
