@@ -18,9 +18,9 @@ import static org.konkuk.degreeverifier.business.DefaultPaths.STUDENTS_PATH;
 import static org.konkuk.degreeverifier.ui.Strings.STUDENTS_LOADING_MESSAGE;
 
 public class AppModel {
-    private static final AppModel instance = new AppModel();
+    protected static final AppModel instance = new AppModel();
 
-    private AppModel() {
+    protected AppModel() {
     }
 
     public static AppModel getInstance() {

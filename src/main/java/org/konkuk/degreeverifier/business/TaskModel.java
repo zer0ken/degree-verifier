@@ -7,9 +7,9 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class TaskModel {
-    private static final TaskModel instance = new TaskModel();
+    protected static final TaskModel instance = new TaskModel();
 
-    private TaskModel() {
+    protected TaskModel() {
     }
 
     public static TaskModel getInstance() {
@@ -50,6 +50,6 @@ public class TaskModel {
 
     public enum ObserveOn {
         ON_PROGRESS_REGISTERED,
-        ON_PROGRESS_DISCARDED;
+        ON_PROGRESS_DISCARDED
     }
 }
