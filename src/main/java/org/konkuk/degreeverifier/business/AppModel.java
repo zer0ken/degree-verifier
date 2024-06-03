@@ -240,6 +240,14 @@ public class AppModel {
         return committingStudent;
     }
 
+    public List<DegreeSnapshot> getSelectedVerifiedDegree() {
+        return selectedVerifiedDegree;
+    }
+
+    public List<DegreeSnapshot> getSelectedCommittedDegree() {
+        return selectedCommittedDegree;
+    }
+
     public enum ObserveOn {
         ON_VERIFIER_LOAD_STARTED,
         ON_VERIFIER_LOADED,

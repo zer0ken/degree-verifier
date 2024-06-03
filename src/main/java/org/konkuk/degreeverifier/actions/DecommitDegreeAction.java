@@ -19,6 +19,8 @@ public class DecommitDegreeAction extends AbstractAction {
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/remove_icon.svg", getClass().getClassLoader()));
 
+        setEnabled(!appModel.getSelectedCommittedDegree().isEmpty());
+
         appModel.observe(AppModel.ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selected ->
                 setEnabled(((List<DegreeSnapshot>)selected).size() >= 1)
         );

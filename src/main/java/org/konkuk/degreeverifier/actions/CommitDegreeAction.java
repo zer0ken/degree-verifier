@@ -19,8 +19,10 @@ public class CommitDegreeAction extends AbstractAction {
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/done_icon.svg", getClass().getClassLoader()));
 
+        setEnabled(!appModel.getSelectedVerifiedDegree().isEmpty());
+
         appModel.observe(AppModel.ObserveOn.ON_VERIFIED_DEGREE_SELECTED, selected ->
-                setEnabled(((List<DegreeSnapshot>)selected).size() >= 1)
+                setEnabled(!((List<DegreeSnapshot>) selected).isEmpty())
         );
     }
 

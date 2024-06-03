@@ -19,6 +19,8 @@ public class StartCommitAction extends AbstractAction {
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/commit_student.svg", getClass().getClassLoader()));
 
+        setEnabled(!appModel.getSelectedStudents().isEmpty());
+
         appModel.observe(AppModel.ObserveOn.ON_STUDENT_SELECTED, students ->
                 setEnabled(((List<Student>) students).size() == 1)
         );
