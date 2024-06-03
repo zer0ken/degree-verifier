@@ -60,7 +60,7 @@ public class RecursiveCriteria {
      * 이 값이 명시되지 않으면 기본값은 0입니다.
      */
     @SerializedName("min")
-    private final Integer minimumPass;
+    public final Integer minimumPass;
 
     /**
      * 학점 계산 시에 사용할 교과목 검사 기준의 개수를 의미합니다.

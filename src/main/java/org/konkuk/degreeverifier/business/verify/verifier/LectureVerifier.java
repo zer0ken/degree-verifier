@@ -19,7 +19,6 @@ import java.util.List;
 public class LectureVerifier extends LectureCriteria implements Verifiable, Creditizable, Estimable, Snapshotable {
     private Lecture matchedLecture = null;  // TODO: 2024-05-31 한 교과목 검사 기준이 여러 교과목에 대해 매치할 수 있도록 수정할 필요가 있을까?
 
-    private boolean pruned = false;
     private boolean holding = false;
 
     public LectureVerifier(LectureCriteria toCopy) {
@@ -28,20 +27,19 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
 
     @Override
     public List<LectureVerifier> match(List<Lecture> lectures) {
-        List<LectureVerifier> matchedLectureVerifiers = new LinkedList<>();
+        List<LectureVerifier> exclusiveLectureVerifiers = new LinkedList<>();
         for (Lecture lecture : lectures) {
             if (match(lecture)) {
                 matchedLecture = lecture;
                 if (isNonExclusive()) {
                     hold();
                 } else {
-                    matchedLectureVerifiers.add(this);
+                    exclusiveLectureVerifiers.add(this);
                 }
                 break;
             }
         }
-        pruned = matchedLecture == null;
-        return matchedLectureVerifiers;
+        return exclusiveLectureVerifiers;
     }
 
     @Override
@@ -49,42 +47,48 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         return holding;
     }
 
-    // todo: minimumGrade를 고려하도록 수정
     private boolean match(Lecture lecture) {
-        return lectureName.equals(lecture.name);
+        if (!lecture.name.equals(lectureName)) {
+            return false;
+        }
+        int year = Integer.parseInt(lecture.year);
+        int semester = Integer.parseInt(String.valueOf(lecture.semester.charAt(0)));
+        // TODO: 2024-06-03 로직 수정: 더 유연한 입력 대응
+        if (minimumYear != null) {
+            if (year < minimumYear) {
+                return false;
+            }
+            if (minimumSemester != null && year == minimumYear && semester < minimumSemester) {
+                return false;
+            }
+        }
+        if (maximumYear != null) {
+            if (year > maximumYear) {
+                return false;
+            }
+            if (maximumSemester != null && year == maximumYear && semester > maximumSemester) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void hold() {
-        if (matchedLecture == null) {
-            holding = false;
-            return;
-        }
-        if (isNonExclusive()) {
-            holding = true;
-        } else if (!matchedLecture.isUsed()) {
-            holding = true;
-            matchedLecture.use();
-        }
+        holding = true;
     }
 
     public void release() {
         holding = false;
-        matchedLecture.disuse();
-    }
-
-    public boolean isPruned() {
-        return pruned;
     }
 
     @Override
     public int creditize() {
-        return pruned ? 0 :
-                holding ? matchedLecture.credit : 0;
+        return holding ? matchedLecture.credit : 0;
     }
 
     @Override
     public int estimateCredit() {
-        return pruned ? 0 : matchedLecture.credit;
+        return matchedLecture.credit;
     }
 
     @Override
@@ -96,7 +100,7 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         );
     }
 
-    public String getLectureName() {
-        return lectureName;
+    public Lecture getMatchedLecture() {
+        return matchedLecture;
     }
 }

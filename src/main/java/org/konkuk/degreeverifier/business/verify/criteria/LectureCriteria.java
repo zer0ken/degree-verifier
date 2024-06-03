@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LectureCriteria {
     public static final String DEFAULT_MINIMUM_GRADE = "D-";
-    public static final Boolean DEFAULT_NON_EXCLUSIVE = true;
+    public static final Boolean DEFAULT_NON_EXCLUSIVE = false;
 
     /**
      * 대상 교과목의 이름입니다.
@@ -25,14 +25,26 @@ public class LectureCriteria {
      * 이 값이 명시되지 않으면 기본 값은 "D-"입니다.
      */
     @SerializedName("min_grade")
-    protected final String minimumGrade;
+    public final String minimumGrade;
 
     /**
      * 이 검사의 대상 교과목이 다른 검사에 중복으로 사용될 수 있는지를 나타냅니다.
      * 이 값이 명시되지 않으면 기본값은 true입니다.
      */
     @SerializedName("non_exclusive")
-    protected final Boolean nonExclusive;
+    public final Boolean nonExclusive;
+
+    @SerializedName("from_year")
+    public final Integer minimumYear;
+
+    @SerializedName("from_semester")
+    public final Integer minimumSemester;
+
+    @SerializedName("to_year")
+    public final Integer maximumYear;
+
+    @SerializedName("to_semester")
+    public final Integer maximumSemester;
 
     public String getMinimumGrade() {
         return minimumGrade == null ? DEFAULT_MINIMUM_GRADE : minimumGrade;
@@ -46,5 +58,9 @@ public class LectureCriteria {
         lectureName = toCopy.lectureName;
         minimumGrade = toCopy.minimumGrade;
         nonExclusive = toCopy.nonExclusive;
+        minimumYear = toCopy.minimumYear;
+        maximumYear = toCopy.maximumYear;
+        minimumSemester = toCopy.minimumSemester;
+        maximumSemester = toCopy.maximumSemester;
     }
 }

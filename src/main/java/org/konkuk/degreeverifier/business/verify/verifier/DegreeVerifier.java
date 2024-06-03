@@ -6,7 +6,6 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.Snapshot;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +17,6 @@ import java.util.List;
 public class DegreeVerifier extends DegreeCriteria implements Verifiable, Creditizable, Snapshotable {
     private final RecursiveVerifier recursiveVerifier;
 
-    private boolean pruned = false;
     private boolean verified = false;
 
     public DegreeVerifier(DegreeCriteria toCopy) {
@@ -29,15 +27,8 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     @Override
     public List<LectureVerifier> match(List<Lecture> lectures) {
         List<LectureVerifier> exclusiveLectureVerifiers = null;
-        try {
-            exclusiveLectureVerifiers = recursiveVerifier.match(lectures);
-            int test = recursiveVerifier.estimateCredit();
-            pruned = recursiveVerifier.isPruned() ||
-                    recursiveVerifier.estimateCredit() < minimumCredit;
-        } catch (ImportantCriteriaFailedException e) {
-            pruned = true;
-        }
-        return pruned ? Collections.emptyList() : exclusiveLectureVerifiers;
+        exclusiveLectureVerifiers = recursiveVerifier.match(lectures);
+        return exclusiveLectureVerifiers;
     }
 
     @Override
@@ -62,10 +53,6 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
                 verified,
                 (RecursiveSnapshot) recursiveVerifier.takeSnapshot()
         );
-    }
-
-    public boolean isPruned() {
-        return pruned;
     }
 
     public RecursiveVerifier getRecursiveVerifier() {

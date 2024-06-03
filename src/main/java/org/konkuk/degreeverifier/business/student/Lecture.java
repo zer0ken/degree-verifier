@@ -7,29 +7,29 @@ package org.konkuk.degreeverifier.business.student;
  * @since 2024-05-25T15:45:31.013Z
  */
 public class Lecture extends LectureData {
-    /**
-     * 주어진 상태에서 이 교과목이 일치를 위해 참조되었는지를 나타냅니다.
-     */
-    private boolean used = false;
-
     public Lecture(String year, String semester, String classification, String code, String name, int credit, String grade, String university) {
         super(year, semester, classification, code, name, credit, grade, university);
     }
 
     public Lecture(Lecture toCopy) {
         super(toCopy);
-        used = toCopy.used;
     }
 
-    public void use() {
-        used = true;
+    @Override
+    public String toString() {
+        return year + "-" + semester + "-" + name;
     }
 
-    public boolean isUsed() {
-        return used;
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 
-    public void disuse() {
-        used = false;
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Lecture)) {
+            return false;
+        }
+        return toString().equals(obj.toString());
     }
 }

@@ -8,7 +8,7 @@ import javax.swing.*;
 public class StudentListModel extends DefaultListModel<Student> {
     public StudentListModel() {
         AppModel appModel = AppModel.getInstance();
-        appModel.observe(AppModel.ObserveOf.ON_STUDENT_LOADED, () -> {
+        appModel.observe(AppModel.ObserveOn.ON_STUDENT_LOADED, () -> {
             this.removeAllElements();
             appModel.getStudents().forEach(this::addElement);
         });

@@ -11,7 +11,7 @@ public class LectureSnapshot implements Snapshot, Creditizable {
     public final boolean verified;
 
     public LectureSnapshot(LectureCriteria criteria, LectureData matched, boolean verified) {
-        this.criteria = criteria;
+        this.criteria = new LectureCriteria(criteria);
         this.matched = matched;
         this.verified = verified;
     }
@@ -22,5 +22,10 @@ public class LectureSnapshot implements Snapshot, Creditizable {
             return matched.credit;
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return criteria.lectureName;
     }
 }

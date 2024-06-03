@@ -9,7 +9,7 @@ public class DegreeSnapshot implements Snapshot, Creditizable {
     public final RecursiveSnapshot recursiveSnapshot;
 
     public DegreeSnapshot(DegreeCriteria criteria, boolean verified, RecursiveSnapshot recursiveSnapshot) {
-        this.criteria = criteria;
+        this.criteria = new DegreeCriteria(criteria);
         this.verified = verified;
         this.recursiveSnapshot = recursiveSnapshot;
     }

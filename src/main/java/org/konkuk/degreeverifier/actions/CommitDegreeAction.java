@@ -2,9 +2,11 @@ package org.konkuk.degreeverifier.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.AppModel;
+import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import static org.konkuk.degreeverifier.ui.Strings.COMMIT_VERIFIED_DEGREE;
 
@@ -16,14 +18,14 @@ public class CommitDegreeAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, COMMIT_VERIFIED_DEGREE);
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/done_icon.svg", getClass().getClassLoader()));
+
+        appModel.observe(AppModel.ObserveOn.ON_VERIFIED_DEGREE_SELECTED, selected ->
+                setEnabled(((List<DegreeSnapshot>)selected).size() >= 1)
+        );
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        perform();
-    }
-
-    public void perform() {
         appModel.commitDegrees();
     }
 }

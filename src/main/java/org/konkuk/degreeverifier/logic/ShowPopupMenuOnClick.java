@@ -1,15 +1,16 @@
-package org.konkuk.degreeverifier.logic.statusbar;
+package org.konkuk.degreeverifier.logic;
 
-import org.konkuk.degreeverifier.components.statusbar.progress.ProgressStatusPanel;
-
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class ProgressStatusMouseListener implements MouseListener {
+public class ShowPopupMenuOnClick implements MouseListener {
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        ProgressStatusPanel panel = (ProgressStatusPanel) e.getSource();
-        panel.getPopup().show(panel, e.getX(), e.getY());
+        JComponent component = (JComponent) e.getSource();
+        JPopupMenu popup = component.getComponentPopupMenu();
+        popup.show(component, 0, 0);
     }
 
     @Override

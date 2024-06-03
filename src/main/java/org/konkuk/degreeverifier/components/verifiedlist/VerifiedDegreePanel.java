@@ -1,8 +1,12 @@
 package org.konkuk.degreeverifier.components.verifiedlist;
 
-import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedDegreeListModel;
-import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedDegreeListSelectionListener;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
+import org.konkuk.degreeverifier.logic.informationtree.InformationTargetFocusListener;
+import org.konkuk.degreeverifier.logic.informationtree.InformationTargetListSelectionListener;
+import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedDegreeListModel;
+import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedDegreeListMouseAdapter;
+import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedDegreeListSelectionListener;
+import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedListCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +24,11 @@ public class VerifiedDegreePanel extends JPanel {
         list.setModel(new VerifiedDegreeListModel());
         list.addListSelectionListener(new VerifiedDegreeListSelectionListener());
         list.setComponentPopupMenu(new VerifiedDegreePopupMenu());
+        list.setCellRenderer(new VerifiedListCellRenderer());
+        list.addMouseListener(new VerifiedDegreeListMouseAdapter());
+
+        list.addListSelectionListener(new InformationTargetListSelectionListener());
+        list.addFocusListener(new InformationTargetFocusListener());
 
         JScrollPane scrollPane = new JScrollPane(
                 list,

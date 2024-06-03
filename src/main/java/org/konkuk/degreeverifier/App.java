@@ -1,21 +1,20 @@
 package org.konkuk.degreeverifier;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.extras.FlatInspector;
 import org.konkuk.degreeverifier.business.AppModel;
-import org.konkuk.degreeverifier.components.*;
+import org.konkuk.degreeverifier.components.SplitPanel;
 import org.konkuk.degreeverifier.components.menubar.MenuBar;
-import org.konkuk.degreeverifier.components.statusbar.StatusPanel;
+import org.konkuk.degreeverifier.components.statusbar.StatusBar;
+import org.konkuk.degreeverifier.ui.Themes;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.konkuk.degreeverifier.ui.Dimensions.DEFAULT_APP_SIZE;
 import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_APP_SIZE;
+import static org.konkuk.degreeverifier.ui.Dimensions.PREFERRED_APP_SIZE;
 import static org.konkuk.degreeverifier.ui.Strings.APP_TITLE;
 import static org.konkuk.degreeverifier.ui.Strings.COMMITTING_TITLE;
 
@@ -24,19 +23,20 @@ public class App extends JFrame {
         initIcons();
         setTitle(APP_TITLE);
         setMinimumSize(MINIMUM_APP_SIZE);
-        setSize(DEFAULT_APP_SIZE);
+        setPreferredSize(PREFERRED_APP_SIZE);
+        setSize(PREFERRED_APP_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setLayout(new BorderLayout());
 
-        AppModel.getInstance().observe(AppModel.ObserveOf.ON_COMMIT_STARTED, (o) -> {
+        AppModel.getInstance().observe(AppModel.ObserveOn.ON_COMMIT_UPDATED, (o) -> {
             setTitle(String.format(COMMITTING_TITLE, o));
         });
 
         setJMenuBar(new MenuBar());
 
-        add(new CommittingPanel());
-//        add(new JLabel("✔➖❌"), BorderLayout.SOUTH);
-        add(new StatusPanel(), BorderLayout.SOUTH);
+        add(new SplitPanel());
+        add(new StatusBar(), BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -63,12 +63,11 @@ public class App extends JFrame {
     public void afterLaunched() {
         AppModel.getInstance().loadVerifier();
         AppModel.getInstance().loadStudentList();
-        FlatInspector.install( "ctrl shift alt X" );
+        FlatInspector.install("ctrl shift alt X");
     }
 
     public static void main(String[] args) {
-        FlatIntelliJLaf.setup();
-
+        Themes.setup();
         App app = new App();
         app.afterLaunched();
     }

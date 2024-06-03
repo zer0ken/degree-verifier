@@ -15,15 +15,11 @@ public class VerifyStudentAction extends AbstractAction {
         putValue(NAME, VERIFY_STUDENT);
         putValue(SHORT_DESCRIPTION, VERIFY_STUDENT);
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/verify_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/rule_icon.svg", getClass().getClassLoader()));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        perform();
-    }
-
-    public void perform() {
         appModel.getSelectedStudents().forEach(appModel::verifyStudent);
     }
 }

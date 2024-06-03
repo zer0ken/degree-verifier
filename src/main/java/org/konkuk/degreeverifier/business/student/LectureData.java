@@ -35,6 +35,32 @@ public class LectureData {
         );
     }
 
+    public Object[] inRow() {
+        return new Object[]{
+                year,
+                semester,
+                name,
+                classification,
+                credit,
+                grade,
+                university,
+                code,
+        };
+    }
+
+    public static Object[] getColumns() {
+        return new Object[]{
+                "년도",
+                "학기",
+                "과목명",
+                "이수구분",
+                "학점",
+                "성적",
+                "제공",
+                "과목코드",
+        };
+    }
+
     @Override
     public int hashCode() {
         return (year+semester+name).hashCode();

@@ -20,10 +20,6 @@ public class CommitRecommendedDegreesAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        perform();
-    }
-
-    public void perform() {
         appModel.commitRecommendedDegrees();
     }
 }

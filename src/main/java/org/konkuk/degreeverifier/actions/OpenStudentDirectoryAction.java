@@ -19,16 +19,12 @@ public class OpenStudentDirectoryAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        perform();
-    }
-
-    public void perform() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
             try {
                 Runtime.getRuntime().exec("Explorer.exe " + DefaultPaths.STUDENTS_PATH);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException exception) {
+                throw new RuntimeException(exception);
             }
         }
     }

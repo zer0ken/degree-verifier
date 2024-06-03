@@ -2,9 +2,8 @@ package org.konkuk.business.student;
 
 import com.sun.media.sound.InvalidFormatException;
 import org.junit.jupiter.api.Test;
-import org.konkuk.degreeverifier.business.student.Student;
-import org.konkuk.degreeverifier.logic.ProgressTracker;
 import org.konkuk.degreeverifier.business.DefaultPaths;
+import org.konkuk.degreeverifier.business.student.Student;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +23,7 @@ class StudentTest {
 
     @Test
     void loaded_and_not_verified_Student() {
-        student.loadLectures(new ProgressTracker("test"));
+        student.loadLectures();
         assertTrue(student.isLoaded());
         assertEquals(17, student.size());
     }

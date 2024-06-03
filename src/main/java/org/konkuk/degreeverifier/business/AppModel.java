@@ -1,10 +1,10 @@
 package org.konkuk.degreeverifier.business;
 
 import com.sun.media.sound.InvalidFormatException;
+import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.logic.ProgressTracker;
-import org.konkuk.degreeverifier.business.student.Student;
+import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
 
 import javax.swing.*;
 import java.io.File;
@@ -13,121 +13,98 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import static org.konkuk.degreeverifier.ui.Strings.*;
+import static org.konkuk.degreeverifier.business.AppModel.ObserveOn.ON_INFORMATION_TARGET_UPDATED;
 import static org.konkuk.degreeverifier.business.DefaultPaths.STUDENTS_PATH;
+import static org.konkuk.degreeverifier.ui.Strings.STUDENTS_LOADING_MESSAGE;
 
 public class AppModel {
-    private static AppModel instance = null;
-    private final Map<ObserveOf, List<Runnable>> runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
-    private final Map<ObserveOf, List<Consumer>> consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
+    private static final AppModel instance = new AppModel();
+
+    private AppModel() {
+    }
+
+    public static AppModel getInstance() {
+        return instance;
+    }
+
+    private final Map<ObserveOn, List<Runnable>> runnableObserverMap = Collections.synchronizedMap(new HashMap<>());
+    private final Map<ObserveOn, List<Consumer<Object>>> consumerObserverMap = Collections.synchronizedMap(new HashMap<>());
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final VerifierFactory verifierFactory = new VerifierFactory();
-    private final List<ProgressTracker> trackers = Collections.synchronizedList(new LinkedList<>());
     private final List<Student> students = Collections.synchronizedList(new LinkedList<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new LinkedList<>());
     private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new LinkedList<>());
+    private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new LinkedList<>());
+    private final List<DegreeSnapshot> informationTargets = Collections.synchronizedList(new LinkedList<>());
 
     private Student committingStudent = null;
 
     private boolean isStudentListLoaded = false;
 
-    public AppModel() {
-        instance = this;
-    }
-
-    public static AppModel getInstance() {
-        return instance != null ? instance : new AppModel();
-    }
-
-    public void observe(ObserveOf observeOf, Runnable callback) {
-        if (observeOf == null) {
+    public void observe(ObserveOn observeOn, Runnable callback) {
+        if (observeOn == null) {
             return;
         }
-        if (!runnableObserverMap.containsKey(observeOf)) {
-            runnableObserverMap.put(observeOf, new LinkedList<>());
+        if (!runnableObserverMap.containsKey(observeOn)) {
+            runnableObserverMap.put(observeOn, Collections.synchronizedList(new LinkedList<>()));
         }
-        runnableObserverMap.get(observeOf).add(callback);
+        runnableObserverMap.get(observeOn).add(callback);
     }
 
-    public void observe(ObserveOf observeOf, Consumer<Object> callback) {
-        if (observeOf == null) {
+    public void observe(ObserveOn observeOn, Consumer<Object> callback) {
+        if (observeOn == null) {
             return;
         }
-        if (!consumerObserverMap.containsKey(observeOf)) {
-            consumerObserverMap.put(observeOf, new LinkedList<>());
+        if (!consumerObserverMap.containsKey(observeOn)) {
+            consumerObserverMap.put(observeOn, Collections.synchronizedList(new LinkedList<>()));
         }
-        consumerObserverMap.get(observeOf).add(callback);
+        consumerObserverMap.get(observeOn).add(callback);
     }
 
-    private void notify(ObserveOf observeOf) {
-        if (observeOf == null) {
+    private void notify(ObserveOn observeOn) {
+        if (observeOn == null) {
             return;
         }
-        List<Runnable> observers = runnableObserverMap.get(observeOf);
+        List<Runnable> observers = runnableObserverMap.get(observeOn);
         if (observers != null) {
             observers.forEach(SwingUtilities::invokeLater);
         }
-        if (observeOf.parent != null) {
-            notify(observeOf.parent);
-        }
     }
 
-    private void notify(ObserveOf observeOf, Object o) {
-        if (observeOf == null) {
+    private void notify(ObserveOn observeOn, Object o) {
+        if (observeOn == null) {
             return;
         }
-        List<Consumer> observers = consumerObserverMap.get(observeOf);
+        List<Consumer<Object>> observers = consumerObserverMap.get(observeOn);
         if (observers != null) {
             observers.forEach(observer -> SwingUtilities.invokeLater(() -> observer.accept(o)));
         }
-        if (observeOf.parent != null) {
-            notify(observeOf.parent, o);
-        }
-    }
-
-    private ProgressTracker newTracker(String message) {
-        ProgressTracker tracker = new ProgressTracker(message);
-        trackers.add(tracker);
-        notify(ObserveOf.ON_TASK_STARTED, tracker);
-        tracker.addOnFinishedListener(() -> {
-            trackers.remove(tracker);
-            notify(ObserveOf.ON_TASK_FINISHED, tracker);
-        });
-        return tracker;
     }
 
     public void submitTask(
             Runnable beforeSubmit,
             Runnable afterFinished,
-            String message,
-            Consumer<ProgressTracker> trackableTask) {
-        ProgressTracker tracker = newTracker(message);
+            Runnable task) {
         beforeSubmit.run();
         executorService.submit(() -> {
-            try {
-                trackableTask.accept(tracker);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-            } finally {
-                tracker.finish();
-                afterFinished.run();
-            }
+            task.run();
+            afterFinished.run();
         });
     }
 
     public void loadStudentList() {
         submitTask(
-                () -> notify(ObserveOf.ON_STUDENT_LOAD_STARTED),
-                () -> notify(ObserveOf.ON_STUDENT_LOADED),
-                STUDENTS_LOADING_MESSAGE,
-                (tracker) -> {
+                () -> notify(ObserveOn.ON_STUDENT_LOAD_STARTED),
+                () -> notify(ObserveOn.ON_STUDENT_LOADED),
+                () -> {
                     students.clear();
                     File directory = new File(STUDENTS_PATH);
                     File[] studentDirectories = directory.listFiles();
                     if (studentDirectories == null) {
-                        tracker.finish();
                         return;
                     }
+                    ProgressTracker tracker = new ProgressTracker(STUDENTS_LOADING_MESSAGE);
+
                     tracker.setMaximum(studentDirectories.length);
                     for (File studentDirectory : studentDirectories) {
                         try {
@@ -145,9 +122,8 @@ public class AppModel {
 
     public void loadVerifier() {
         submitTask(
-                () -> notify(ObserveOf.ON_VERIFIER_LOAD_STARTED),
-                () -> notify(ObserveOf.ON_VERIFIER_LOADED),
-                VERIFIER_LOADING_MESSAGE,
+                () -> notify(ObserveOn.ON_VERIFIER_LOAD_STARTED),
+                () -> notify(ObserveOn.ON_VERIFIER_LOADED),
                 verifierFactory::loadAllVerifiers
         );
     }
@@ -160,28 +136,38 @@ public class AppModel {
             throw new RuntimeException("Verifier not loaded yet");
         }
 
-        executorService.submit(() -> {
-            if (!student.isLoaded()) {
-                student.loadLectures(newTracker(String.format(LECTURES_LOADING_MESSAGES, student)));
-            }
-            submitTask(
-                    () -> notify(ObserveOf.ON_VERIFY_STARTED, student),
-                    () -> {
-                        notify(ObserveOf.ON_VERIFIED, student);
+        executorService.submit(
+                () -> {
+                    if (!student.isLoaded()) {
+                        student.loadLectures();
                         if (student.equals(committingStudent)) {
-                            notify(ObserveOf.ON_COMMIT_UPDATED, student);
+                            notify(ObserveOn.ON_LECTURE_UPDATED, student);
                         }
-                    },
-                    String.format(VERIFYING, student),
-                    (tracker) -> verifierFactory.newVerifier().verify(student, tracker)
-            );
-        });
+                    }
+                    submitTask(
+                            () -> notify(ObserveOn.ON_VERIFY_STARTED, student),
+                            () -> {
+                                notify(ObserveOn.ON_VERIFIED, student);
+                                if (student.equals(committingStudent)) {
+                                    notify(ObserveOn.ON_COMMIT_UPDATED, student);
+                                }
+                            },
+                            () -> verifierFactory.newVerifier().verify(student)
+                    );
+                }
+        );
+    }
+
+    public void setInformationTargets(Collection<DegreeSnapshot> degreeSnapshots) {
+        informationTargets.clear();
+        informationTargets.addAll(degreeSnapshots);
+        notify(ON_INFORMATION_TARGET_UPDATED, informationTargets);
     }
 
     public void setSelectedStudents(Collection<Student> selectedStudents) {
         this.selectedStudents.clear();
         this.selectedStudents.addAll(selectedStudents);
-        notify(ObserveOf.ON_STUDENT_SELECTED, selectedStudents);
+        notify(ObserveOn.ON_STUDENT_SELECTED, selectedStudents);
     }
 
     public void startCommit() {
@@ -189,7 +175,8 @@ public class AppModel {
             return;
         }
         committingStudent = selectedStudents.get(0);
-        notify(ObserveOf.ON_COMMIT_STARTED, committingStudent);
+        notify(ObserveOn.ON_LECTURE_UPDATED, committingStudent);
+        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
         if (!committingStudent.isVerified()) {
             verifyStudent(committingStudent);
         }
@@ -198,6 +185,14 @@ public class AppModel {
     public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
         selectedVerifiedDegree.clear();
         selectedVerifiedDegree.addAll(selectedDegrees);
+        notify(ObserveOn.ON_VERIFIED_DEGREE_SELECTED, selectedDegrees);
+    }
+
+    public void setSelectedCommittedDegree(Collection<DegreeSnapshot> selectedDegrees) {
+        selectedCommittedDegree.clear();
+        selectedCommittedDegree.addAll(selectedDegrees);
+        notify(ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selectedDegrees);
+        notify(ObserveOn.ON_COMMITTED_DEGREE_SELECTED, selectedDegrees);
     }
 
     public void commitDegrees() {
@@ -205,7 +200,7 @@ public class AppModel {
             return;
         }
         committingStudent.commitAll(selectedVerifiedDegree);
-        notify(ObserveOf.ON_COMMIT_UPDATED, committingStudent);
+        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
     }
 
     public void commitRecommendedDegrees() {
@@ -214,15 +209,23 @@ public class AppModel {
         }
 
         committingStudent.commitFirstBundle();
-        notify(ObserveOf.ON_COMMIT_UPDATED, committingStudent);
+        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
     }
 
-    public VerifierFactory getVerifierFactory() {
-        return verifierFactory;
+    public void decommitDegrees() {
+        if (committingStudent == null || !committingStudent.isVerified()) {
+            return;
+        }
+        committingStudent.decommitAll(selectedCommittedDegree);
+        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
     }
 
-    public List<ProgressTracker> getTrackers() {
-        return trackers;
+    public void clearCommittedDegrees() {
+        if (committingStudent == null || !committingStudent.isVerified()) {
+            return;
+        }
+        committingStudent.clearCommit();
+        notify(ObserveOn.ON_COMMIT_UPDATED, committingStudent);
     }
 
     public List<Student> getStudents() {
@@ -237,14 +240,7 @@ public class AppModel {
         return committingStudent;
     }
 
-    public List<DegreeSnapshot> getSelectedVerifiedDegree() {
-        return selectedVerifiedDegree;
-    }
-
-    public enum ObserveOf {
-        ON_TASK_STARTED,
-        ON_TASK_FINISHED,
-
+    public enum ObserveOn {
         ON_VERIFIER_LOAD_STARTED,
         ON_VERIFIER_LOADED,
 
@@ -255,27 +251,14 @@ public class AppModel {
         ON_STUDENT_LOADED,
 
         ON_STUDENT_SELECTED,
-        ON_COMMIT_STARTED,
-        ON_COMMIT_UPDATED;
 
-        private final ObserveOf parent;
+        ON_VERIFIED_DEGREE_SELECTED,
+        ON_COMMITTED_DEGREE_SELECTED,
 
-        ObserveOf() {
-            this.parent = null;
-        }
+        ON_COMMIT_UPDATED,
 
-        ObserveOf(ObserveOf parent) {
-            this.parent = parent;
-        }
+        ON_LECTURE_UPDATED,
 
-        public boolean isIn(ObserveOf other) {
-            if (this == other) {
-                return true;
-            }
-            if (parent != null) {
-                return parent.isIn(other);
-            }
-            return false;
-        }
+        ON_INFORMATION_TARGET_UPDATED
     }
 }

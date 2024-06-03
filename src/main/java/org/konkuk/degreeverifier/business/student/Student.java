@@ -1,13 +1,18 @@
 package org.konkuk.degreeverifier.business.student;
 
 import com.sun.media.sound.InvalidFormatException;
+import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.logic.ProgressTracker;
-import org.konkuk.degreeverifier.business.FileUtil;
+import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import static org.konkuk.degreeverifier.ui.Strings.LECTURES_LOADING_MESSAGES;
 
 public class Student extends LinkedHashSet<Lecture> {
     private final String directoryName;
@@ -33,11 +38,11 @@ public class Student extends LinkedHashSet<Lecture> {
         this.name = tokenizer.nextToken().trim();
     }
 
-    public void loadLectures(ProgressTracker tracker) {
+    synchronized public void loadLectures() {
         if (loaded) {
-            tracker.finish();
             return;
         }
+        ProgressTracker tracker = new ProgressTracker(String.format(LECTURES_LOADING_MESSAGES, this));
         File directory = new File(directoryName);
         File[] transcripts = directory.listFiles();
         if (transcripts == null) {
@@ -65,32 +70,28 @@ public class Student extends LinkedHashSet<Lecture> {
         tracker.finish();
     }
 
-    public void setVerifiedSnapshotBundles(List<SnapshotBundle> verifiedSnapshotBundles) {
+    synchronized public void setVerifiedSnapshotBundles(List<SnapshotBundle> verifiedSnapshotBundles) {
         this.verifiedSnapshotBundles = verifiedSnapshotBundles;
-        sufficientDegrees.clear();
         verifiedSnapshotBundles.forEach(sufficientDegrees::putAll);
-        insufficientDegrees.clear();
         verified = true;
+        committedDegrees.clear();
+        updateSufficientInsufficientDegrees();
     }
 
-    public List<SnapshotBundle> getVerifiedSnapshotBundles() {
-        return verifiedSnapshotBundles;
-    }
-
-    public void commitAll(Collection<DegreeSnapshot> degrees) {
+    synchronized public void commitAll(Collection<DegreeSnapshot> degrees) {
         if (degrees == null || degrees.isEmpty()) {
             return;
         }
         for (DegreeSnapshot degree : degrees) {
             if (degree == null || !sufficientDegrees.containsKey(degree.toString())) {
-                return;
+                continue;
             }
             committedDegrees.put(degree.toString(), degree);
+            updateSufficientInsufficientDegrees();
         }
-        updateSufficientInsufficientDegrees();
     }
 
-    public void commitFirstBundle() {
+    synchronized public void commitFirstBundle() {
         if (verifiedSnapshotBundles.isEmpty()) {
             return;
         }
@@ -103,20 +104,61 @@ public class Student extends LinkedHashSet<Lecture> {
         updateSufficientInsufficientDegrees();
     }
 
-    private void updateSufficientInsufficientDegrees() {
+    synchronized public void decommitAll(Collection<DegreeSnapshot> degrees) {
+        if (degrees == null || degrees.isEmpty()) {
+            return;
+        }
+        for (DegreeSnapshot degree : degrees) {
+            if (degree == null || !committedDegrees.containsKey(degree.toString())) {
+                return;
+            }
+            committedDegrees.remove(degree.toString());
+        }
+        updateSufficientInsufficientDegrees();
+    }
+
+    synchronized public void clearCommit() {
+        committedDegrees.clear();
+        updateSufficientInsufficientDegrees();
+    }
+
+    synchronized private void updateSufficientInsufficientDegrees() {
         sufficientDegrees.clear();
         insufficientDegrees.clear();
 
-        for (String committedDegree : committedDegrees.keySet()) {
+        if (committedDegrees.isEmpty()) {
             for (SnapshotBundle bundle : verifiedSnapshotBundles) {
-                if (bundle.containsKey(committedDegree)) {
-                    sufficientDegrees.putAll(bundle);
-                } else {
-                    insufficientDegrees.putAll(bundle);
+                sufficientDegrees.putAll(bundle);
+            }
+            return;
+        }
+
+        for (SnapshotBundle bundle : verifiedSnapshotBundles) {
+            boolean isSufficientBundle = true;
+            for (String key : committedDegrees.keySet()) {
+                if (!bundle.containsKey(key)) {
+                    isSufficientBundle = false;
+                    break;
                 }
             }
+            if (isSufficientBundle) {
+                sufficientDegrees.putAll(bundle);
+            } else {
+                insufficientDegrees.putAll(bundle);
+            }
         }
-        committedDegrees.keySet().forEach(sufficientDegrees::remove);
+        for (String committedKey : committedDegrees.keySet()) {
+            committedDegrees.put(committedKey, sufficientDegrees.get(committedKey));
+            sufficientDegrees.remove(committedKey);
+            insufficientDegrees.remove(committedKey);
+        }
+        for (String sufficientKey : sufficientDegrees.keySet()) {
+            insufficientDegrees.remove(sufficientKey);
+        }
+    }
+
+    public SnapshotBundle getCommittedDegrees() {
+        return committedDegrees;
     }
 
     public SnapshotBundle getSufficientDegrees() {
@@ -133,6 +175,10 @@ public class Student extends LinkedHashSet<Lecture> {
 
     public boolean isVerified() {
         return verified;
+    }
+
+    public String getDirectoryName() {
+        return directoryName;
     }
 
     @Override
