@@ -42,6 +42,6 @@ public class Strings {
     public static final String OPEN_LECTURE_DIRECTORY = "수강 내역 위치 열기";
 
     public static final String INFORMATION = "자세한 정보";
-    public static final String FOLD_INFORMATION_TREE = "트리를 한 단계 접기";
-    public static final String UNFOLD_INFORMATION_TREE = "트리를 한 단계 펼치기";
+    public static final String FOLD_INFORMATION_TREE = "한 단계 접기";
+    public static final String UNFOLD_INFORMATION_TREE = "한 단계 펼치기";
 }
