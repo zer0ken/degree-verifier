@@ -13,13 +13,11 @@ public class Dimensions {
     public static final Dimension MINIMUM_LECTURE_LIST_SIZE = new Dimension(220, 180);
     public static final Dimension MINIMUM_INFORMATION_PANEL_SIZE = new Dimension(180, 180);
 
-    public static final EmptyBorder APP_PADDING = new EmptyBorder(0, 14, 0, 14);
-
     public static final Dimension STATUS_BAR_SIZE = new Dimension(0, 24);
-    public static final EmptyBorder STATUS_BAR_BORDER = new EmptyBorder(0, 14, 0, 14);
+    public static final EmptyBorder STATUS_BAR_PADDING = new EmptyBorder(0, 14, 0, 14);
 
-    public static final Dimension TITLED_TOOLBAR_SIZE = new Dimension(0, 28);
-    public static final Dimension TITLED_TOOLBAR_BUTTON_SIZE = new Dimension(24, 24);
+    public static final Dimension TITLED_TOOLBAR_SIZE = new Dimension(0, 38);
+    public static final Dimension TITLED_TOOLBAR_BUTTON_SIZE = new Dimension(34, 34);
     public static final float TITLED_TOOLBAR_ICON_SCALE = 0.8f;
     public static final int TITLED_TOOLBAR_LEFT_INSET = 12;
     public static final int TITLED_TOOLBAR_RIGHT_GAP = 26;

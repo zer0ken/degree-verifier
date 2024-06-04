@@ -8,10 +8,12 @@ import org.konkuk.degreeverifier.logic.informationtree.InformationTargetFocusLis
 import org.konkuk.degreeverifier.logic.informationtree.InformationTargetListSelectionListener;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static org.konkuk.degreeverifier.ui.Borders.TOP_MARGIN;
 import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_COMMITTED_DEGREE_SIZE;
 
 public class CommittedDegreePanel extends JPanel {
@@ -20,6 +22,7 @@ public class CommittedDegreePanel extends JPanel {
         setMinimumSize(MINIMUM_COMMITTED_DEGREE_SIZE);
 
         JList<DegreeSnapshot> list = new JList<>();
+        list.setBorder(new CompoundBorder(TOP_MARGIN, list.getBorder()));
         list.setModel(new CommittedDegreeListMode());
         list.addListSelectionListener(new CommittedDegreeListSelectionListener());
         list.setComponentPopupMenu(new CommittedDegreePopupMenu());

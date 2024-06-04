@@ -1,9 +1,11 @@
 package org.konkuk.degreeverifier.business;
 
 import com.google.gson.Gson;
+import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +19,7 @@ import java.util.List;
  * @since 2024-05-24T23:23:06.064Z
  */
 public class FileUtil {
-    public static <T> T fromJsonFile(String fileName, Class<T> classOfT) {
+    synchronized public static <T> T fromJsonFile(String fileName, Class<T> classOfT) {
         Gson gson = new Gson();
         Path path = Paths.get(fileName);
         try {
@@ -29,7 +31,7 @@ public class FileUtil {
         }
     }
 
-    public static List<String[]> fromTsvFile(String fileName) {
+    synchronized public static List<String[]> fromTsvFile(String fileName) {
         List<String[]> tokenizedLines = new ArrayList<>();
         File file = new File(fileName);
         try (
@@ -44,10 +46,34 @@ public class FileUtil {
         return tokenizedLines;
     }
 
+    synchronized public static void exportCommit(String fileName, String content) {
+        try {
+            File file = new File(fileName);
+            file.createNewFile();
+            Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.err.println("Exception occurred while writing TXT file: " + fileName);
+            throw new RuntimeException(e);
+        }
+    }
+
+    synchronized public static SnapshotBundle loadCommit(File file){
+        SnapshotBundle bundle = new SnapshotBundle();
+        try {
+            Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).stream()
+                    .filter(line -> !line.trim().isEmpty()).forEach(line -> bundle.put(line.trim(), null));
+        } catch (IOException e) {
+            System.err.println("Exception occurred while reading TXT file: " + file.getName());
+            throw new RuntimeException(e);
+        } finally {
+            return bundle;
+        }
+    }
+
     /**
      * 이 메소드는 테스트 목적으로만 사용됩니다.
      */
-    public static <T> String getAbsolutePathOfResource(Class<T> requester, String resourceName) {
+    synchronized public static <T> String getAbsolutePathOfResource(Class<T> requester, String resourceName) {
         String asciiFileName = requester.getResource(resourceName).getFile();
         try {
             String utf8FileName = URLDecoder.decode(asciiFileName, "UTF-8");

@@ -1,17 +1,18 @@
 package org.konkuk.degreeverifier.business.student;
 
 import com.sun.media.sound.InvalidFormatException;
+import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.konkuk.degreeverifier.ui.Strings.EXPORTING_COMMIT_MESSAGE;
 import static org.konkuk.degreeverifier.ui.Strings.LECTURES_LOADING_MESSAGES;
 
 public class Student extends LinkedHashSet<Lecture> {
@@ -26,6 +27,8 @@ public class Student extends LinkedHashSet<Lecture> {
     private final SnapshotBundle committedDegrees = new SnapshotBundle();
     private final SnapshotBundle sufficientDegrees = new SnapshotBundle();
     private final SnapshotBundle insufficientDegrees = new SnapshotBundle();
+
+    private File lastExported = null;
 
     public Student(String directoryName) throws InvalidFormatException {
         File directory = new File(directoryName);
@@ -44,6 +47,18 @@ public class Student extends LinkedHashSet<Lecture> {
         }
         ProgressTracker tracker = new ProgressTracker(String.format(LECTURES_LOADING_MESSAGES, this));
         File directory = new File(directoryName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File exportDirectory = new File(getExportDirectoryPath());
+        if (!exportDirectory.exists()) {
+            exportDirectory.mkdir();
+        } else if(exportDirectory.listFiles().length != 0) {
+            lastExported = Arrays.stream(exportDirectory.listFiles())
+                    .sorted((f1, f2) -> f2.getName().substring(8).compareTo(f1.getName().substring(8)))
+                    .collect(Collectors.toList()).get(0);
+        }
+
         File[] transcripts = directory.listFiles();
         if (transcripts == null) {
             tracker.finish();
@@ -87,21 +102,33 @@ public class Student extends LinkedHashSet<Lecture> {
                 continue;
             }
             committedDegrees.put(degree.toString(), degree);
+            exportCommit(false);
             updateSufficientInsufficientDegrees();
         }
     }
 
-    synchronized public void commitFirstBundle() {
+    synchronized public void commitRecommendedBundle() {
         if (verifiedSnapshotBundles.isEmpty()) {
             return;
         }
 
-        committedDegrees.clear();
         sufficientDegrees.clear();
         insufficientDegrees.clear();
 
-        committedDegrees.putAll(verifiedSnapshotBundles.get(0));
+        committedDegrees.clear();
+        committedDegrees.putAll(getRecommendedBundle());
+
+        exportCommit(false);
         updateSufficientInsufficientDegrees();
+    }
+
+    synchronized public SnapshotBundle getRecommendedBundle() {
+        for (SnapshotBundle bundle : verifiedSnapshotBundles) {
+            if (bundle.keySet().containsAll(committedDegrees.keySet())) {
+                return bundle;
+            }
+        }
+        return new SnapshotBundle();
     }
 
     synchronized public void decommitAll(Collection<DegreeSnapshot> degrees) {
@@ -114,11 +141,13 @@ public class Student extends LinkedHashSet<Lecture> {
             }
             committedDegrees.remove(degree.toString());
         }
+        exportCommit(false);
         updateSufficientInsufficientDegrees();
     }
 
     synchronized public void clearCommit() {
         committedDegrees.clear();
+        exportCommit(false);
         updateSufficientInsufficientDegrees();
     }
 
@@ -155,6 +184,39 @@ public class Student extends LinkedHashSet<Lecture> {
         for (String sufficientKey : sufficientDegrees.keySet()) {
             insufficientDegrees.remove(sufficientKey);
         }
+    }
+
+    public void exportCommit(boolean manually) {
+        ProgressTracker tracker = new ProgressTracker(String.format(EXPORTING_COMMIT_MESSAGE, this));
+        lastExported = manually
+                ? new File(getManualExportFilePath())
+                : lastExported.getName().startsWith("자동 저장")
+                ? lastExported
+                : new File(getAutoExportFilePath());
+        FileUtil.exportCommit(lastExported.getAbsolutePath(), getCommittedDegrees().keySet().stream().reduce("", (acc, str) -> acc + str + "\n"));
+        tracker.finish();
+    }
+
+    public void loadFrom(File file) {
+        committedDegrees.clear();
+        committedDegrees.putAll(FileUtil.loadCommit(file));
+        updateSufficientInsufficientDegrees();
+    }
+
+    public File getLastExported() {
+        return lastExported;
+    }
+
+    public String getManualExportFilePath() {
+        return getExportDirectoryPath() + "\\" + new SimpleDateFormat("수동 출력 - yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".txt";
+    }
+
+    public String getAutoExportFilePath() {
+        return getExportDirectoryPath() + "\\" + new SimpleDateFormat("자동 저장 - yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".txt";
+    }
+
+    public String getExportDirectoryPath() {
+        return DefaultPaths.EXPORT_PATH + "\\" + id + " - " + name;
     }
 
     public SnapshotBundle getCommittedDegrees() {

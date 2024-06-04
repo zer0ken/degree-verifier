@@ -108,7 +108,12 @@ public class AppModel extends Observable {
                                     notify(On.COMMIT_UPDATED, student);
                                 }
                             },
-                            () -> verifierFactory.newVerifier().verify(student)
+                            () -> {
+                                verifierFactory.newVerifier().verify(student);
+                                if (committingStudent.getLastExported() != null) {
+                                    committingStudent.loadFrom(committingStudent.getLastExported());
+                                }
+                            }
                     );
                 }
         );
@@ -157,7 +162,7 @@ public class AppModel extends Observable {
             return;
         }
 
-        committingStudent.commitFirstBundle();
+        committingStudent.commitRecommendedBundle();
         notify(On.COMMIT_UPDATED, committingStudent);
     }
 
@@ -175,6 +180,25 @@ public class AppModel extends Observable {
         }
         committingStudent.clearCommit();
         notify(On.COMMIT_UPDATED, committingStudent);
+    }
+
+    public void addStudent(String directoryName) {
+        Student student;
+        try {
+            student = new Student(directoryName);
+        } catch (InvalidFormatException e) {
+            throw new RuntimeException(e);
+        }
+        student.loadLectures();
+        students.add(student);
+        notify(On.STUDENT_LOADED, students);
+    }
+
+    public void exportManually() {
+        if (committingStudent != null && !committingStudent.isVerified()) {
+            return;
+        }
+        executorService.submit(() -> committingStudent.exportCommit(true));
     }
 
     public List<Student> getStudents() {

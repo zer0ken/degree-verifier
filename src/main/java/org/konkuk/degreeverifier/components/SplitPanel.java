@@ -7,24 +7,36 @@ import org.konkuk.degreeverifier.components.studentlist.StudentListPanel;
 import org.konkuk.degreeverifier.components.verifiedlist.VerifiedDegreePanel;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
+
+import static org.konkuk.degreeverifier.ui.Borders.SEPARATOR_EVERY_SIDE;
+import static org.konkuk.degreeverifier.ui.Borders.SEPARATOR_WITHOUT_BOTTOM;
 
 
 public class SplitPanel extends JPanel {
     public SplitPanel() {
         setLayout(new BorderLayout());
 
+        JPanel verifiedDegreePanel = new VerifiedDegreePanel();
+        JPanel committedDegreePanel = new CommittedDegreePanel();
+        JPanel lectureListPanel = new LectureListPanel();
+
+        verifiedDegreePanel.setBorder(new CompoundBorder(SEPARATOR_EVERY_SIDE, verifiedDegreePanel.getBorder()));
+        committedDegreePanel.setBorder(new CompoundBorder(SEPARATOR_EVERY_SIDE, committedDegreePanel.getBorder()));
+        lectureListPanel.setBorder(new CompoundBorder(SEPARATOR_WITHOUT_BOTTOM, lectureListPanel.getBorder()));
+
         JSplitPane commitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
-                new VerifiedDegreePanel(),
-                new CommittedDegreePanel()
+                verifiedDegreePanel,
+                committedDegreePanel
         );
         commitPane.setResizeWeight(0.5f);
 
         JSplitPane withLectureList = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 commitPane,
-                new LectureListPanel()
+                lectureListPanel
         );
 
         JSplitPane withInformation = new JSplitPane(

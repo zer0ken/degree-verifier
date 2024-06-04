@@ -103,7 +103,7 @@ public class InformationTreeModel extends DefaultTreeModel {
         }
         parent.add(new DefaultMutableTreeNode("다른 학위에서 사용: " + (snapshot.criteria.isNonExclusive() ? "허가" : "불허")));
         if (snapshot.duplicatedDegrees.length > 0) {
-            DefaultMutableTreeNode duplicated = new DefaultMutableTreeNode("사용 요청: " + snapshot.duplicatedDegrees.length + "건");
+            DefaultMutableTreeNode duplicated = new DefaultMutableTreeNode("사용 학위: " + snapshot.duplicatedDegrees.length + "개");
             parent.add(duplicated);
 
             for (String duplicatedDegree : snapshot.duplicatedDegrees) {

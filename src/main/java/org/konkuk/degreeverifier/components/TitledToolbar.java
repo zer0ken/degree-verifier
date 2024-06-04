@@ -9,6 +9,7 @@ import java.awt.event.ComponentEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.konkuk.degreeverifier.ui.Borders.TITLED_TOOLBAR_BORDER;
 import static org.konkuk.degreeverifier.ui.Dimensions.*;
 
 public class TitledToolbar extends JToolBar {
@@ -21,7 +22,7 @@ public class TitledToolbar extends JToolBar {
         setName(title);
         setPreferredSize(TITLED_TOOLBAR_SIZE);
         setAlignmentY(JComponent.CENTER_ALIGNMENT);
-        add(Box.createHorizontalStrut(TITLED_TOOLBAR_LEFT_INSET));
+        setBorder(TITLED_TOOLBAR_BORDER);
         add(new JLabel(title));
 
         whenNarrow.add(add(Box.createGlue()));

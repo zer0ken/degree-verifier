@@ -22,7 +22,9 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifiedDegreeList
 
     private void updateTree(Student student) {
         removeAllElements();
-        addElement(new VerifiedDegreeListSufficientSeparatorItem());
+        if (!student.getSufficientDegrees().isEmpty()){
+            addElement(new VerifiedDegreeListSufficientSeparatorItem());
+        }
         student.getSufficientDegrees().values()
                 .forEach(element -> addElement(new VerifiedDegreeListSufficientItem(element)));
         if (!student.getInsufficientDegrees().isEmpty()) {

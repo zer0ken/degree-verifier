@@ -9,10 +9,12 @@ import org.konkuk.degreeverifier.logic.verifiedlist.VerifiedListCellRenderer;
 import org.konkuk.degreeverifier.logic.verifiedlist.items.VerifiedDegreeListItem;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static org.konkuk.degreeverifier.ui.Borders.TOP_MARGIN;
 import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_VERIFIED_DEGREE_SIZE;
 
 public class VerifiedDegreePanel extends JPanel {
@@ -21,6 +23,7 @@ public class VerifiedDegreePanel extends JPanel {
         setMinimumSize(MINIMUM_VERIFIED_DEGREE_SIZE);
 
         JList<VerifiedDegreeListItem> list = new JList<>();
+        list.setBorder(new CompoundBorder(TOP_MARGIN, list.getBorder()));
         list.setModel(new VerifiedDegreeListModel());
         list.addListSelectionListener(new VerifiedDegreeListSelectionListener());
         list.setComponentPopupMenu(new VerifiedDegreePopupMenu());

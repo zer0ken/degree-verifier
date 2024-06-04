@@ -10,10 +10,10 @@ import java.util.Collection;
 
 import static org.konkuk.degreeverifier.ui.Strings.VERIFY_STUDENT;
 
-public class VerifyStudentAction extends AbstractAction {
+public class VerifyAllStudentAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
 
-    public VerifyStudentAction() {
+    public VerifyAllStudentAction() {
         putValue(NAME, VERIFY_STUDENT);
         putValue(SHORT_DESCRIPTION, VERIFY_STUDENT);
         putValue(SMALL_ICON, null);
@@ -27,6 +27,6 @@ public class VerifyStudentAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        appModel.getSelectedStudents().forEach(appModel::verifyStudent);
+        appModel.getStudents().forEach(appModel::verifyStudent);
     }
 }

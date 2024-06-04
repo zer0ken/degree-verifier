@@ -8,7 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 public class InformationTree extends JTree {
-    private int unfoldDepth = 0;
+    private int unfoldDepth = 2;
 
     public InformationTree() {
         super();

@@ -27,6 +27,8 @@ public class Themes {
             UIManager.put("List.selectionForeground", UIManager.get("List.foreground"));
 
             UIManager.put("SplitPaneDivider.style", "plain");
+
+            UIManager.put("ScrollPane.border", BorderFactory.createEmptyBorder());
         }
 
         return succeed;
