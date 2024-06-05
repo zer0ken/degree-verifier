@@ -10,6 +10,8 @@ public class Themes {
         boolean succeed = FlatIntelliJLaf.setup();
 
         if (succeed) {
+            UIManager.put("TitlePane.embeddedForeground", new Color(0x494949));
+
             UIManager.put("Tree.selectionArc", 8);
             UIManager.put("Component.arrowType", "chevron");
             UIManager.put("Tree.rendererMargins", new Insets(3, 18, 3, 8));

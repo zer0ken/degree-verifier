@@ -10,11 +10,15 @@ public class Dimensions {
     public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(180, 180);
     public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(220, 180);
     public static final Dimension MINIMUM_VERIFIED_DEGREE_SIZE = new Dimension(220, 180);
+
     public static final Dimension MINIMUM_LECTURE_LIST_SIZE = new Dimension(220, 180);
+    public static final Dimension PREFERRED_LECTURE_LIST_SIZE = new Dimension(220, 280);
+
     public static final Dimension MINIMUM_INFORMATION_PANEL_SIZE = new Dimension(180, 180);
+    public static final Dimension PREFERRED_INFORMATION_PANEL_SIZE = new Dimension(300, 0);
 
     public static final Dimension STATUS_BAR_SIZE = new Dimension(0, 24);
-    public static final EmptyBorder STATUS_BAR_PADDING = new EmptyBorder(0, 14, 0, 14);
+    public static final EmptyBorder STATUS_BAR_PADDING = new EmptyBorder(2, 14, 2, 14);
 
     public static final Dimension TITLED_TOOLBAR_SIZE = new Dimension(0, 38);
     public static final Dimension TITLED_TOOLBAR_BUTTON_SIZE = new Dimension(34, 34);

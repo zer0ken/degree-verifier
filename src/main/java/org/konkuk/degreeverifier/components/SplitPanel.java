@@ -11,10 +11,11 @@ import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
 import static org.konkuk.degreeverifier.ui.Borders.SEPARATOR_EVERY_SIDE;
-import static org.konkuk.degreeverifier.ui.Borders.SEPARATOR_WITHOUT_BOTTOM;
 
 
 public class SplitPanel extends JPanel {
+    private JSplitPane withLectureList;
+
     public SplitPanel() {
         setLayout(new BorderLayout());
 
@@ -24,34 +25,34 @@ public class SplitPanel extends JPanel {
 
         verifiedDegreePanel.setBorder(new CompoundBorder(SEPARATOR_EVERY_SIDE, verifiedDegreePanel.getBorder()));
         committedDegreePanel.setBorder(new CompoundBorder(SEPARATOR_EVERY_SIDE, committedDegreePanel.getBorder()));
-        lectureListPanel.setBorder(new CompoundBorder(SEPARATOR_WITHOUT_BOTTOM, lectureListPanel.getBorder()));
+        lectureListPanel.setBorder(new CompoundBorder(SEPARATOR_EVERY_SIDE, lectureListPanel.getBorder()));
 
         JSplitPane commitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 verifiedDegreePanel,
                 committedDegreePanel
         );
-        commitPane.setResizeWeight(0.5f);
+        commitPane.setResizeWeight(0.5d);
 
-        JSplitPane withLectureList = new JSplitPane(
+        withLectureList = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 commitPane,
                 lectureListPanel
         );
+        withLectureList.setResizeWeight(1);
 
         JSplitPane withInformation = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 withLectureList,
                 new InformationPanel()
         );
-        withInformation.setResizeWeight(0.65f);
+        withInformation.setResizeWeight(1);
 
         JSplitPane totalPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 new StudentListPanel(),
                 withInformation
         );
-        totalPane.setResizeWeight(0.1f);
 
         add(totalPane);
     }

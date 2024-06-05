@@ -3,7 +3,6 @@ package org.konkuk.degreeverifier.components.statusbar;
 import javax.swing.*;
 import java.awt.*;
 
-import static org.konkuk.degreeverifier.ui.Borders.TOP_SEPARATOR;
 import static org.konkuk.degreeverifier.ui.Dimensions.STATUS_BAR_PADDING;
 import static org.konkuk.degreeverifier.ui.Dimensions.STATUS_BAR_SIZE;
 
@@ -11,7 +10,7 @@ public class StatusBar extends JPanel {
     public StatusBar() {
         setLayout(new BorderLayout());
         setPreferredSize(STATUS_BAR_SIZE);
-        setBorder(TOP_SEPARATOR);
+//        setBorder(TOP_SEPARATOR);
 
         JPanel inner = new JPanel(new BorderLayout());
         inner.setBorder(STATUS_BAR_PADDING);
@@ -32,6 +31,10 @@ public class StatusBar extends JPanel {
 
         // add here
 
+        left.add(new JButton("test"));
+        left.add(new JSeparator(JSeparator.VERTICAL));
+        left.add(new JButton("test"));
+        left.add(new JButton("test"));
         left.add(new JButton("test"));
 
         right.add(new ProgressStatusPanel(), 0);

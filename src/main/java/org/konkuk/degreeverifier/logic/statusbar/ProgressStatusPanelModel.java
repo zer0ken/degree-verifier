@@ -16,7 +16,7 @@ public class ProgressStatusPanelModel {
 
     public ProgressStatusPanelModel(ProgressStatusPanel panel) {
         this.panel = panel;
-        panel.setVisible(false);
+//        panel.setVisible(false);
 
         taskModel.observe(TaskModel.ObserveOn.ON_PROGRESS_REGISTERED, this::taskRegistered);
         taskModel.observe(TaskModel.ObserveOn.ON_PROGRESS_DISCARDED, this::taskDiscarded);
