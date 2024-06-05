@@ -27,6 +27,7 @@ public class App extends JFrame {
         setSize(PREFERRED_APP_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
         setLayout(new BorderLayout());
 
         AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, (o) -> setTitle(String.format(COMMITTING_TITLE, o)));

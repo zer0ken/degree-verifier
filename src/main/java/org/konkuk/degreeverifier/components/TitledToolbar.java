@@ -1,7 +1,5 @@
 package org.konkuk.degreeverifier.components;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -12,13 +10,15 @@ import java.util.List;
 import static org.konkuk.degreeverifier.ui.Borders.TITLED_TOOLBAR_BORDER;
 import static org.konkuk.degreeverifier.ui.Dimensions.*;
 
-public class TitledToolbar extends JToolBar {
+public class TitledToolbar extends SizedToolbar {
     private final List<Component> whenNarrow = new LinkedList<>();
     private final List<Component> whenWide = new LinkedList<>();
 
     private boolean narrow = true;
 
     public TitledToolbar(String title) {
+        super(TITLED_TOOLBAR_BUTTON_SIZE, TITLED_TOOLBAR_ICON_SCALE);
+
         setName(title);
         setPreferredSize(TITLED_TOOLBAR_SIZE);
         setAlignmentY(JComponent.CENTER_ALIGNMENT);
@@ -49,16 +49,5 @@ public class TitledToolbar extends JToolBar {
             whenNarrow.forEach((c) -> c.setVisible(false));
         }
         this.narrow = narrow;
-    }
-
-    @Override
-    public JButton add(Action a) {
-        JButton button = super.add(a);
-        button.setPreferredSize(TITLED_TOOLBAR_BUTTON_SIZE);
-        button.setMinimumSize(TITLED_TOOLBAR_BUTTON_SIZE);
-        button.setMaximumSize(TITLED_TOOLBAR_BUTTON_SIZE);
-        FlatSVGIcon icon = (FlatSVGIcon) a.getValue(Action.LARGE_ICON_KEY);
-        a.putValue(Action.LARGE_ICON_KEY, icon.derive(TITLED_TOOLBAR_ICON_SCALE));
-        return button;
     }
 }

@@ -1,6 +1,5 @@
 package org.konkuk.degreeverifier.business.student;
 
-import com.sun.media.sound.InvalidFormatException;
 import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
@@ -30,11 +29,11 @@ public class Student extends LinkedHashSet<Lecture> {
 
     private File lastExported = null;
 
-    public Student(String directoryName) throws InvalidFormatException {
+    public Student(String directoryName) throws RuntimeException {
         File directory = new File(directoryName);
         StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "-");
         if (tokenizer.countTokens() != 2) {
-            throw new InvalidFormatException("Wrong directory name format: " + directoryName);
+            throw new RuntimeException("Wrong directory name format: " + directoryName);
         }
         this.directoryName = directoryName;
         this.id = tokenizer.nextToken().trim();

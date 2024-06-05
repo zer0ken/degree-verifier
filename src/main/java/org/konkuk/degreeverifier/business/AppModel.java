@@ -1,6 +1,5 @@
 package org.konkuk.degreeverifier.business;
 
-import com.sun.media.sound.InvalidFormatException;
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
@@ -65,7 +64,7 @@ public class AppModel extends Observable {
                     for (File studentDirectory : studentDirectories) {
                         try {
                             students.add(new Student(studentDirectory.getAbsolutePath()));
-                        } catch (InvalidFormatException ignored) {
+                        } catch (RuntimeException ignored) {
                         } finally {
                             tracker.increment();
                         }
@@ -184,11 +183,7 @@ public class AppModel extends Observable {
 
     public void addStudent(String directoryName) {
         Student student;
-        try {
-            student = new Student(directoryName);
-        } catch (InvalidFormatException e) {
-            throw new RuntimeException(e);
-        }
+        student = new Student(directoryName);
         student.loadLectures();
         students.add(student);
         notify(On.STUDENT_LOADED, students);
