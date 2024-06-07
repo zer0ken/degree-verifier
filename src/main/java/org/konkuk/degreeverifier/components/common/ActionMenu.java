@@ -1,4 +1,4 @@
-package org.konkuk.degreeverifier.components;
+package org.konkuk.degreeverifier.components.common;
 
 import javax.swing.*;
 

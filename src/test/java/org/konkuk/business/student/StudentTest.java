@@ -25,6 +25,6 @@ class StudentTest {
     void loaded_and_not_verified_Student() {
         student.loadLectures();
         assertTrue(student.isLoaded());
-        assertEquals(17, student.size());
+        assertEquals(18, student.size());
     }
 }

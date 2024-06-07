@@ -26,16 +26,13 @@ public class App extends JFrame {
         setPreferredSize(PREFERRED_APP_SIZE);
         setSize(PREFERRED_APP_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
         setLayout(new BorderLayout());
-
-        AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, (o) -> setTitle(String.format(COMMITTING_TITLE, o)));
-
         setJMenuBar(new MenuBar());
 
         add(new SplitPanel());
         add(new StatusBar(), BorderLayout.SOUTH);
+
+        AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, (o) -> setTitle(String.format(COMMITTING_TITLE, o)));
 
         setVisible(true);
     }

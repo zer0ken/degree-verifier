@@ -2,7 +2,7 @@ package org.konkuk.degreeverifier.components.informationtree;
 
 import org.konkuk.degreeverifier.actions.informationtree.FoldAction;
 import org.konkuk.degreeverifier.actions.informationtree.UnfoldAction;
-import org.konkuk.degreeverifier.components.TitledToolbar;
+import org.konkuk.degreeverifier.components.common.TitledToolbar;
 
 import static org.konkuk.degreeverifier.ui.Strings.INFORMATION;
 

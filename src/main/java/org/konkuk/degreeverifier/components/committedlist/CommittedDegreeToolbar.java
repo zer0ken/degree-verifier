@@ -3,7 +3,7 @@ package org.konkuk.degreeverifier.components.committedlist;
 import org.konkuk.degreeverifier.actions.ClearCommitAction;
 import org.konkuk.degreeverifier.actions.DecommitDegreeAction;
 import org.konkuk.degreeverifier.actions.ExportCommitAction;
-import org.konkuk.degreeverifier.components.TitledToolbar2;
+import org.konkuk.degreeverifier.components.common.TitledToolbar2;
 
 import static org.konkuk.degreeverifier.ui.Strings.COMMITTED_DEGREE_LIST;
 

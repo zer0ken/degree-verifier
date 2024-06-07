@@ -1,4 +1,4 @@
-package org.konkuk.degreeverifier.components;
+package org.konkuk.degreeverifier.components.common;
 
 import static org.konkuk.degreeverifier.ui.Borders.TITLED_TOOLBAR_BORDER2;
 import static org.konkuk.degreeverifier.ui.Colors.COMMON_WHITE;

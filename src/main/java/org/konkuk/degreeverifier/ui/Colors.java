@@ -5,6 +5,8 @@ import java.awt.*;
 public class Colors {
     public static final Color DEFAULT_SVG_COLOR = new Color(0x5f6368);
 
+    public static final Color DEFAULT_BACKGROUND = new Color(0xf7f8fa);
+
     public static final Color COMMON_GRAY = new Color(0x857f7f);
     public static final Color COMMON_WHITE = new Color(0xFFFFFF);
     public static final Color COMMON_RED = new Color(0xFF6262);

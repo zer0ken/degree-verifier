@@ -36,7 +36,7 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
         isLoaded = true;
     }
 
-    synchronized public Verifier newVerifier() {
+    synchronized public Verifier createVerifier() {
         return new Verifier(this);
     }
 

@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.components.menubar;
 
 import org.konkuk.degreeverifier.actions.*;
-import org.konkuk.degreeverifier.components.ActionMenu;
+import org.konkuk.degreeverifier.components.common.ActionMenu;
 
 import static org.konkuk.degreeverifier.ui.Strings.FILE_MENU;
 

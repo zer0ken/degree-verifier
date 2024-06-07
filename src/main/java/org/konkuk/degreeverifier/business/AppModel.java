@@ -6,9 +6,9 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,10 +31,10 @@ public class AppModel extends Observable {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final VerifierFactory verifierFactory = new VerifierFactory();
-    private final List<Student> students = Collections.synchronizedList(new LinkedList<>());
-    private final List<Student> selectedStudents = Collections.synchronizedList(new LinkedList<>());
-    private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new LinkedList<>());
-    private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new LinkedList<>());
+    private final List<Student> students = Collections.synchronizedList(new ArrayList<>());
+    private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
+    private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
+    private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
 
     public void submitTask(
             Runnable beforeSubmit,
@@ -83,14 +83,7 @@ public class AppModel extends Observable {
         );
     }
 
-    public void verifyStudent(Student student) throws RuntimeException {
-        if (!isStudentListLoaded) {
-            throw new RuntimeException("Student list not loaded yet");
-        }
-        if (!verifierFactory.isLoaded()) {
-            throw new RuntimeException("Verifier not loaded yet");
-        }
-
+    public void verifyStudent(Student student) {
         executorService.submit(
                 () -> {
                     if (!student.isLoaded()) {
@@ -108,8 +101,8 @@ public class AppModel extends Observable {
                                 }
                             },
                             () -> {
-                                verifierFactory.newVerifier().verify(student);
-                                if (committingStudent.getLastExported() != null) {
+                                verifierFactory.createVerifier().verify(student);
+                                if (committingStudent.hasCommitFile()) {
                                     committingStudent.loadFrom(committingStudent.getLastExported());
                                 }
                             }
@@ -124,16 +117,26 @@ public class AppModel extends Observable {
         notify(On.STUDENT_SELECTED, selectedStudents);
     }
 
-    public void startCommit() {
-        if (selectedStudents.isEmpty()) {
-            return;
-        }
-        committingStudent = selectedStudents.get(0);
+    public void startCommit(Student student) {
+        committingStudent = student;
         notify(On.LECTURE_UPDATED, committingStudent);
         notify(On.COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_STARTED, committingStudent);
         if (!committingStudent.isVerified()) {
             verifyStudent(committingStudent);
         }
+    }
+
+    public void startCommit() {
+        startCommit(selectedStudents.get(0));
+    }
+
+    public void startCommitNext() {
+        startCommit(students.get(students.indexOf(committingStudent) + 1));
+    }
+
+    public void startCommitPrevious() {
+        startCommit(students.get(students.indexOf(committingStudent) - 1));
     }
 
     public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
@@ -196,6 +199,38 @@ public class AppModel extends Observable {
         executorService.submit(() -> committingStudent.exportCommit(true));
     }
 
+    public void commitAllStudentAutomatically(boolean excludeAlreadyCommittedStudent) {
+        for (Student student : students) {
+            if (student.hasCommitFile() && excludeAlreadyCommittedStudent) {
+                continue;
+            }
+
+            executorService.submit(() -> {
+                        if (!student.isLoaded()) {
+                            student.loadLectures();
+                            if (student.equals(committingStudent)) {
+                                notify(On.LECTURE_UPDATED, student);
+                            }
+                        }
+                        notify(On.VERIFY_STARTED, student);
+                        verifierFactory.createVerifier().verify(student);
+                        notify(On.VERIFIED, student);
+                        if (student.hasCommitFile()) {
+                            student.loadFrom(student.getLastExported());
+                        }
+                        student.commitRecommendedBundle();
+                        if (student.equals(committingStudent)) {
+                            notify(On.COMMIT_UPDATED, student);
+                        }
+                    }
+            );
+        }
+    }
+
+    public int getCommittingStudentIndex() {
+        return committingStudent == null? -1 : students.indexOf(committingStudent);
+    }
+
     public List<Student> getStudents() {
         return students;
     }
@@ -216,6 +251,14 @@ public class AppModel extends Observable {
         return selectedCommittedDegree;
     }
 
+    public boolean isStudentListLoaded() {
+        return isStudentListLoaded;
+    }
+
+    public boolean isVerifierLoaded() {
+        return verifierFactory.isLoaded();
+    }
+
     public enum On implements Event {
         VERIFIER_LOAD_STARTED,
         VERIFIER_LOADED,
@@ -227,6 +270,8 @@ public class AppModel extends Observable {
         STUDENT_LOADED,
 
         STUDENT_SELECTED,
+
+        COMMIT_STARTED,
 
         VERIFIED_DEGREE_SELECTED,
         COMMITTED_DEGREE_SELECTED,

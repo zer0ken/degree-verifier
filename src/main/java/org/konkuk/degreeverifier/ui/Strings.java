@@ -6,6 +6,7 @@ public class Strings {
     public static final String COMMITTING_TITLE = APP_TITLE + " / 검토중 - %s";
     public static final String FILE_MENU = "파일";
     public static final String VERIFY_MENU = "검사";
+    public static final String COMMIT_MENU = "검토";
 
     public static final String LECTURES_LOADING_MESSAGES = "수강 내역을 불러오는 중... [%s]";
     public static final String VERIFYING = "인정 가능한 학위를 검사하는 중... [%s]";
@@ -21,7 +22,10 @@ public class Strings {
 
     public static final String STUDENT_LIST = "학생 목록";
     public static final String VERIFY_STUDENT = "학위 검사하기";
-    public static final String START_COMMIT = "학위 자세히 검토하기";
+    public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 검사하기";
+    public static final String START_COMMIT = "검토 시작하기";
+    public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
+    public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";
     public static final String LOAD_STUDENT_LIST = "학생 목록 불러오기";
     public static final String OPEN_STUDENT_DIRECTORY = "학생 목록 위치 열기";
     public static final String CREATE_STUDENT = "새 학생 추가";
@@ -39,11 +43,14 @@ public class Strings {
     public static final String VERIFIED_DEGREE_LIST = "검사한 학위 목록";
     public static final String COMMIT_VERIFIED_DEGREE = "인정하기";
     public static final String COMMIT_RECOMMENDED_DEGREES = "권장 조합으로 인정하기";
+    public static final String COMMIT_ALL_STUDENT = "모든 학생 권장 조합으로 인정하기";
     public static final String OPEN_VERIFIER_DIRECTORY = "검사 기준 위치 열기";
     public static final String INSUFFICIENT_DEGREES = "충돌이 발생하는 학위";
     public static final String SUFFICIENT_DEGREES = "인정 가능한 학위";
     public static final String COMMIT_RECOMMENDED_DEGREES_DIALOG_TITLE = COMMIT_RECOMMENDED_DEGREES;
     public static final String COMMIT_RECOMMENDED_DEGREES_DIALOG_MESSAGE = "<html><p>다음 학위를 인정하려면 [확인]을 누르세요.</p>%s</html>";
+    public static final String COMMIT_ALL_STUDENT_MESSAGE = "<html><p>모든 학생의 학위를 다시 검사하고 권장 조합으로 인정합니다.</p>" +
+            "<p>이전에 검토된 기록이 있는 학생을 검토에서 제외할까요?</p></html>";
 
     public static final String COMMITTED_DEGREE_LIST = "인정한 학위 목록";
     public static final String DECOMMIT_DEGREE = "인정 취소하기";

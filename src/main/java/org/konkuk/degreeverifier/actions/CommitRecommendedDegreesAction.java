@@ -6,6 +6,7 @@ import org.konkuk.degreeverifier.business.student.Student;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import static org.konkuk.degreeverifier.ui.Strings.*;
 
@@ -14,9 +15,10 @@ public class CommitRecommendedDegreesAction extends AbstractAction {
 
     public CommitRecommendedDegreesAction() {
         putValue(NAME, COMMIT_RECOMMENDED_DEGREES);
-        putValue(SHORT_DESCRIPTION, COMMIT_RECOMMENDED_DEGREES);
+        putValue(SHORT_DESCRIPTION, COMMIT_RECOMMENDED_DEGREES + " (F3)");
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/done_all_icon.svg", getClass().getClassLoader()));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
 
         setEnabled(appModel.getCommittingStudent() != null && appModel.getCommittingStudent().isVerified());
 

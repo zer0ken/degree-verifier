@@ -1,18 +1,15 @@
 package org.konkuk.degreeverifier.components.menubar;
 
-import org.konkuk.degreeverifier.components.menubar.studentnavigator.StudentNavigator;
-
 import javax.swing.*;
-import java.awt.*;
 
 public class MenuBar extends JMenuBar {
     public MenuBar() {
         add(new FileMenu());
         add(new VerifyMenu());
+        add(new CommitMenu());
 
-        add(Box.createGlue());
-        add(new StudentNavigator());
-        add(Box.createGlue());
+        add(Box.createHorizontalStrut(30));
+        add(new QuickToolbar());
     }
 
     public JButton add(Action action) {

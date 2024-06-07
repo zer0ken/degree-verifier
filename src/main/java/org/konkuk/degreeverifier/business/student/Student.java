@@ -49,14 +49,8 @@ public class Student extends LinkedHashSet<Lecture> {
         if (!directory.exists()) {
             directory.mkdir();
         }
-        File exportDirectory = new File(getExportDirectoryPath());
-        if (!exportDirectory.exists()) {
-            exportDirectory.mkdir();
-        } else if(exportDirectory.listFiles().length != 0) {
-            lastExported = Arrays.stream(exportDirectory.listFiles())
-                    .sorted((f1, f2) -> f2.getName().substring(8).compareTo(f1.getName().substring(8)))
-                    .collect(Collectors.toList()).get(0);
-        }
+
+        fetchLastExportedFile();
 
         File[] transcripts = directory.listFiles();
         if (transcripts == null) {
@@ -82,6 +76,17 @@ public class Student extends LinkedHashSet<Lecture> {
         }
         loaded = true;
         tracker.finish();
+    }
+
+    private void fetchLastExportedFile() {
+        File exportDirectory = new File(getExportDirectoryPath());
+        if (!exportDirectory.exists()) {
+            exportDirectory.mkdir();
+        } else if (exportDirectory.listFiles().length != 0) {
+            lastExported = Arrays.stream(exportDirectory.listFiles())
+                    .sorted((f1, f2) -> f2.getName().substring(8).compareTo(f1.getName().substring(8)))
+                    .collect(Collectors.toList()).get(0);
+        }
     }
 
     synchronized public void setVerifiedSnapshotBundles(List<SnapshotBundle> verifiedSnapshotBundles) {
@@ -187,11 +192,14 @@ public class Student extends LinkedHashSet<Lecture> {
 
     public void exportCommit(boolean manually) {
         ProgressTracker tracker = new ProgressTracker(String.format(EXPORTING_COMMIT_MESSAGE, this));
-        lastExported = manually
-                ? new File(getManualExportFilePath())
-                : lastExported.getName().startsWith("자동 저장")
-                ? lastExported
-                : new File(getAutoExportFilePath());
+
+        fetchLastExportedFile();
+
+        if (manually || lastExported == null || !lastExported.getName().startsWith("자동 저장")) {
+            lastExported = new File(
+                    manually ? getManualExportFilePath() : getAutoExportFilePath()
+            );
+        }
         FileUtil.exportCommit(lastExported.getAbsolutePath(), getCommittedDegrees().keySet().stream().reduce("", (acc, str) -> acc + str + "\n"));
         tracker.finish();
     }
@@ -240,6 +248,14 @@ public class Student extends LinkedHashSet<Lecture> {
 
     public String getDirectoryName() {
         return directoryName;
+    }
+
+    public boolean hasCommitFile() {
+        if (lastExported != null && lastExported.exists()) {
+            return true;
+        }
+        lastExported = null;
+        return false;
     }
 
     @Override

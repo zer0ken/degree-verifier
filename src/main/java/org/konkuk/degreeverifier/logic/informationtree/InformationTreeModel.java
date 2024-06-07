@@ -38,7 +38,7 @@ public class InformationTreeModel extends DefaultTreeModel {
             }
             DefaultMutableTreeNode degreeNode = new DefaultMutableTreeNode(selectedDegree);
             DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode(
-                    "인정 기준: " + selectedDegree.criteria.minimumCredit + " 학점 이상 교과목 이수"
+                    "필요 학점: " + selectedDegree.criteria.minimumCredit + " 학점 이상"
             );
             degreeNode.add(minimumCreditNode);
 

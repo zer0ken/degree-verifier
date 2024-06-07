@@ -19,7 +19,6 @@ public class InformationPanel extends JPanel {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane);
         add(new InformationToolbar(tree), BorderLayout.NORTH);
     }

@@ -21,6 +21,7 @@ public class LectureListPanel extends JPanel {
                 VERTICAL_SCROLLBAR_AS_NEEDED,
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         add(new LectureListToolbar(), BorderLayout.NORTH);
         add(scrollPane);

@@ -1,9 +1,7 @@
 package org.konkuk.degreeverifier.components.studentlist;
 
 import org.konkuk.degreeverifier.business.student.Student;
-import org.konkuk.degreeverifier.logic.studentlist.StudentListModel;
-import org.konkuk.degreeverifier.logic.studentlist.StudentListMouseAdapter;
-import org.konkuk.degreeverifier.logic.studentlist.StudentListSelectionListener;
+import org.konkuk.degreeverifier.logic.studentlist.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,15 +19,17 @@ public class StudentListPanel extends JPanel {
         JList<Student> list = new JList<>(new StudentListModel());
         list.setComponentPopupMenu(new StudentListPopupMenu());
         list.addListSelectionListener(new StudentListSelectionListener());
-        list.setBackground(UIManager.getColor("Panel.background"));
+        list.setBackground(UIManager.getColor("RootPane.background"));
         list.addMouseListener(new StudentListMouseAdapter());
+        list.setSelectionModel(new StudentListSelectionModel());
+        list.addFocusListener(new StudentFocusListener());
 
         JScrollPane scrollPane = new JScrollPane(
                 list,
                 VERTICAL_SCROLLBAR_AS_NEEDED,
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+//        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         add(new StudentToolbar(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

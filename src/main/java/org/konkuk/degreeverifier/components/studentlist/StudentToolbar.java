@@ -2,7 +2,7 @@ package org.konkuk.degreeverifier.components.studentlist;
 
 import org.konkuk.degreeverifier.actions.StartCommitAction;
 import org.konkuk.degreeverifier.actions.VerifyStudentAction;
-import org.konkuk.degreeverifier.components.TitledToolbar;
+import org.konkuk.degreeverifier.components.common.TitledToolbar;
 
 import static org.konkuk.degreeverifier.ui.Strings.STUDENT_LIST;
 

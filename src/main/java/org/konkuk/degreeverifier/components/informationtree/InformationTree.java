@@ -12,7 +12,7 @@ public class InformationTree extends JTree {
 
     public InformationTree() {
         super();
-        setBackground(UIManager.getColor("Panel.background"));
+        setBackground(UIManager.getColor("RootPane.background"));
         setRootVisible(false);
         setModel(new InformationTreeModel(this));
         setCellRenderer(new InformationTreeCellRenderer());

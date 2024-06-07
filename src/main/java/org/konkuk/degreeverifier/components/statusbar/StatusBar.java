@@ -30,13 +30,7 @@ public class StatusBar extends JPanel {
         add(inner);
 
         // add here
-
-        left.add(new JButton("test"));
-        left.add(new JSeparator(JSeparator.VERTICAL));
-        left.add(new JButton("test"));
-        left.add(new JButton("test"));
-        left.add(new JButton("test"));
-
+        // left.add
         right.add(new ProgressStatusPanel(), 0);
     }
 }

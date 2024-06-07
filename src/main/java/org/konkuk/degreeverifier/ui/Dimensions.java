@@ -32,4 +32,7 @@ public class Dimensions {
     public static final int PROGRESS_BAR_LEFT_GAP = 8;
 
     public static final int ITEM_ICON_SIZE = 16;
+
+    public static final Dimension QUICK_TOOLBAR_BUTTON_SIZE = new Dimension(32, 32);
+    public static final float QUICK_TOOLBAR_ICON_SCALE = 0.8f;
 }
