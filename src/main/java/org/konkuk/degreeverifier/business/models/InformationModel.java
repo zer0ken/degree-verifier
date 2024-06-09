@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.VerifiedDegreeListItem;
+import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.ListItem;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,9 +29,9 @@ public class InformationModel extends Observable {
             for (Object target : targets) {
                 informationTargets.add(((DegreeSnapshot) target));
             }
-        } else if (targets.get(0) instanceof VerifiedDegreeListItem) {
+        } else if (targets.get(0) instanceof ListItem) {
             for (Object target : targets) {
-                VerifiedDegreeListItem item = (VerifiedDegreeListItem) target;
+                ListItem item = (ListItem) target;
                 if(item.getDegreeSnapshot() != null) {
                     informationTargets.add(item.getDegreeSnapshot());
                 }

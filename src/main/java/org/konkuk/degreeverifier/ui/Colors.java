@@ -15,10 +15,14 @@ public class Colors {
 
     public static final Color SUFFICIENT_SEPARATOR_FOREGROUND = COMMON_GREEN;
     public static final Color INSUFFICIENT_SEPARATOR_FOREGROUND = COMMON_RED;
+    public static final Color NOT_VERIFIED_SEPARATOR_FOREGROUND = COMMON_GRAY;
 
-    public static final Color INSUFFICIENT_DEGREE_FOREGROUND = COMMON_GRAY;
+    public static final Color INSUFFICIENT_DEGREE_FOREGROUND = COMMON_RED;
+    public static final Color NOT_VERIFIED_DEGREE_FOREGROUND = COMMON_GRAY;
 
-    public static final Color PRUNED_NODE_FOREGROUND = COMMON_GRAY;
+    public static final Color INFORMATION_INSUFFICIENT_ROOT_NODE_FOREGROUND = COMMON_RED;
+
+    public static final Color NOT_PASSED_NODE_FOREGROUND = COMMON_GRAY;
     public static final Color DUPLICATED_NODE_FOREGROUND = COMMON_ORANGE;
-    public static final Color VERIFIED_NODE_FOREGROUND = COMMON_GREEN;
+    public static final Color PASSED_NODE_FOREGROUND = COMMON_GREEN;
 }

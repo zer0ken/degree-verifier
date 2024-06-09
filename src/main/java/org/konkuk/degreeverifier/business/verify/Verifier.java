@@ -75,7 +75,46 @@ public class Verifier extends LinkedList<DegreeVerifier> {
         }
 
         // 3. Finish
+        Map<String, List<DegreeSnapshot>> flattened = new LinkedHashMap<>();
+        for (SnapshotBundle bundle : snapshotBundles) {
+            for (DegreeSnapshot degreeInBundle : bundle.values()) {
+                if (!flattened.containsKey(degreeInBundle.toString())) {
+                    flattened.put(degreeInBundle.toString(), new LinkedList<>());
+                }
+                flattened.get(degreeInBundle.toString()).add(degreeInBundle);
+            }
+        }
+        for (SnapshotBundle bundle : snapshotBundles) {
+            for (DegreeSnapshot degreeInBundle : bundle.values()) {
+                for (DegreeSnapshot sufficientDegree : flattened.get(degreeInBundle.toString())) {
+                    sufficientDegree.sufficientDegrees.addAll(bundle.keySet());
+                }
+            }
+        }
+        for (List<DegreeSnapshot> groupedSnapshots : flattened.values()) {
+            DegreeSnapshot degree = groupedSnapshots.get(0);
+            Set<String> insufficientDegrees = new LinkedHashSet<>(flattened.keySet());
+            insufficientDegrees.removeAll(degree.sufficientDegrees);
+            for (DegreeSnapshot degreeSnapshot : groupedSnapshots) {
+                degreeSnapshot.insufficientDegrees.addAll(insufficientDegrees);
+            }
+        }
+
         student.setVerifiedSnapshotBundles(snapshotBundles);
+
+        SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
+        for (List<LectureVerifier> value : groupedExclusiveVerifiers.values()) {
+            for (LectureVerifier lectureVerifier : value) {
+                lectureVerifier.hold();
+            }
+        }
+        for (DegreeVerifier degreeVerifier : this) {
+            if (snapshotBundles.stream().noneMatch(snapshotBundle -> snapshotBundle.containsKey(degreeVerifier.degreeName))) {
+                notVerifiedDegrees.put(degreeVerifier.degreeName, (DegreeSnapshot) degreeVerifier.takeSnapshot());
+            }
+        }
+        student.setNotVerifiedDegrees(notVerifiedDegrees);
+
         tracker.finish();
     }
 
