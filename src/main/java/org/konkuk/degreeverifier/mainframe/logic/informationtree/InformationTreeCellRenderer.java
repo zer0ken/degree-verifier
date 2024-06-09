@@ -41,6 +41,7 @@ public class InformationTreeCellRenderer extends DefaultTreeCellRenderer {
                 } else {
                     component.setForeground(PASSED_NODE_FOREGROUND);
                 }
+                setIcon("icons/rule_icon.svg", component.getForeground());
             }
         } else if (data instanceof InsufficientRootNode) {
             component.setForeground(INFORMATION_INSUFFICIENT_ROOT_NODE_FOREGROUND);
