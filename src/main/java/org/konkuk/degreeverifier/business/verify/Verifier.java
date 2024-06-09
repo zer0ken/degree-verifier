@@ -5,7 +5,7 @@ import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.business.verify.verifier.LectureVerifier;
-import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
+import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.util.*;
 

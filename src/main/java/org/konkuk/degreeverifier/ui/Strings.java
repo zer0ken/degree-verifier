@@ -1,9 +1,10 @@
 package org.konkuk.degreeverifier.ui;
 
 public class Strings {
-    public static final String APP_TITLE = "이수 판정 SW";
+    /** MainFrame */
+    public static final String MAIN_FRAME_TITLE = "이수 판정 SW";
 
-    public static final String COMMITTING_TITLE = APP_TITLE + " / 검토중 - %s";
+    public static final String COMMITTING_TITLE = MAIN_FRAME_TITLE + " / 검토중 - %s";
     public static final String FILE_MENU = "파일";
     public static final String VERIFY_MENU = "검사";
     public static final String COMMIT_MENU = "검토";
@@ -20,7 +21,7 @@ public class Strings {
 
     public static final String LOAD_VERIFIER_LIST = "검사 기준 불러오기";
 
-    public static final String STUDENT_LIST = "학생 목록";
+    public static final String STUDENT_LIST = "학생";
     public static final String VERIFY_STUDENT = "학위 검사하기";
     public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 검사하기";
     public static final String START_COMMIT = "검토 시작하기";
@@ -40,7 +41,7 @@ public class Strings {
             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
             "\\ / : * ? \" &lt; > | -</html>";
 
-    public static final String VERIFIED_DEGREE_LIST = "검사한 학위 목록";
+    public static final String VERIFIED_DEGREE_LIST = "검사한 학위";
     public static final String COMMIT_VERIFIED_DEGREE = "인정하기";
     public static final String COMMIT_RECOMMENDED_DEGREES = "권장 조합으로 인정하기";
     public static final String COMMIT_ALL_STUDENT = "모든 학생 권장 조합으로 인정하기";
@@ -52,7 +53,7 @@ public class Strings {
     public static final String COMMIT_ALL_STUDENT_MESSAGE = "<html><p>모든 학생의 학위를 다시 검사하고 권장 조합으로 인정합니다.</p>" +
             "<p>이전에 검토된 기록이 있는 학생을 검토에서 제외할까요?</p></html>";
 
-    public static final String COMMITTED_DEGREE_LIST = "인정한 학위 목록";
+    public static final String COMMITTED_DEGREE_LIST = "인정한 학위";
     public static final String DECOMMIT_DEGREE = "인정 취소하기";
     public static final String CLEAR_COMMITTED_DEGREE = "인정한 학위 초기화하기";
     public static final String EXPORT_COMMITTED_DEGREE = "인정한 학위 저장하기";
@@ -63,7 +64,17 @@ public class Strings {
     public static final String LECTURE_LIST = "수강 내역";
     public static final String OPEN_LECTURE_DIRECTORY = "수강 내역 위치 열기";
 
-    public static final String INFORMATION = "자세한 정보";
+    public static final String INFORMATION = "자세히 보기";
     public static final String FOLD_INFORMATION_TREE = "한 단계 접기";
     public static final String UNFOLD_INFORMATION_TREE = "한 단계 펼치기";
+
+    /** EditorFrame */
+    public static final String EDIT_FRAME_TITLE = "학위 검사 기준 수정";
+    
+    public static final String APPLY_EDIT = "변경사항 적용하기";
+    public static final String CANCEL_EDIT = "변경사항 취소하기";
+
+    public static final String VERIFIER_TREE = "자세히 보기";
+
+    public static final String VERIFIER_LIST = "학위 검사 기준";
 }

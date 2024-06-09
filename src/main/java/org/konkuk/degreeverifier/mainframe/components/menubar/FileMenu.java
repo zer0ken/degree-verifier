@@ -1,0 +1,19 @@
+package org.konkuk.degreeverifier.mainframe.components.menubar;
+
+import org.konkuk.degreeverifier.common.components.ActionMenu;
+import org.konkuk.degreeverifier.mainframe.actions.*;
+
+import static org.konkuk.degreeverifier.ui.Strings.FILE_MENU;
+
+public class FileMenu extends ActionMenu {
+    public FileMenu() {
+        super(FILE_MENU);
+
+        add(new LoadStudentListAction());
+        add(new LoadVerifierAction());
+        addSeparator();
+        add(new OpenStudentDirectoryAction());
+        add(new OpenVerifierDirectoryAction());
+        add(new OpenExportDirectoryAction());
+    }
+}
