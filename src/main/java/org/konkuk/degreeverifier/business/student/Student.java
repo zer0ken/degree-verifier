@@ -4,7 +4,7 @@ import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
+import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

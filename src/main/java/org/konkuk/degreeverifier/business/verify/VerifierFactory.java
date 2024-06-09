@@ -4,7 +4,7 @@ import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
-import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
+import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -12,6 +12,15 @@ import java.util.LinkedList;
 import static org.konkuk.degreeverifier.ui.Strings.VERIFIER_LOADING_MESSAGE;
 
 public class VerifierFactory extends LinkedList<DegreeVerifier> {
+    private static final VerifierFactory instance = new VerifierFactory();
+
+    protected VerifierFactory() {
+    }
+
+    public static VerifierFactory getInstance() {
+        return instance;
+    }
+
     private boolean isLoaded = false;
 
     synchronized public void loadAllVerifiers() {

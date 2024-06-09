@@ -5,20 +5,18 @@ import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class VerifierFactoryTest {
-    VerifierFactory verifierFactory = new VerifierFactory();
-
+class VerifierFactoryTest extends VerifierFactory {
     @Test
     void not_loaded_VerifierFactory() {
-        assertFalse(verifierFactory.isLoaded());
-        assertTrue(verifierFactory.isEmpty());
+        assertFalse(isLoaded());
+        assertTrue(isEmpty());
     }
 
     @Test
     void loaded_VerifierFactory() {
-        verifierFactory.loadAllVerifiers();
+        loadAllVerifiers();
 
-        assertTrue(verifierFactory.isLoaded());
-        assertEquals(11, verifierFactory.size());
+        assertTrue(isLoaded());
+        assertEquals(11, size());
     }
 }

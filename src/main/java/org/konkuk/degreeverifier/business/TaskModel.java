@@ -1,6 +1,6 @@
 package org.konkuk.degreeverifier.business;
 
-import org.konkuk.degreeverifier.logic.statusbar.ProgressTracker;
+import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import javax.swing.*;
 import java.util.*;
