@@ -1,27 +1,18 @@
-package org.konkuk.degreeverifier.mainframe.components.verifiedlist.items;
+package org.konkuk.degreeverifier.mainframe.components.verifiedlist.separators;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static org.konkuk.degreeverifier.ui.Colors.SUFFICIENT_SEPARATOR_FOREGROUND;
-import static org.konkuk.degreeverifier.ui.Strings.SUFFICIENT_DEGREES;
-
-public class VerifiedDegreeListSufficientSeparatorCell extends JPanel {
-    public VerifiedDegreeListSufficientSeparatorCell() {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBackground(UIManager.getColor("List.background"));
-        setForeground(SUFFICIENT_SEPARATOR_FOREGROUND);
-        setBorder(new EmptyBorder(3, 16, 3, 16));
-
+public class SeparatorCell extends JPanel {
+    protected void setText(String text) {
         addSeparator();
         add(Box.createHorizontalStrut(8));
-        addLabel();
+        addLabel(text);
         add(Box.createHorizontalStrut(8));
         addSeparator();
     }
 
-    private void addSeparator(){
+    protected void addSeparator(){
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setForeground(getForeground());
 
@@ -35,8 +26,8 @@ public class VerifiedDegreeListSufficientSeparatorCell extends JPanel {
         add(panel);
     }
 
-    private void addLabel(){
-        JLabel label = new JLabel(SUFFICIENT_DEGREES);
+    private void addLabel(String text){
+        JLabel label = new JLabel(text);
         label.setForeground(getForeground());
         label.setAlignmentY(CENTER_ALIGNMENT);
         add(label);

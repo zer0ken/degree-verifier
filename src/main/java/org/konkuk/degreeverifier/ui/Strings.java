@@ -48,6 +48,7 @@ public class Strings {
     public static final String OPEN_VERIFIER_DIRECTORY = "검사 기준 위치 열기";
     public static final String INSUFFICIENT_DEGREES = "충돌이 발생하는 학위";
     public static final String SUFFICIENT_DEGREES = "인정 가능한 학위";
+    public static final String NOT_VERIFIED_DEGREES = "조건을 만족하지 못한 학위";
     public static final String COMMIT_RECOMMENDED_DEGREES_DIALOG_TITLE = COMMIT_RECOMMENDED_DEGREES;
     public static final String COMMIT_RECOMMENDED_DEGREES_DIALOG_MESSAGE = "<html><p>다음 학위를 인정하려면 [확인]을 누르세요.</p>%s</html>";
     public static final String COMMIT_ALL_STUDENT_MESSAGE = "<html><p>모든 학생의 학위를 다시 검사하고 권장 조합으로 인정합니다.</p>" +

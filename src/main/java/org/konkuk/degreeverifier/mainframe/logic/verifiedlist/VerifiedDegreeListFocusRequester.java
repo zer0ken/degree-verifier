@@ -1,14 +1,14 @@
 package org.konkuk.degreeverifier.mainframe.logic.verifiedlist;
 
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.VerifiedDegreeListItem;
+import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.ListItem;
 
 import javax.swing.*;
 
 public class VerifiedDegreeListFocusRequester {
     private final AppModel appModel = AppModel.getInstance();
 
-    public VerifiedDegreeListFocusRequester(JList<VerifiedDegreeListItem> list) {
+    public VerifiedDegreeListFocusRequester(JList<ListItem> list) {
         appModel.observe(AppModel.On.COMMIT_STARTED, (student) -> list.requestFocus());
     }
 }

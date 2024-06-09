@@ -2,10 +2,10 @@ package org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items;
 
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 
-public abstract class VerifiedDegreeListItem {
+public abstract class ListItem {
     private final DegreeSnapshot degreeSnapshot;
 
-    public VerifiedDegreeListItem(DegreeSnapshot degreeSnapshot) {
+    public ListItem(DegreeSnapshot degreeSnapshot) {
         this.degreeSnapshot = degreeSnapshot;
     }
 

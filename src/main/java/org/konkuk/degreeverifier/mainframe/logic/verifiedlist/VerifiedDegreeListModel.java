@@ -6,7 +6,7 @@ import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.*;
 
 import javax.swing.*;
 
-public class VerifiedDegreeListModel extends DefaultListModel<VerifiedDegreeListItem> {
+public class VerifiedDegreeListModel extends DefaultListModel<ListItem> {
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListModel() {
@@ -23,14 +23,19 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifiedDegreeList
     private void updateTree(Student student) {
         removeAllElements();
         if (!student.getSufficientDegrees().isEmpty()){
-            addElement(new VerifiedDegreeListSufficientSeparatorItem());
+            addElement(new SufficientSeparatorItem());
         }
         student.getSufficientDegrees().values()
-                .forEach(element -> addElement(new VerifiedDegreeListSufficientItem(element)));
+                .forEach(element -> addElement(new SufficientItem(element)));
         if (!student.getInsufficientDegrees().isEmpty()) {
-            addElement(new VerifiedDegreeListInsufficientSeparatorItem());
+            addElement(new InsufficientSeparatorItem());
             student.getInsufficientDegrees().values()
-                    .forEach(element -> addElement(new VerifiedDegreeListInsufficientItem(element)));
+                    .forEach(element -> addElement(new InsufficientItem(element)));
+        }
+        if (!student.getNotVerifiedDegrees().isEmpty()) {
+            addElement(new NotVerifiedSeparatorItem());
+            student.getNotVerifiedDegrees().values()
+                    .forEach(element -> addElement(new NotVerifiedItem(element)));
         }
     }
 }

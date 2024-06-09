@@ -4,6 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
+import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.InsufficientRootNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -27,21 +28,23 @@ public class InformationTreeCellRenderer extends DefaultTreeCellRenderer {
             if (recursive.lectureSnapshot != null) {
                 LectureSnapshot lecture = recursive.lectureSnapshot;
                 if (lecture.matched == null) {
-                    component.setForeground(PRUNED_NODE_FOREGROUND);
+                    component.setForeground(NOT_PASSED_NODE_FOREGROUND);
                 } else if (lecture.duplicatedDegrees.length > 0) {
                     component.setForeground(DUPLICATED_NODE_FOREGROUND);
                 } else {
-                    component.setForeground(VERIFIED_NODE_FOREGROUND);
+                    component.setForeground(PASSED_NODE_FOREGROUND);
                 }
                 setIcon("icons/book_icon.svg", component.getForeground());
             } else {
                 if (!recursive.verified) {
-                    component.setForeground(PRUNED_NODE_FOREGROUND);
+                    component.setForeground(NOT_PASSED_NODE_FOREGROUND);
                 } else {
-                    component.setForeground(VERIFIED_NODE_FOREGROUND);
+                    component.setForeground(PASSED_NODE_FOREGROUND);
                 }
-                setIcon("icons/rule_icon.svg", component.getForeground());
             }
+        } else if (data instanceof InsufficientRootNode) {
+            component.setForeground(INFORMATION_INSUFFICIENT_ROOT_NODE_FOREGROUND);
+            setIcon("icons/warning_icon.svg", component.getForeground());
         }
         return component;
     }

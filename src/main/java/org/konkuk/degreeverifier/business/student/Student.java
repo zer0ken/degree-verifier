@@ -26,6 +26,7 @@ public class Student extends LinkedHashSet<Lecture> {
     private final SnapshotBundle committedDegrees = new SnapshotBundle();
     private final SnapshotBundle sufficientDegrees = new SnapshotBundle();
     private final SnapshotBundle insufficientDegrees = new SnapshotBundle();
+    private final SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
 
     private File lastExported = null;
 
@@ -95,6 +96,11 @@ public class Student extends LinkedHashSet<Lecture> {
         verified = true;
         committedDegrees.clear();
         updateSufficientInsufficientDegrees();
+    }
+
+    synchronized public void setNotVerifiedDegrees(SnapshotBundle notVerifiedDegrees) {
+        this.notVerifiedDegrees.clear();
+        this.notVerifiedDegrees.putAll(notVerifiedDegrees);
     }
 
     synchronized public void commitAll(Collection<DegreeSnapshot> degrees) {
@@ -236,6 +242,10 @@ public class Student extends LinkedHashSet<Lecture> {
 
     public SnapshotBundle getInsufficientDegrees() {
         return insufficientDegrees;
+    }
+
+    public SnapshotBundle getNotVerifiedDegrees() {
+        return notVerifiedDegrees;
     }
 
     public boolean isLoaded() {

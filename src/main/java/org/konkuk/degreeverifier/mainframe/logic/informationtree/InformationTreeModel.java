@@ -5,6 +5,7 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.mainframe.components.informationtree.InformationTree;
+import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.InsufficientRootNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -41,6 +42,14 @@ public class InformationTreeModel extends DefaultTreeModel {
                     "필요 학점: " + selectedDegree.criteria.minimumCredit + " 학점 이상"
             );
             degreeNode.add(minimumCreditNode);
+
+            if (!selectedDegree.insufficientDegrees.isEmpty()) {
+                DefaultMutableTreeNode insufficientRootNode = new DefaultMutableTreeNode(new InsufficientRootNode());
+                for (String insufficientDegree : selectedDegree.insufficientDegrees) {
+                    insufficientRootNode.add(new DefaultMutableTreeNode(insufficientDegree));
+                }
+                degreeNode.add(insufficientRootNode);
+            }
 
             addNode(degreeNode, selectedDegree.recursiveSnapshot);
             root.add(degreeNode);

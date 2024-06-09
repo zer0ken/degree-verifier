@@ -1,8 +1,8 @@
 package org.konkuk.degreeverifier.mainframe.logic.verifiedlist;
 
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.VerifiedDegreeListItem;
-import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.VerifiedDegreeListSeparatorItem;
+import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.ListItem;
+import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.SeparatorItem;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,18 +18,18 @@ public class VerifiedDegreeListSelectionListener implements ListSelectionListene
         if (e.getValueIsAdjusting()) {
             return;
         }
-        JList<VerifiedDegreeListItem> list = (JList<VerifiedDegreeListItem>) e.getSource();
+        JList<ListItem> list = (JList<ListItem>) e.getSource();
 
-        if (list.getSelectedValuesList().stream().anyMatch(item -> item instanceof VerifiedDegreeListSeparatorItem)) {
+        if (list.getSelectedValuesList().stream().anyMatch(item -> item instanceof SeparatorItem)) {
             list.setSelectedIndices(Arrays.stream(list.getSelectedIndices())
-                    .filter(i -> !(list.getModel().getElementAt(i) instanceof VerifiedDegreeListSeparatorItem))
+                    .filter(i -> !(list.getModel().getElementAt(i) instanceof SeparatorItem))
                     .toArray()
             );
             return;
         }
 
         appModel.setSelectedVerifiedDegree(list.getSelectedValuesList().stream()
-                .map(VerifiedDegreeListItem::getDegreeSnapshot)
+                .map(ListItem::getDegreeSnapshot)
                 .collect(Collectors.toList())
         );
     }
