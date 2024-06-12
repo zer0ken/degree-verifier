@@ -1,0 +1,117 @@
+{
+  "degree_name": "화학공학",
+  "min_credit": 9,
+  "criteria": {
+    "label": "전문 과목",
+    "important": false,
+    "all": false,
+    "min": 1,
+    "max": 3,
+    "subcriteria": [
+      {
+        "label": "유기화학",
+        "important": false,
+        "lecture": {
+          "name": "유기화학 I",
+          "min_grade": "B+",
+          "non_exclusive": true,
+          "from_year": 2021,
+          "from_semester": 1,
+          "to_year": 2023,
+          "to_semester": 2
+        },
+        "all": false,
+        "min": 1,
+        "max": null,
+        "subcriteria": [
+          {
+            "label": "실험",
+            "important": true,
+            "lecture": {
+              "name": "유기화학 실험",
+              "min_grade": "B",
+              "non_exclusive": true,
+              "from_year": 2021,
+              "from_semester": 1,
+              "to_year": 2023,
+              "to_semester": 2
+            },
+            "all": false,
+            "min": 1,
+            "max": null,
+            "subcriteria": []
+          },
+          {
+            "label": "고급 주제",
+            "important": false,
+            "lecture": {
+              "name": "고급 유기화학",
+              "min_grade": "B+",
+              "non_exclusive": true,
+              "from_year": 2022,
+              "from_semester": 1,
+              "to_year": 2024,
+              "to_semester": 2
+            },
+            "all": false,
+            "min": 1,
+            "max": null,
+            "subcriteria": []
+          }
+        ]
+      },
+      {
+        "label": "물리화학",
+        "important": false,
+        "lecture": {
+          "name": "물리화학 I",
+          "min_grade": "B",
+          "non_exclusive": false,
+          "from_year": 2020,
+          "from_semester": 1,
+          "to_year": 2023,
+          "to_semester": 2
+        },
+        "all": false,
+        "min": 1,
+        "max": null,
+        "subcriteria": [
+          {
+            "label": "양자 역학",
+            "important": true,
+            "lecture": {
+              "name": "양자 역학",
+              "min_grade": "B-",
+              "non_exclusive": true,
+              "from_year": 2021,
+              "from_semester": 2,
+              "to_year": 2024,
+              "to_semester": 2
+            },
+            "all": false,
+            "min": 1,
+            "max": null,
+            "subcriteria": []
+          },
+          {
+            "label": "열역학",
+            "important": false,
+            "lecture": {
+              "name": "열역학",
+              "min_grade": "B",
+              "non_exclusive": true,
+              "from_year": 2020,
+              "from_semester": 1,
+              "to_year": 2023,
+              "to_semester": 2
+            },
+            "all": false,
+            "min": 1,
+            "max": null,
+            "subcriteria": []
+          }
+        ]
+      }
+    ]
+  }
+}
