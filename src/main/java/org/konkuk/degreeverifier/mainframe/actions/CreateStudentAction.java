@@ -25,14 +25,14 @@ public class CreateStudentAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String directoryName = getStudentDirectoryName();
+        String directoryName = getStudentDirectoryName(e);
         if (directoryName == null) {
             return;
         }
         appModel.addStudent(directoryName);
     }
 
-    private String getStudentDirectoryName() {
+    private String getStudentDirectoryName(ActionEvent e) {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -98,7 +98,7 @@ public class CreateStudentAction extends AbstractAction {
         idField.getDocument().addDocumentListener(listener);
         nameField.getDocument().addDocumentListener(listener);
 
-        int result = JOptionPane.showConfirmDialog(null, panel, CREATE_STUDENT, JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog((Component) e.getSource(), panel, CREATE_STUDENT, JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             return STUDENTS_PATH + "\\" + idField.getText() + " - " + nameField.getText();
         }

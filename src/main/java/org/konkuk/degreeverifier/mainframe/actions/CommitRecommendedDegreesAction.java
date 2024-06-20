@@ -5,6 +5,7 @@ import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.business.student.Student;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -33,7 +34,7 @@ public class CommitRecommendedDegreesAction extends AbstractAction {
             list += "<li>" + s + "</li>";
         }
         list += "</ul>";
-        int confirm = JOptionPane.showConfirmDialog(null,
+        int confirm = JOptionPane.showConfirmDialog((Component) e.getSource(),
                 String.format(COMMIT_RECOMMENDED_DEGREES_DIALOG_MESSAGE, list), COMMIT_RECOMMENDED_DEGREES_DIALOG_TITLE,
                 JOptionPane.OK_CANCEL_OPTION);
         if (confirm == JOptionPane.OK_OPTION) {

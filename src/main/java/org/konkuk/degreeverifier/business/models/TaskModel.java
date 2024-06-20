@@ -1,4 +1,4 @@
-package org.konkuk.degreeverifier.business;
+package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 

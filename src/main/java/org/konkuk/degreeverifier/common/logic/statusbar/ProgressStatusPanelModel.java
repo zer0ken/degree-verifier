@@ -1,6 +1,6 @@
 package org.konkuk.degreeverifier.common.logic.statusbar;
 
-import org.konkuk.degreeverifier.business.TaskModel;
+import org.konkuk.degreeverifier.business.models.TaskModel;
 import org.konkuk.degreeverifier.common.components.statusbar.ProgressStatusPanel;
 
 import javax.swing.*;
