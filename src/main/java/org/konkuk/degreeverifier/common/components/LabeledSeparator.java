@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static org.konkuk.degreeverifier.ui.Borders.LABELED_SEPARATOR_BORDER;
+import static org.konkuk.degreeverifier.ui.Borders.LABELED_SEPARATOR_BORDER2;
 import static org.konkuk.degreeverifier.ui.Dimensions.MAXIMUM_LABELED_SEPARATOR_SIZE;
 
 public class LabeledSeparator extends JPanel {
@@ -13,36 +14,42 @@ public class LabeledSeparator extends JPanel {
         setMaximumSize(MAXIMUM_LABELED_SEPARATOR_SIZE);
     }
 
-    public LabeledSeparator(String text){
+    public LabeledSeparator(String text) {
         this();
+        setBorder(LABELED_SEPARATOR_BORDER2);
+        setForeground(UIManager.getColor("Separator.foreground"));
 
-        add(Box.createHorizontalStrut(8));
         addLabel(text);
         add(Box.createHorizontalStrut(8));
         addSeparator();
     }
 
-    public LabeledSeparator(String text, Color foreground, Color background){
+    public LabeledSeparator(String text, Color foreground, Color background) {
         this();
         setForeground(foreground);
         setBackground(background);
 
         addSeparator();
         add(Box.createHorizontalStrut(8));
-        addLabel(text);
+        addLabel(text, getForeground());
         add(Box.createHorizontalStrut(8));
         addSeparator();
     }
 
-    protected void addSeparator(){
+    protected void addSeparator() {
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setForeground(getForeground());
         addCenter(separator);
     }
 
-    private void addLabel(String text){
+    private void addLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setForeground(getForeground());
+        add(label);
+    }
+
+    private void addLabel(String text, Color foreground) {
+        JLabel label = new JLabel(text);
+        label.setForeground(foreground);
         add(label);
     }
 
