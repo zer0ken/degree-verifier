@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.editorframe.components;
 
 import org.konkuk.degreeverifier.editorframe.components.editpanel.EditPanel;
+import org.konkuk.degreeverifier.editorframe.components.editpanel.EditPanel_;
 import org.konkuk.degreeverifier.editorframe.components.verifierlist.VerifierListPanel;
 import org.konkuk.degreeverifier.editorframe.components.verifiertree.VerifierTreePanel;
 
@@ -11,8 +12,11 @@ public class SplitPanel extends JPanel {
     public SplitPanel() {
         setLayout(new BorderLayout());
 
+        JPanel inner = new JPanel(new BorderLayout());
+        inner.add(new EditPanel_(), BorderLayout.NORTH);
+
         JScrollPane scrollPane = new JScrollPane(
-                new EditPanel(),
+                inner,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );

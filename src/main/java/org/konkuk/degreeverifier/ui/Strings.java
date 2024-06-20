@@ -78,4 +78,7 @@ public class Strings {
     public static final String VERIFIER_TREE = "자세히 보기";
 
     public static final String VERIFIER_LIST = "학위 검사 기준";
+
+    public static final String LECTURE_VERIFIER = "교과목 검사";
+    public static final String CRITERIA_VERIFIER = "검사 그룹";
 }
