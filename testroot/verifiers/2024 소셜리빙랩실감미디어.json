@@ -1,0 +1,14 @@
+{
+  "degree_name": "2024 소셜리빙랩실감미디어",
+  "min_credit": 9,
+  "criteria": {
+    "subcriteria": [
+      {"lecture": {"name": "리빙랩디자인"}},
+      {"lecture": {"name": "기술융합과공유가치창출"}},
+      {"lecture": {"name": "소셜벤처디자인"}},
+      {"lecture": {"name": "소셜비즈니스"}},
+      {"lecture": {"name": "효과적인사회문제정의와이이디어"}},
+      {"lecture": {"name": "소셜리빙랩실감미디어PBL"}}
+    ]
+  }
+}
