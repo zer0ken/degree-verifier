@@ -3,7 +3,7 @@ package org.konkuk.degreeverifier.business.verify.criteria;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 이 클래스는 재귀적으로 하위 검사 기준을 가질 수 있는 복잡한 검사 기준의 정의를 나타냅니다.
+ * 이 클래스는 재귀적으로 하위 검사 기준을 가질 수 있는 복잡한 검사 그룹의 정의를 나타냅니다.
  * 이 클래스 객체는 JSON 형식으로 전환될 수 있습니다.
  *
  * @author 이현령

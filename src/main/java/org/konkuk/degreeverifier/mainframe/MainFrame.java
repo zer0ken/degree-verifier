@@ -12,8 +12,8 @@ import org.konkuk.degreeverifier.ui.Themes;
 import javax.swing.*;
 import java.awt.*;
 
-import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_APP_SIZE;
-import static org.konkuk.degreeverifier.ui.Dimensions.PREFERRED_APP_SIZE;
+import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_MAIN_FRAME_SIZE;
+import static org.konkuk.degreeverifier.ui.Dimensions.PREFERRED_MAIN_FRAME_SIZE;
 import static org.konkuk.degreeverifier.ui.Strings.COMMITTING_TITLE;
 import static org.konkuk.degreeverifier.ui.Strings.MAIN_FRAME_TITLE;
 
@@ -21,9 +21,9 @@ public class MainFrame extends DegreeVerifierFrame {
     public MainFrame() {
         super();
         setTitle(MAIN_FRAME_TITLE);
-        setMinimumSize(MINIMUM_APP_SIZE);
-        setPreferredSize(PREFERRED_APP_SIZE);
-        setSize(PREFERRED_APP_SIZE);
+        setMinimumSize(MINIMUM_MAIN_FRAME_SIZE);
+        setPreferredSize(PREFERRED_MAIN_FRAME_SIZE);
+        setSize(PREFERRED_MAIN_FRAME_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 

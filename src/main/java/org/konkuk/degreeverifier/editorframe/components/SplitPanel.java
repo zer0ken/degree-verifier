@@ -11,10 +11,16 @@ public class SplitPanel extends JPanel {
     public SplitPanel() {
         setLayout(new BorderLayout());
 
+        JScrollPane scrollPane = new JScrollPane(
+                new EditPanel(),
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        );
+
         JSplitPane editPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 new VerifierTreePanel(),
-                new EditPanel()
+                scrollPane
         );
         editPane.setResizeWeight(0.5);
 
