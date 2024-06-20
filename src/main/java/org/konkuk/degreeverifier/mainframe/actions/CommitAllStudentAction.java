@@ -4,6 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.models.AppModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -29,7 +30,7 @@ public class CommitAllStudentAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int select = JOptionPane.showConfirmDialog(null,
+        int select = JOptionPane.showConfirmDialog((Component) e.getSource(),
                 COMMIT_ALL_STUDENT_MESSAGE, COMMIT_RECOMMENDED_DEGREES_DIALOG_TITLE,
                 JOptionPane.YES_NO_CANCEL_OPTION);
         if (select == JOptionPane.CANCEL_OPTION || select == JOptionPane.CLOSED_OPTION) {
