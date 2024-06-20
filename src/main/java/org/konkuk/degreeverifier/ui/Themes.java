@@ -1,6 +1,8 @@
 package org.konkuk.degreeverifier.ui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import org.konkuk.degreeverifier.common.components.OutlinedFlatRoundBorder;
+import org.konkuk.degreeverifier.common.components.OutlinedFlatTextBorder;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
@@ -44,6 +46,12 @@ public class Themes {
             UIManager.put("List.selectionForeground", UIManager.get("List.foreground"));
 
             UIManager.put("SplitPaneDivider.style", "plain");
+
+            UIManager.put("CheckBox.icon.borderWidth", 1);
+
+            UIManager.put("ComboBox.border", new OutlinedFlatRoundBorder());
+            UIManager.put("Spinner.border", new OutlinedFlatRoundBorder());
+            UIManager.put("TextField.border", new OutlinedFlatTextBorder());
         }
 
         return succeed;

@@ -125,7 +125,6 @@ public class Student extends LinkedHashSet<Lecture> {
         sufficientDegrees.clear();
         insufficientDegrees.clear();
 
-        committedDegrees.clear();
         committedDegrees.putAll(getRecommendedBundle());
 
         exportCommit(false);

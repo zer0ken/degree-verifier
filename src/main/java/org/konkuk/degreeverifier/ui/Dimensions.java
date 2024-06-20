@@ -3,8 +3,11 @@ package org.konkuk.degreeverifier.ui;
 import java.awt.*;
 
 public class Dimensions {
-    public static final Dimension MINIMUM_APP_SIZE = new Dimension(740, 500);
-    public static final Dimension PREFERRED_APP_SIZE = new Dimension(1240, 760);
+    public static final Dimension MINIMUM_MAIN_FRAME_SIZE = new Dimension(740, 500);
+    public static final Dimension PREFERRED_MAIN_FRAME_SIZE = new Dimension(1240, 760);
+
+    public static final Dimension MINIMUM_EDIT_FRAME_SIZE = new Dimension(700, 340);
+    public static final Dimension PREFERRED_EDIT_FRAME_SIZE = new Dimension(900, 560);
 
     public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(180, 180);
     public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(220, 180);
@@ -29,9 +32,14 @@ public class Dimensions {
 
     public static final int ITEM_ICON_SIZE = 16;
 
-    public static final Dimension QUICK_TOOLBAR_BUTTON_SIZE = new Dimension(32, 32);
+    public static final Dimension QUICK_TOOLBAR_BUTTON_SIZE = new Dimension(32, 28);
     public static final float QUICK_TOOLBAR_ICON_SCALE = 0.8f;
 
     public static final Dimension MINIMUM_VERIFIER_LIST_SIZE = new Dimension(220, 180);
     public static final Dimension MINIMUM_VERIFIER_TREE_SIZE = new Dimension(220, 180);
+    public static final Dimension MINIMUM_EDIT_PANEL_SIZE = new Dimension(220, 180);
+
+    public static final Dimension MAXIMUM_LABELED_SEPARATOR_SIZE = new Dimension(Integer.MAX_VALUE, 20);
+
+    public static final Insets EDIT_PANEL_GRID_INSETS = new Insets(4, 4, 4, 4);
 }

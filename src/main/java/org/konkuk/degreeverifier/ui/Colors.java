@@ -13,6 +13,8 @@ public class Colors {
     public static final Color COMMON_ORANGE = new Color(0xeb8c25);
     public static final Color COMMON_GREEN = new Color(0x088147);
 
+    public static final Color DESCRIPTION = new Color(0x5B5B5B);
+
     public static final Color SUFFICIENT_SEPARATOR_FOREGROUND = COMMON_GREEN;
     public static final Color INSUFFICIENT_SEPARATOR_FOREGROUND = COMMON_RED;
     public static final Color NOT_VERIFIED_SEPARATOR_FOREGROUND = COMMON_GRAY;
