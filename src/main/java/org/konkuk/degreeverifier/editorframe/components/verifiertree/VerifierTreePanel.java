@@ -18,7 +18,7 @@ public class VerifierTreePanel extends JPanel {
 
         JTree tree = new JTree();
         tree.setRootVisible(false);
-        tree.setModel(new VerifierTreeModel());
+        tree.setModel(new VerifierTreeModel(tree));
 
         JScrollPane scrollPane = new JScrollPane(
                 tree,
