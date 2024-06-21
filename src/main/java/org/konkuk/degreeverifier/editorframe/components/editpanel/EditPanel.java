@@ -1,150 +1,182 @@
 package org.konkuk.degreeverifier.editorframe.components.editpanel;
 
-import org.konkuk.degreeverifier.common.components.Description;
+import org.konkuk.degreeverifier.business.Semester;
+import org.konkuk.degreeverifier.common.components.IndentedGridCell;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Vector;
+import java.util.Calendar;
 
 import static org.konkuk.degreeverifier.ui.Borders.EDIT_PANEL_BORDER;
-import static org.konkuk.degreeverifier.ui.Dimensions.EDIT_PANEL_GRID_INSETS;
 import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_EDIT_PANEL_SIZE;
+import static org.konkuk.degreeverifier.ui.Strings.CRITERIA_VERIFIER;
+import static org.konkuk.degreeverifier.ui.Strings.LECTURE_VERIFIER;
 
 public class EditPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private int currentRow = 0;
-    private final int MAX_COLUMNS = 4;
+
+    private final JTextField degreeNameField = new JTextField();
+
+    private final JRadioButton useCriteriaRadioButton = new JRadioButton(CRITERIA_VERIFIER);
+    private final JTextField memoField = new JTextField();
+    private final JCheckBox useMinimumPassCheckBox = new JCheckBox("최소 선택 개수:");
+    private final JSpinner minimumPassSpinner = new JSpinner();
+    private final JCheckBox useMaximumPassCheckBox = new JCheckBox("최대 선택 개수:");
+    private final JSpinner maximumPassSpinner = new JSpinner();
+    private final JCheckBox needAllPassCheckBox = new JCheckBox("필수 검사 조건");
+
+    private final JRadioButton useLectureRadioButton = new JRadioButton(LECTURE_VERIFIER);
+    private final JTextField lectureNameField = new JTextField();
+    private final JCheckBox useMinimumSemesterCheckBox = new JCheckBox("유효 기간 시작:");
+    private final JComboBox<Semester> minimumSemesterComboBox = new JComboBox<>();
+    private final JCheckBox useMaximumSemesterCheckBox = new JCheckBox("유효 기간 종료:");
+    private final JComboBox<Semester> maximumSemesterComboBox = new JComboBox<>();
+    private final JCheckBox setNonExclusiveCheckBox = new JCheckBox("타 학위에서의 중복 사용을 허용");
 
     public EditPanel() {
+        setLayout(new GridBagLayout());
         setMinimumSize(MINIMUM_EDIT_PANEL_SIZE);
         setBorder(EDIT_PANEL_BORDER);
-        setLayout(new GridBagLayout());
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = EDIT_PANEL_GRID_INSETS;
+        
+        initGridBackConstraints();
+        initDegreeEditor();
+        initCriteriaEditor();
+        initRecursiveEditor();
+        initLectureEditor();
 
-        startNewRow();
-        addInRow(new JLabel("학위명:"));
-        gbc.gridwidth = MAX_COLUMNS - 1;
-        addInRow(new JTextField());
+        ButtonGroup group = new ButtonGroup();
+        group.add(useLectureRadioButton);
+        group.add(useCriteriaRadioButton);
+    }
 
-        startNewRow();
-        addDescription("이 검사 기준에서 검사할 학위의 이름입니다.");
-
-        startNewRow();
-        addInRow(new JLabel("필요 학점:"));
-        addInRow(new JSpinner());
-
-        startNewRow();
-        addVerticalSpace();
-
-        startNewRow();
-        addInRow(new JRadioButton("교과목 검사"));
-
-        startNewRow(1);
-        addDescription("조건과 일치하는 교과목을 찾는 검사 기준입니다.");
-
-        startNewRow(1);
-        addInRow(new JLabel("과목명:"));
-        gbc.gridwidth = MAX_COLUMNS - 1;
-        addInRow(new JTextField());
-
-        startNewRow(1);
+    private void initGridBackConstraints() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         gbc.gridwidth = 2;
-        addInRow(new JCheckBox("중복 사용 허용"));
-
-        startNewRow(1);
-        addInRow(new JCheckBox("필요 성적:"));
-        addInRow(new JComboBox<>(new Vector<>(Arrays.asList(
-                "F 이상",
-                "D- 이상", "D 이상", "D+ 이상",
-                "C- 이상", "C 이상", "C+ 이상",
-                "B- 이상", "B 이상", "B+ 이상",
-                "A- 이상", "A 이상", "A+ 이상"
-        ))));
-
-        startNewRow(1);
-        addInRow(new JCheckBox("유효 기간 시작"));
-        startNewRow(2);
-        addDescription("설정한 기간 이전에 수강한 교과목은 일치시키지 않습니다.");
-
-        startNewRow(2);
-        addInRow(new JSpinner());
-        addInRow(new JLabel("년도"));
-        addInRow(new JComboBox<>(new Vector<>(Arrays.asList(
-                "1학기",
-                "2학기"
-        ))));
-        addInRow(new JLabel("부터"));
-
-        startNewRow(1);
-        addInRow(new JCheckBox("유효 기간 종료"));
-        startNewRow(2);
-        addDescription("설정한 기간 이후에 수강한 교과목은 일치시키지 않습니다.");
-
-        startNewRow(2);
-        addInRow(new JSpinner());
-        addInRow(new JLabel("년도"));
-        addInRow(new JComboBox<>(new Vector<>(Arrays.asList(
-                "1학기",
-                "2학기"
-        ))));
-        addInRow(new JLabel("까지"));
-
-        startNewRow(1);
-        addInRow(new JLabel("메모:"));
-        gbc.gridwidth = MAX_COLUMNS - 1;
-        addInRow(new JTextField());
-
-        startNewRow();
-        addVerticalSpace();
-
-        startNewRow();
-        addInRow(new JRadioButton("검사 그룹"));
-
-        startNewRow(1);
-        addDescription("다른 검사 기준을 포함하는 검사 그룹입니다.");
-
-        startNewRow(1);
-        addInRow(new JLabel("메모:"));
-        gbc.gridwidth = MAX_COLUMNS - 1;
-        addInRow(new JTextField());
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(4, 0, 4, 0);
     }
 
-    private void startNewRow() {
-        startNewRow(0);
-    }
-
-    private void startNewRow(int indent) {
-        Insets insets = new Insets(
-                EDIT_PANEL_GRID_INSETS.top,
-                EDIT_PANEL_GRID_INSETS.left,
-                EDIT_PANEL_GRID_INSETS.bottom,
-                EDIT_PANEL_GRID_INSETS.right
-        );
-        insets.left += indent * 22;
-
-        gbc.gridy = ++currentRow;
+    private void initDegreeEditor() {
         gbc.gridx = 0;
-        gbc.insets = insets;
-    }
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new JLabel("학위 이름:"), gbc);
 
-    private void addDescription(String text) {
-        gbc.gridx = 0;
-        gbc.gridwidth = MAX_COLUMNS;
-        add(new Description(text), gbc);
-        gbc.insets = EDIT_PANEL_GRID_INSETS;
-        gbc.gridwidth = 1;
-    }
-
-    private void addInRow(JComponent component) {
-        add(component, gbc);
         gbc.gridx++;
-        gbc.insets = EDIT_PANEL_GRID_INSETS;
+        gbc.weightx = 1;
+        add(degreeNameField, gbc);
+    }
+
+    private void initCriteriaEditor() {
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        add(needAllPassCheckBox, gbc);
         gbc.gridwidth = 1;
     }
 
-    private void addVerticalSpace() {
-        add(Box.createVerticalStrut(10), gbc);
+    private void initRecursiveEditor() {
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(useCriteriaRadioButton, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(useMinimumPassCheckBox, 1), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(minimumPassSpinner, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(useMaximumPassCheckBox, 1), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(maximumPassSpinner, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(new JLabel("메모:"), 2), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        add(memoField, gbc);
+    }
+
+    private void initLectureEditor() {
+        Semester s = new Semester(2022, Semester.Type.FIRST);
+        while (s.year <= Calendar.getInstance().get(Calendar.YEAR) + 4) {
+            minimumSemesterComboBox.addItem(s);
+            maximumSemesterComboBox.addItem(s);
+            s = s.next();
+        }
+        useLectureRadioButton.addChangeListener(
+                e -> {
+                    lectureNameField.setEnabled(useLectureRadioButton.isSelected());
+                    useMinimumSemesterCheckBox.setEnabled(useLectureRadioButton.isSelected());
+                    useMaximumSemesterCheckBox.setEnabled(useLectureRadioButton.isSelected());
+                    setNonExclusiveCheckBox.setEnabled(useLectureRadioButton.isSelected());
+                }
+        );
+        useMinimumSemesterCheckBox.addChangeListener(
+                e -> minimumSemesterComboBox.setEnabled(useMinimumSemesterCheckBox.isSelected())
+        );
+        useMaximumSemesterCheckBox.addChangeListener(
+                e -> maximumSemesterComboBox.setEnabled(useMaximumSemesterCheckBox.isSelected())
+        );
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(useLectureRadioButton, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(new JLabel("과목명:"), 2), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        add(lectureNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(useMinimumSemesterCheckBox, 1), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(minimumSemesterComboBox, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
+        add(new IndentedGridCell(useMaximumSemesterCheckBox, 1), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(maximumSemesterComboBox, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        add(new IndentedGridCell(setNonExclusiveCheckBox, 1), gbc);
     }
 }
