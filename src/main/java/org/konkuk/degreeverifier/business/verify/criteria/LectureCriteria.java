@@ -34,15 +34,31 @@ public class LectureCriteria {
     @SerializedName("non_exclusive")
     public final Boolean nonExclusive;
 
+    /**
+     * 이 검사의 대상 교과목의 유효 이수 년도가 언제 시작되는지 나타냅니다.
+     * 이 값이 명시되면 minimumSemester 또한 명시되어야 합니다.
+     */
     @SerializedName("from_year")
     public final Integer minimumYear;
 
+    /**
+     * 이 검사의 대상 교과목의 유효 이수 학기가 언제 시작되는지 나타냅니다.
+     * minimumYear가 명시되지 않으면 이 값은 무시됩니다.
+     */
     @SerializedName("from_semester")
     public final String minimumSemester;
 
+    /**
+     * 이 검사의 대상 교과목의 유효 이수 년도가 언제 끝나는지 나타냅니다.
+     * 이 값이 명시되면 minimumSemester 또한 명시되어야 합니다.
+     */
     @SerializedName("to_year")
     public final Integer maximumYear;
 
+    /**
+     * 이 검사의 대상 교과목의 유효 이수 학기가 언제 끝나는지 나타냅니다.
+     * maximumYear가 명시되지 않으면 이 값은 무시됩니다.
+     */
     @SerializedName("to_semester")
     public final String maximumSemester;
 
