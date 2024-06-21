@@ -40,7 +40,7 @@ public class Semester implements Comparable<Semester> {
         this.semester = Type.fromString(semester);
     }
 
-    private Semester(int year, Type semester) {
+    public Semester(int year, Type semester) {
         this.year = year;
         this.semester = semester;
     }
@@ -59,5 +59,10 @@ public class Semester implements Comparable<Semester> {
             return year - o.year;
         }
         return semester.compareTo(o.semester);
+    }
+
+    @Override
+    public String toString() {
+        return year + "년도 " + semester.value;
     }
 }
