@@ -21,6 +21,15 @@ public class Semester implements Comparable<Semester> {
             }
             return null;
         }
+
+        public static Type fromOrdinal(int ordinal) {
+            for (Type type : Type.values()) {
+                if (type.ordinal() == ordinal % 4) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
 
     public final int year;
@@ -29,6 +38,19 @@ public class Semester implements Comparable<Semester> {
     public Semester(int year, String semester) {
         this.year = year;
         this.semester = Type.fromString(semester);
+    }
+
+    private Semester(int year, Type semester) {
+        this.year = year;
+        this.semester = semester;
+    }
+
+    public Semester next() {
+        int nextYear = year;
+        if (semester == Type.WINTER) {
+            nextYear++;
+        }
+        return new Semester(nextYear, Type.fromOrdinal(semester.ordinal() + 1));
     }
 
     @Override
