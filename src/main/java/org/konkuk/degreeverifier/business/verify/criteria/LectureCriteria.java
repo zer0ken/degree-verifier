@@ -38,13 +38,13 @@ public class LectureCriteria {
     public final Integer minimumYear;
 
     @SerializedName("from_semester")
-    public final Integer minimumSemester;
+    public final String minimumSemester;
 
     @SerializedName("to_year")
     public final Integer maximumYear;
 
     @SerializedName("to_semester")
-    public final Integer maximumSemester;
+    public final String maximumSemester;
 
     public String getMinimumGrade() {
         return minimumGrade == null ? DEFAULT_MINIMUM_GRADE : minimumGrade;
