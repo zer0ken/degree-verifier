@@ -18,8 +18,8 @@ import java.util.List;
  * @since 2024-05-25T15:39:55.673Z
  */
 public class LectureVerifier extends LectureCriteria implements Verifiable, Creditizable, Estimable, Snapshotable {
-    private Semester minSemester = null;
-    private Semester maxSemester = null;
+    public final Semester minSemester;
+    public final Semester maxSemester;
 
     private Lecture matchedLecture = null;  // TODO: 2024-05-31 한 교과목 검사 기준이 여러 교과목에 대해 매치할 수 있도록 수정할 필요가 있을까?
 
@@ -30,13 +30,8 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
 
     public LectureVerifier(LectureCriteria toCopy) {
         super(toCopy);
-
-        if (minimumYear != null) {
-            minSemester = new Semester(minimumYear, minimumSemester);
-        }
-        if (maximumYear != null) {
-            maxSemester = new Semester(maximumYear, maximumSemester);
-        }
+        minSemester = getMinimumSemester();
+        maxSemester = getMaximumSemester();
     }
 
     @Override

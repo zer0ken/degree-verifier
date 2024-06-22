@@ -24,6 +24,10 @@ public class FoldableTree extends JTree {
         updateFoldingState();
     }
 
+    public void setUnfoldDepth(int unfoldDepth) {
+        this.unfoldDepth = unfoldDepth;
+    }
+
     public void updateFoldingState() {
         for (int i = 0; i < getRowCount(); i++) {
             TreePath path = getPathForRow(i);

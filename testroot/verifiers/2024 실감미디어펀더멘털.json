@@ -7,7 +7,7 @@
     "subcriteria": [
       {
         "label": "기술 영역",
-        "lecture": {"name": "실감피디어컴퓨팅기초", "from_year":  2022, "from_semester": 2, "to_year":  2025, "to_semester": 1}
+        "lecture": {"name": "실감피디어컴퓨팅기초", "from_year":  2022, "from_semester": "2학기", "to_year":  2025, "to_semester": "1학기"}
       },
       {
         "label": "디자인 영역",

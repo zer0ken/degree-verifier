@@ -11,6 +11,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DegreeCriteria {
     /**
+     * 검사 기준에 대한 짧은 설명입니다.
+     */
+    @SerializedName("label")
+    public final String description;
+
+    /**
      * 이 학위의 이름입니다.
      */
     @SerializedName("degree_name")
@@ -29,6 +35,7 @@ public class DegreeCriteria {
     public final RecursiveCriteria recursiveCriteria;
 
     public DegreeCriteria(DegreeCriteria toCopy) {
+        description = toCopy.description;
         degreeName = toCopy.degreeName;
         recursiveCriteria = toCopy.recursiveCriteria;
         minimumCredit = toCopy.minimumCredit;

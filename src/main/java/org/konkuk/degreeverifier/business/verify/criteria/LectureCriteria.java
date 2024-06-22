@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business.verify.criteria;
 
 import com.google.gson.annotations.SerializedName;
+import org.konkuk.degreeverifier.business.Semester;
 
 /**
  * 이 클래스는 교과목의 이수 여부를 판단하는 검사 기준의 정의를 나타냅니다.
@@ -12,6 +13,12 @@ import com.google.gson.annotations.SerializedName;
 public class LectureCriteria {
     public static final String DEFAULT_MINIMUM_GRADE = "D-";
     public static final Boolean DEFAULT_NON_EXCLUSIVE = false;
+
+    /**
+     * 검사 기준에 대한 짧은 설명입니다.
+     */
+    @SerializedName("label")
+    public final String description;
 
     /**
      * 대상 교과목의 이름입니다.
@@ -70,7 +77,22 @@ public class LectureCriteria {
         return nonExclusive == null ? DEFAULT_NON_EXCLUSIVE : nonExclusive;
     }
 
+    public Semester getMinimumSemester() {
+        if (minimumYear != null) {
+            return new Semester(minimumYear, Semester.Type.fromString(minimumSemester));
+        }
+        return null;
+    }
+
+    public Semester getMaximumSemester() {
+        if (maximumYear != null) {
+            return new Semester(maximumYear, Semester.Type.fromString(maximumSemester));
+        }
+        return null;
+    }
+
     public LectureCriteria(LectureCriteria toCopy) {
+        description = toCopy.description;
         lectureName = toCopy.lectureName;
         minimumGrade = toCopy.minimumGrade;
         nonExclusive = toCopy.nonExclusive;

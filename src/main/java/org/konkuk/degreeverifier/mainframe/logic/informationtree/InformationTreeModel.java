@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.mainframe.logic.informationtree;
 
+import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.models.InformationModel;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
@@ -73,7 +74,7 @@ public class InformationTreeModel extends DefaultTreeModel {
 
             if (snapshot.criteria.maximumPass != null) {
                 recursiveNode.add(new DefaultMutableTreeNode(
-                        "학점 제한: 최대 " + snapshot.criteria.maximumPass + "개의 교과목"));
+                        "학점 제한: 최대 " + snapshot.criteria.maximumPass + "개의 하위 검사만 사용"));
             }
 
             for (RecursiveSnapshot subSnapshot : snapshot.subSnapshots) {
@@ -92,20 +93,16 @@ public class InformationTreeModel extends DefaultTreeModel {
         String validPeriodPrefix = "유효 기간:";
         String validPeriodPostfix = " 교과목만 인정";
         String validPeriod = "";
-        if (snapshot.criteria.minimumYear != null) {
-            validPeriod += " " + snapshot.criteria.minimumYear + "년도";
-            if (snapshot.criteria.minimumSemester != null) {
-                validPeriod += " " + snapshot.criteria.minimumSemester + "학기";
-            }
+        Semester minSemester = snapshot.criteria.getMinimumSemester();
+        Semester maxSemester = snapshot.criteria.getMaximumSemester();
+        if (minSemester != null) {
+            validPeriod += minSemester;
         }
         if (!validPeriod.isEmpty()) {
             validPeriod += " ~";
         }
-        if (snapshot.criteria.maximumYear != null) {
-            validPeriod += " " + snapshot.criteria.maximumYear + "년도";
-        }
-        if (snapshot.criteria.maximumSemester != null) {
-            validPeriod += " " + snapshot.criteria.maximumSemester + "학기";
+        if (maxSemester != null) {
+            validPeriod += maxSemester;
         }
         if (!validPeriod.isEmpty()) {
             parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod + validPeriodPostfix));
