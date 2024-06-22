@@ -85,6 +85,24 @@ public class RecursiveCriteria {
         subcriteria = toCopy.subcriteria;
     }
 
+    public RecursiveCriteria(
+            String description,
+            Boolean important,
+            LectureCriteria lectureCriteria,
+            Boolean needAllPass,
+            Integer minimumPass,
+            Integer maximumPass,
+            RecursiveCriteria[] subcriteria
+    ) {
+        this.description = description;
+        this.important = important;
+        this.lectureCriteria = lectureCriteria;
+        this.needAllPass = needAllPass;
+        this.minimumPass = minimumPass;
+        this.maximumPass = maximumPass;
+        this.subcriteria = subcriteria;
+    }
+
     public Boolean isImportant() {
         return important != null && important;
     }
@@ -112,7 +130,7 @@ public class RecursiveCriteria {
         }
         if (lectureCriteria != null) {
             sb.append("교과목: ").append(lectureCriteria.lectureName);
-        } else{
+        } else {
             sb.append("검사 그룹(").append(subcriteria.length).append(")");
             if (needsAllPass()) {
                 sb.append(": 모두 통과");

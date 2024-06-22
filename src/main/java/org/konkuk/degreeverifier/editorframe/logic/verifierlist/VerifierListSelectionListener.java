@@ -7,11 +7,14 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class VerifierListSelectionList implements ListSelectionListener {
+public class VerifierListSelectionListener implements ListSelectionListener {
     private final EditorModel editorModel = EditorModel.getInstance();
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) {
+            return;
+        }
         JList<DegreeVerifier> list = (JList<DegreeVerifier>) e.getSource();
         editorModel.setSelectedCriteria(list.getSelectedValue());
     }
