@@ -7,6 +7,8 @@ import org.konkuk.degreeverifier.editorframe.components.verifiertree.VerifierTre
 import javax.swing.*;
 import java.awt.*;
 
+import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_EDIT_PANEL_SIZE;
+
 public class SplitPanel extends JPanel {
     public SplitPanel() {
         setLayout(new BorderLayout());
@@ -25,7 +27,7 @@ public class SplitPanel extends JPanel {
                 new VerifierTreePanel(),
                 scrollPane
         );
-        editPane.setResizeWeight(0.5);
+        editPane.setResizeWeight(0.7);
 
         JSplitPane withVerifierList = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,

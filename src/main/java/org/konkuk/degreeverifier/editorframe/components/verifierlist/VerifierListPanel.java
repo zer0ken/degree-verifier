@@ -2,7 +2,7 @@ package org.konkuk.degreeverifier.editorframe.components.verifierlist;
 
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.editorframe.logic.verifierlist.VerifierListModel;
-import org.konkuk.degreeverifier.editorframe.logic.verifierlist.VerifierListSelectionList;
+import org.konkuk.degreeverifier.editorframe.logic.verifierlist.VerifierListSelectionListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class VerifierListPanel extends JPanel {
         list.setBackground(UIManager.getColor("RootPane.background"));
         list.setModel(new VerifierListModel());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.addListSelectionListener(new VerifierListSelectionList());
+        list.addListSelectionListener(new VerifierListSelectionListener());
 
         JScrollPane scrollPane = new JScrollPane(
                 list,

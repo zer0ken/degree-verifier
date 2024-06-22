@@ -2,6 +2,7 @@ package org.konkuk.degreeverifier.editorframe.components.editpanel;
 
 import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.common.components.IndentedGridCell;
+import org.konkuk.degreeverifier.editorframe.logic.editpanel.EditPanelController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,23 +16,23 @@ import static org.konkuk.degreeverifier.ui.Strings.LECTURE_VERIFIER;
 public class EditPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    private final JTextField degreeNameField = new JTextField();
+    public final JTextField degreeNameField = new JTextField();
 
-    private final JRadioButton useCriteriaRadioButton = new JRadioButton(CRITERIA_VERIFIER);
-    private final JTextField memoField = new JTextField();
-    private final JCheckBox useMinimumPassCheckBox = new JCheckBox("최소 선택 개수:");
-    private final JSpinner minimumPassSpinner = new JSpinner();
-    private final JCheckBox useMaximumPassCheckBox = new JCheckBox("최대 선택 개수:");
-    private final JSpinner maximumPassSpinner = new JSpinner();
-    private final JCheckBox needAllPassCheckBox = new JCheckBox("필수 검사 조건");
+    public final JRadioButton useCriteriaRadioButton = new JRadioButton(CRITERIA_VERIFIER);
+    public final JTextField memoField = new JTextField();
+    public final JCheckBox useMinimumPassCheckBox = new JCheckBox("최소 선택 개수:");
+    public final JSpinner minimumPassSpinner = new JSpinner();
+    public final JCheckBox useMaximumPassCheckBox = new JCheckBox("최대 선택 개수:");
+    public final JSpinner maximumPassSpinner = new JSpinner();
+    public final JCheckBox needAllPassCheckBox = new JCheckBox("필수 검사 조건");
 
-    private final JRadioButton useLectureRadioButton = new JRadioButton(LECTURE_VERIFIER);
-    private final JTextField lectureNameField = new JTextField();
-    private final JCheckBox useMinimumSemesterCheckBox = new JCheckBox("유효 기간 시작:");
-    private final JComboBox<Semester> minimumSemesterComboBox = new JComboBox<>();
-    private final JCheckBox useMaximumSemesterCheckBox = new JCheckBox("유효 기간 종료:");
-    private final JComboBox<Semester> maximumSemesterComboBox = new JComboBox<>();
-    private final JCheckBox setNonExclusiveCheckBox = new JCheckBox("타 학위에서의 중복 사용을 허용");
+    public final JRadioButton useLectureRadioButton = new JRadioButton(LECTURE_VERIFIER);
+    public final JTextField lectureNameField = new JTextField();
+    public final JCheckBox useMinimumSemesterCheckBox = new JCheckBox("유효 기간 시작:");
+    public final JComboBox<Semester> minimumSemesterComboBox = new JComboBox<>();
+    public final JCheckBox useMaximumSemesterCheckBox = new JCheckBox("유효 기간 종료:");
+    public final JComboBox<Semester> maximumSemesterComboBox = new JComboBox<>();
+    public final JCheckBox setNonExclusiveCheckBox = new JCheckBox("타 학위에서의 중복 사용을 허용");
 
     public EditPanel() {
         setLayout(new GridBagLayout());
@@ -47,6 +48,8 @@ public class EditPanel extends JPanel {
         ButtonGroup group = new ButtonGroup();
         group.add(useLectureRadioButton);
         group.add(useCriteriaRadioButton);
+
+        new EditPanelController(this);
     }
 
     private void initGridBackConstraints() {
@@ -118,27 +121,6 @@ public class EditPanel extends JPanel {
     }
 
     private void initLectureEditor() {
-        Semester s = new Semester(2022, Semester.Type.FIRST);
-        while (s.year <= Calendar.getInstance().get(Calendar.YEAR) + 4) {
-            minimumSemesterComboBox.addItem(s);
-            maximumSemesterComboBox.addItem(s);
-            s = s.next();
-        }
-        useLectureRadioButton.addChangeListener(
-                e -> {
-                    lectureNameField.setEnabled(useLectureRadioButton.isSelected());
-                    useMinimumSemesterCheckBox.setEnabled(useLectureRadioButton.isSelected());
-                    useMaximumSemesterCheckBox.setEnabled(useLectureRadioButton.isSelected());
-                    setNonExclusiveCheckBox.setEnabled(useLectureRadioButton.isSelected());
-                }
-        );
-        useMinimumSemesterCheckBox.addChangeListener(
-                e -> minimumSemesterComboBox.setEnabled(useMinimumSemesterCheckBox.isSelected())
-        );
-        useMaximumSemesterCheckBox.addChangeListener(
-                e -> maximumSemesterComboBox.setEnabled(useMaximumSemesterCheckBox.isSelected())
-        );
-
         gbc.gridx = 0;
         gbc.gridy++;
         add(useLectureRadioButton, gbc);
