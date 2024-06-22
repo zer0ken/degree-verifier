@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.mainframe.actions.informationtree;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import org.konkuk.degreeverifier.mainframe.components.informationtree.InformationTree;
+import org.konkuk.degreeverifier.common.components.FoldableTree;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,9 +9,9 @@ import java.awt.event.ActionEvent;
 import static org.konkuk.degreeverifier.ui.Strings.UNFOLD_INFORMATION_TREE;
 
 public class UnfoldAction extends AbstractAction {
-    private final InformationTree tree;
+    private final FoldableTree tree;
 
-    public UnfoldAction(InformationTree tree) {
+    public UnfoldAction(FoldableTree tree) {
         this.tree = tree;
         putValue(NAME, UNFOLD_INFORMATION_TREE);
         putValue(SHORT_DESCRIPTION, UNFOLD_INFORMATION_TREE);

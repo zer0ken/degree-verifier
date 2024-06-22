@@ -1,6 +1,6 @@
 package org.konkuk.degreeverifier.editorframe.components.verifierlist;
 
-import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
+import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.editorframe.logic.verifierlist.VerifierListModel;
 import org.konkuk.degreeverifier.editorframe.logic.verifierlist.VerifierListSelectionList;
 
@@ -14,7 +14,7 @@ public class VerifierListPanel extends JPanel {
         setLayout(new BorderLayout());
         setMinimumSize(MINIMUM_VERIFIER_LIST_SIZE);
 
-        JList<DegreeVerifier> list = new JList<>();
+        JList<DegreeCriteria> list = new JList<>();
         list.setBackground(UIManager.getColor("RootPane.background"));
         list.setModel(new VerifierListModel());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

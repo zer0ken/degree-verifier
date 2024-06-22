@@ -45,7 +45,7 @@ public class RecursiveSnapshot implements Snapshot, Creditizable {
 
     @Override
     public String toString() {
-        String str = criteria.label != null ? criteria.label + " - " : "";
+        String str = criteria.description != null ? criteria.description + " - " : "";
         if (criteria.isImportant()) {
             str += "필수 ";
         }

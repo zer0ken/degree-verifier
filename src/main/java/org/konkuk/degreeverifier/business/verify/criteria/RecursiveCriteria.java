@@ -14,7 +14,7 @@ public class RecursiveCriteria {
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
-    public final String label;
+    public final String description;
 
     /**
      * 검사 기준의 중요도를 나타냅니다. 이 값이 True이면 이 검사가 실패했을 때 이 검사를 포함하는 학위를 이수할 수 없습니다.
@@ -76,7 +76,7 @@ public class RecursiveCriteria {
     protected final RecursiveCriteria[] subcriteria;
 
     public RecursiveCriteria(RecursiveCriteria toCopy) {
-        label = toCopy.label;
+        description = toCopy.description;
         important = toCopy.important;
         lectureCriteria = toCopy.lectureCriteria;
         needAllPass = toCopy.needAllPass;
@@ -95,5 +95,31 @@ public class RecursiveCriteria {
 
     public int getMinimumPass() {
         return minimumPass != null ? minimumPass : 0;
+    }
+
+    public RecursiveCriteria[] getSubcriteria() {
+        return subcriteria;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (description != null) {
+            sb.append(description).append(" - ");
+        }
+        if (isImportant()) {
+            sb.append("필수 ");
+        }
+        if (lectureCriteria != null) {
+            sb.append("교과목: ").append(lectureCriteria.lectureName);
+        } else{
+            sb.append("검사 그룹(").append(subcriteria.length).append(")");
+            if (needsAllPass()) {
+                sb.append(": 모두 통과");
+            } else if (getMinimumPass() != 0) {
+                sb.append(": ").append(getMinimumPass()).append("개 이상 통과");
+            }
+        }
+        return sb.toString();
     }
 }

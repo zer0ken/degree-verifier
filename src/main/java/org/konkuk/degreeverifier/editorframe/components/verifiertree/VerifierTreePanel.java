@@ -16,9 +16,7 @@ public class VerifierTreePanel extends JPanel {
         setMinimumSize(MINIMUM_VERIFIER_TREE_SIZE);
         setBorder(SEPARATOR_EVERY_SIDE);
 
-        JTree tree = new JTree();
-        tree.setRootVisible(false);
-        tree.setModel(new VerifierTreeModel(tree));
+        VerifierTree tree = new VerifierTree();
 
         JScrollPane scrollPane = new JScrollPane(
                 tree,
@@ -26,7 +24,7 @@ public class VerifierTreePanel extends JPanel {
                 HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        add(new VerifierTreeToolbar(), BorderLayout.NORTH);
+        add(new VerifierTreeToolbar(tree), BorderLayout.NORTH);
         add(scrollPane);
     }
 }

@@ -13,6 +13,6 @@ public class VerifierListSelectionList implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         JList<DegreeVerifier> list = (JList<DegreeVerifier>) e.getSource();
-        editorModel.setSelectedVerifier(list.getSelectedValue());
+        editorModel.setSelectedCriteria(list.getSelectedValue());
     }
 }

@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.business.models;
 
+import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
 import java.util.Collection;
@@ -20,10 +21,9 @@ public class EditorModel extends Observable {
 
     private final AppModel appModel = AppModel.getInstance();
 
-    private DegreeVerifier selectedVerifier = null;
-
-    private final HashMap<String, DegreeVerifier> original = new HashMap<>();
-    private final HashMap<String, DegreeVerifier> updated = new HashMap<>();
+    private final HashMap<String, DegreeCriteria> original = new HashMap<>();
+    private final HashMap<String, DegreeCriteria> updated = new HashMap<>();
+    private DegreeCriteria selectedCriteria = null;
 
     public void loadVerifiers() {
         for (DegreeVerifier degreeVerifier : appModel.getVerifierFactory()) {
@@ -32,7 +32,7 @@ public class EditorModel extends Observable {
     }
 
     public void saveChanges() {
-        HashMap<String, DegreeVerifier> updated = new HashMap<>(this.updated);
+        HashMap<String, DegreeCriteria> updated = new HashMap<>(this.updated);
         for (String key : updated.keySet()) {
             // try save, rollback on fail
             // also update original
@@ -41,21 +41,21 @@ public class EditorModel extends Observable {
         notify(On.SAVED, updated);
     }
 
-    public Collection<DegreeVerifier> getVerifiers() {
+    public Collection<DegreeCriteria> getAllCriteria() {
         return original.values();
     }
 
-    public void setSelectedVerifier(DegreeVerifier selectedVerifier) {
-        this.selectedVerifier = selectedVerifier;
-        notify(On.VERIFIER_SELECTED, selectedVerifier);
+    public void setSelectedCriteria(DegreeCriteria selectedCriteria) {
+        this.selectedCriteria = selectedCriteria;
+        notify(On.CRITERIA_SELECTED, selectedCriteria);
     }
 
-    public DegreeVerifier getSelectedVerifier() {
-        return selectedVerifier;
+    public DegreeCriteria getSelectedCriteria() {
+        return selectedCriteria;
     }
 
     public enum On implements Event {
-        VERIFIER_SELECTED,
+        CRITERIA_SELECTED,
         SAVED
     }
 }
