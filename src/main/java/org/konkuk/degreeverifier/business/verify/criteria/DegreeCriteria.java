@@ -14,30 +14,47 @@ public class DegreeCriteria {
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
-    public final String description;
+    public String description;
 
     /**
      * 이 학위의 이름입니다.
      */
     @SerializedName("degree_name")
-    public final String degreeName;
+    public String degreeName;
 
     /**
      * 이 학위를 인정받기 위해 이수해야 하는 학점의 최소값을 나타냅니다.
      */
     @SerializedName("min_credit")
-    public final Integer minimumCredit;
+    public Integer minimumCredit;
 
     /**
      * 이 학위를 인정받기 위해 통과해야 하는 검사 조건을 나타냅니다.
      */
     @SerializedName("criteria")
-    public final RecursiveCriteria recursiveCriteria;
+    public RecursiveCriteria recursiveCriteria;
 
     public DegreeCriteria(DegreeCriteria toCopy) {
         description = toCopy.description;
         degreeName = toCopy.degreeName;
-        recursiveCriteria = toCopy.recursiveCriteria;
         minimumCredit = toCopy.minimumCredit;
+        recursiveCriteria = toCopy.recursiveCriteria;
+    }
+
+    public DegreeCriteria(
+            String description,
+            String degreeName,
+            Integer minimumCredit,
+            RecursiveCriteria recursiveCriteria
+    ) {
+        this.description = description;
+        this.degreeName = degreeName;
+        this.minimumCredit =  minimumCredit;
+        this.recursiveCriteria = recursiveCriteria;
+    }
+
+    @Override
+    public String toString() {
+        return degreeName;
     }
 }
