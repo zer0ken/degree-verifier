@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.editorframe.logic.verifierlist;
 
 import org.konkuk.degreeverifier.business.models.EditorModel;
-import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
+import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -15,7 +15,7 @@ public class VerifierListSelectionListener implements ListSelectionListener {
         if (e.getValueIsAdjusting()) {
             return;
         }
-        JList<DegreeVerifier> list = (JList<DegreeVerifier>) e.getSource();
-        editorModel.setSelectedCriteria(list.getSelectedValue());
+        JList<EditableDegreeCriteria> list = (JList<EditableDegreeCriteria>) e.getSource();
+        editorModel.setSelectedDegree(list.getSelectedValue());
     }
 }

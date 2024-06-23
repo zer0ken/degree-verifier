@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.editorframe.logic.verifiertree;
 
 import org.konkuk.degreeverifier.business.models.EditorModel;
-import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
+import org.konkuk.degreeverifier.business.verify.editable.Editable;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -13,31 +13,31 @@ public class VerifierTreeSelectionListener implements TreeSelectionListener {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        System.out.println("valueChanged");
         for (TreePath path : e.getPaths()) {
             TreePath cur = path;
-            RecursiveCriteria criteria = null;
+            Editable editable = null;
 
             while (cur != null) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) cur.getLastPathComponent();
-                if (node.getUserObject() instanceof RecursiveCriteria) {
-                    criteria = (RecursiveCriteria) node.getUserObject();
+                if (node.getUserObject() instanceof Editable) {
+                    editable = (Editable) node.getUserObject();
                     break;
                 }
                 cur = cur.getParentPath();
             }
 
-            if (criteria == null) {
+            if (editable == null) {
                 continue;
             }
 
             if (e.isAddedPath(path)) {
-                editorModel.addSelectedNode(criteria);
+                editorModel.addSelectedNode(editable);
             } else {
-                editorModel.removeSelectedNode(criteria);
+                editorModel.removeSelectedNode(editable);
             }
         }
-        for (RecursiveCriteria selectedNode : editorModel.getSelectedNodes()) {
+        System.out.println("valueChanged");
+        for (Editable selectedNode : editorModel.getSelectedNodes()) {
             System.out.println(selectedNode);
         }
     }

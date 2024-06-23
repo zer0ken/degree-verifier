@@ -1,26 +1,26 @@
 package org.konkuk.degreeverifier.editorframe.logic.verifierlist;
 
 import org.konkuk.degreeverifier.business.models.EditorModel;
-import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
+import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 
 import javax.swing.*;
 import java.util.Collection;
 
-public class VerifierListModel extends DefaultListModel<DegreeCriteria> {
+public class VerifierListModel extends DefaultListModel<EditableDegreeCriteria> {
     private final EditorModel editorModel = EditorModel.getInstance();
 
     public VerifierListModel() {
-        if (!editorModel.getAllCriteria().isEmpty()) {
-            update(editorModel.getAllCriteria());
+        if (!editorModel.getDegrees().isEmpty()) {
+            update(editorModel.getDegrees());
         }
 
-        editorModel.observe(EditorModel.On.SAVED, unused -> update(editorModel.getAllCriteria()));
+        editorModel.observe(EditorModel.On.SAVED, unused -> update(editorModel.getDegrees()));
     }
 
-    private void update(Collection<DegreeCriteria> allCriteria) {
+    private void update(Collection<EditableDegreeCriteria> degrees) {
         clear();
-        for (DegreeCriteria criteria : allCriteria) {
-            addElement(criteria);
+        for (EditableDegreeCriteria degree : degrees) {
+            addElement(degree);
         }
     }
 }

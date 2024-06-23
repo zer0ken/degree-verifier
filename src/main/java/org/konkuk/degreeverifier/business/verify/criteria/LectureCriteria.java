@@ -18,13 +18,13 @@ public class LectureCriteria {
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
-    public final String description;
+    public String description;
 
     /**
      * 대상 교과목의 이름입니다.
      */
     @SerializedName("name")
-    public final String lectureName;
+    public String lectureName;
 
     /**
      * 대상 교과목에서 받아야 하는 성적의 최소값을 나타내는 문자열입니다.
@@ -32,42 +32,42 @@ public class LectureCriteria {
      * 이 값이 명시되지 않으면 기본 값은 "D-"입니다.
      */
     @SerializedName("min_grade")
-    public final String minimumGrade;
+    public String minimumGrade;
 
     /**
      * 이 검사의 대상 교과목이 다른 검사에 중복으로 사용될 수 있는지를 나타냅니다.
      * 이 값이 명시되지 않으면 기본값은 true입니다.
      */
     @SerializedName("non_exclusive")
-    public final Boolean nonExclusive;
+    public Boolean nonExclusive;
 
     /**
      * 이 검사의 대상 교과목의 유효 이수 년도가 언제 시작되는지 나타냅니다.
      * 이 값이 명시되면 minimumSemester 또한 명시되어야 합니다.
      */
     @SerializedName("from_year")
-    public final Integer minimumYear;
+    public Integer minimumYear;
 
     /**
      * 이 검사의 대상 교과목의 유효 이수 학기가 언제 시작되는지 나타냅니다.
      * minimumYear가 명시되지 않으면 이 값은 무시됩니다.
      */
     @SerializedName("from_semester")
-    public final String minimumSemester;
+    public String minimumSemester;
 
     /**
      * 이 검사의 대상 교과목의 유효 이수 년도가 언제 끝나는지 나타냅니다.
      * 이 값이 명시되면 minimumSemester 또한 명시되어야 합니다.
      */
     @SerializedName("to_year")
-    public final Integer maximumYear;
+    public Integer maximumYear;
 
     /**
      * 이 검사의 대상 교과목의 유효 이수 학기가 언제 끝나는지 나타냅니다.
      * maximumYear가 명시되지 않으면 이 값은 무시됩니다.
      */
     @SerializedName("to_semester")
-    public final String maximumSemester;
+    public String maximumSemester;
 
     public String getMinimumGrade() {
         return minimumGrade == null ? DEFAULT_MINIMUM_GRADE : minimumGrade;
@@ -100,5 +100,25 @@ public class LectureCriteria {
         maximumYear = toCopy.maximumYear;
         minimumSemester = toCopy.minimumSemester;
         maximumSemester = toCopy.maximumSemester;
+    }
+
+    public LectureCriteria(
+            String description,
+            String lectureName,
+            String minimumGrade,
+            Boolean nonExclusive,
+            Integer minimumYear,
+            Integer maximumYear,
+            String minimumSemester,
+            String maximumSemester
+    ) {
+        this.description = description;
+        this.lectureName = lectureName;
+        this.minimumGrade = minimumGrade;
+        this.nonExclusive = nonExclusive;
+        this.minimumYear = minimumYear;
+        this.maximumYear = maximumYear;
+        this.minimumSemester = minimumSemester;
+        this.maximumSemester = maximumSemester;
     }
 }

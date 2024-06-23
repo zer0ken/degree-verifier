@@ -14,13 +14,13 @@ public class RecursiveCriteria {
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
-    public final String description;
+    public String description;
 
     /**
      * 검사 기준의 중요도를 나타냅니다. 이 값이 True이면 이 검사가 실패했을 때 이 검사를 포함하는 학위를 이수할 수 없습니다.
      */
     @SerializedName("important")
-    public final Boolean important;
+    public Boolean important;
 
     /**
      * <p>
@@ -37,7 +37,7 @@ public class RecursiveCriteria {
      * </p>
      */
     @SerializedName("lecture")
-    public final LectureCriteria lectureCriteria;
+    public LectureCriteria lectureCriteria;
 
     /**
      * <p>
@@ -52,7 +52,7 @@ public class RecursiveCriteria {
      * </p>
      */
     @SerializedName("all")
-    public final Boolean needAllPass;
+    public Boolean needAllPass;
 
     /**
      * 하위 검사 기준 중 통과해야 하는 기준의 최소값을 의미합니다.
@@ -60,20 +60,20 @@ public class RecursiveCriteria {
      * 이 값이 명시되지 않으면 기본값은 0입니다.
      */
     @SerializedName("min")
-    public final Integer minimumPass;
+    public Integer minimumPass;
 
     /**
      * 학점 계산 시에 사용할 교과목 검사 기준의 개수를 의미합니다.
      * 이 값이 명시되지 않으면 기본값은 null입니다.
      */
     @SerializedName("max")
-    public final Integer maximumPass;
+    public Integer maximumPass;
 
     /**
      * 하위 검사 기준의 배열입니다.
      */
     @SerializedName("subcriteria")
-    protected final RecursiveCriteria[] subcriteria;
+    public RecursiveCriteria[] subcriteria;
 
     public RecursiveCriteria(RecursiveCriteria toCopy) {
         description = toCopy.description;
@@ -123,7 +123,7 @@ public class RecursiveCriteria {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (description != null) {
-            sb.append(description).append(" - ");
+            sb.append(description).append(" | ");
         }
         if (isImportant()) {
             sb.append("필수 ");
@@ -132,11 +132,6 @@ public class RecursiveCriteria {
             sb.append("교과목: ").append(lectureCriteria.lectureName);
         } else {
             sb.append("검사 그룹(").append(subcriteria.length).append(")");
-            if (needsAllPass()) {
-                sb.append(": 모두 통과");
-            } else if (getMinimumPass() != 0) {
-                sb.append(": ").append(getMinimumPass()).append("개 이상 통과");
-            }
         }
         return sb.toString();
     }

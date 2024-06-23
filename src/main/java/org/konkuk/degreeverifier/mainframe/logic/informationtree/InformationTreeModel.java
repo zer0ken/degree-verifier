@@ -67,14 +67,21 @@ public class InformationTreeModel extends DefaultTreeModel {
         } else {
             if (snapshot.criteria.needsAllPass()) {
                 recursiveNode.add(new DefaultMutableTreeNode("통과 기준: 모든 하위 검사 통과"));
-            } else if (snapshot.criteria.minimumPass != null) {
-                recursiveNode.add(new DefaultMutableTreeNode(
-                        "통과 기준: 최소 " + snapshot.criteria.minimumPass + "개의 하위 검사 통과"));
-            }
-
-            if (snapshot.criteria.maximumPass != null) {
-                recursiveNode.add(new DefaultMutableTreeNode(
-                        "학점 제한: 최대 " + snapshot.criteria.maximumPass + "개의 하위 검사만 사용"));
+            } else {
+                String needPassPrefix = "필요 통과 수: ";
+                String needPass = "";
+                if (snapshot.criteria.minimumPass != null) {
+                    needPass += snapshot.criteria.minimumPass + " ~";
+                }
+                if (snapshot.criteria.maximumPass != null) {
+                    if (needPass.isEmpty()) {
+                        needPass = "~";
+                    }
+                    needPass += " " + snapshot.criteria.maximumPass;
+                }
+                if (!needPass.isEmpty()){
+                    recursiveNode.add(new DefaultMutableTreeNode(needPassPrefix + needPass));
+                }
             }
 
             for (RecursiveSnapshot subSnapshot : snapshot.subSnapshots) {
@@ -86,7 +93,6 @@ public class InformationTreeModel extends DefaultTreeModel {
     }
 
     private void addNode(DefaultMutableTreeNode parent, LectureSnapshot snapshot) {
-        parent.add(new DefaultMutableTreeNode("과목명: " + snapshot.criteria.lectureName));
         if (snapshot.criteria.minimumGrade != null) {
             parent.add(new DefaultMutableTreeNode("인정 성적: " + snapshot.criteria.minimumGrade + " 이상"));
         }
