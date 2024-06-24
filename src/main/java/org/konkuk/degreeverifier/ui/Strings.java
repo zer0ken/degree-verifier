@@ -88,8 +88,10 @@ public class Strings {
     public static final String OPEN_VERIFIER_FILE = "검사 기준 파일 열기";
     public static final String CREATE_DEGREE_VERIFIER = "새 학위 추가하기";
     public static final String REMOVE_DEGREE_VERIFIER = "학위 삭제하기";
+    public static final String CONFIRM_REMOVE_DEGREE_MESSAGE = "선택한 학위를 삭제하려면 [확인]을 누르세요.";
     public static final String CREATE_RECURSIVE_VERIFIER = "새 검사 기준 추가하기";
     public static final String REMOVE_RECURSIVE_VERIFIER = "검사 기준 삭제하기";
     public static final String ROLLBACK_SELECTED_NODE = "변경 되돌리기";
     public static final String ROLLBACK_ALL = "모든 변경 취소하기";
+
 }

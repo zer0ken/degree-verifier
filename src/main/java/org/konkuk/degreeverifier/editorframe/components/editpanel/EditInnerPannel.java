@@ -2,7 +2,8 @@ package org.konkuk.degreeverifier.editorframe.components.editpanel;
 
 import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.common.components.LabeledSeparator;
-import org.konkuk.degreeverifier.editorframe.logic.editpanel.EditPanelController;
+import org.konkuk.degreeverifier.editorframe.logic.editpanel.EditPanelListener;
+import org.konkuk.degreeverifier.editorframe.logic.editpanel.EditPanelPresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class EditInnerPannel extends JPanel {
     public final JLabel degreeNameLabel = new JLabel("학위 이름:");
     public final JTextField degreeNameField = new JTextField();
     public final JLabel degreeMinimumCreditLabel = new JLabel("필요 학점:");
-    public final JSpinner degreeMinimumCreditSpinner = new JSpinner();
+    public final JSpinner degreeMinimumCreditSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     public final JLabel degreeDescriptionLabel = new JLabel("메모:");
     public final JTextField degreeDescriptionField = new JTextField();
 
@@ -31,9 +32,9 @@ public class EditInnerPannel extends JPanel {
 
     public final JRadioButton useRecursiveRadioButton = new JRadioButton(CRITERIA_VERIFIER);
     public final JCheckBox useMinimumPassCheckBox = new JCheckBox("통과 수 하한:");
-    public final JSpinner minimumPassSpinner = new JSpinner();
+    public final JSpinner minimumPassSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     public final JCheckBox useMaximumPassCheckBox = new JCheckBox("통과 수 상한:");
-    public final JSpinner maximumPassSpinner = new JSpinner();
+    public final JSpinner maximumPassSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
 
     public final JRadioButton useLectureRadioButton = new JRadioButton(LECTURE_VERIFIER);
     public final JLabel lectureNameLabel = new JLabel("과목명:");
@@ -70,7 +71,8 @@ public class EditInnerPannel extends JPanel {
             s = s.next();
         }
 
-        new EditPanelController(this);
+        new EditPanelPresenter(this);
+        new EditPanelListener(this);
     }
 
     private void initDegreeEditor() {

@@ -3,12 +3,14 @@ package org.konkuk.degreeverifier.editorframe.actions;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.models.EditorModel;
+import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import static org.konkuk.degreeverifier.ui.Strings.OPEN_VERIFIER_FILE;
 
@@ -21,8 +23,9 @@ public class OpenVerifierFileAction extends AbstractAction {
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/file_icon.svg", getClass().getClassLoader()));
 
-        setEnabled(editorModel.getSelectedDegree() != null);
-        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> setEnabled(selectedDegree != null));
+        setEnabled(editorModel.getSelectedDegrees().size() == 1);
+        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegrees ->
+                setEnabled(((Collection<EditableDegreeCriteria>) selectedDegrees).size() == 1));
     }
 
     @Override

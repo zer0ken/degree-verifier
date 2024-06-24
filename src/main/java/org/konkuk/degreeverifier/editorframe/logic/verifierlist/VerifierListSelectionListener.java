@@ -16,6 +16,6 @@ public class VerifierListSelectionListener implements ListSelectionListener {
             return;
         }
         JList<EditableDegreeCriteria> list = (JList<EditableDegreeCriteria>) e.getSource();
-        editorModel.setSelectedDegree(list.getSelectedValue());
+        editorModel.setSelectedDegrees(list.getSelectedValuesList());
     }
 }

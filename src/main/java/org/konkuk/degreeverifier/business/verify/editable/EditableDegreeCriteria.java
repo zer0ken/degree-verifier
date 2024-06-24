@@ -13,7 +13,7 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
     }
 
     public EditableDegreeCriteria(String degreeName) {
-        super(degreeName, null, null, new EditableRecursiveCriteria());
+        super(degreeName, null, 0, new EditableRecursiveCriteria());
 
         original = null;
         added = true;

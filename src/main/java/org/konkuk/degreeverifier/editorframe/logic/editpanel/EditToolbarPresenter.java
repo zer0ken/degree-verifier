@@ -6,12 +6,12 @@ import org.konkuk.degreeverifier.editorframe.components.editpanel.EditToolbar;
 
 import static org.konkuk.degreeverifier.ui.Strings.EDIT_PANEL_TITLE;
 
-public class EditToolbarController {
+public class EditToolbarPresenter {
     private final EditorModel editorModel = EditorModel.getInstance();
 
     private final EditToolbar toolbar;
 
-    public EditToolbarController(EditToolbar editToolbar) {
+    public EditToolbarPresenter(EditToolbar editToolbar) {
         toolbar = editToolbar;
         setTitle();
 
@@ -21,11 +21,11 @@ public class EditToolbarController {
 
     private void setTitle() {
         String title = EDIT_PANEL_TITLE;
-        if (editorModel.getSelectedDegree() != null) {
+        if (editorModel.getSelectedDegrees().size() == 1) {
             title = editorModel.getSelectedDegree().toString() + " / ";
-            if (editorModel.getSelectedNodes().size() == 1
-                    && !(editorModel.getSelectedNodes().get(0) instanceof EditableDegreeCriteria)) {
-                title += editorModel.getSelectedNodes().get(0);
+            if (editorModel.getSelectedNodeObjects().size() == 1
+                    && !(editorModel.getSelectedNode() instanceof EditableDegreeCriteria)) {
+                title += editorModel.getSelectedNode();
             }
         }
         toolbar.setTitle(title);

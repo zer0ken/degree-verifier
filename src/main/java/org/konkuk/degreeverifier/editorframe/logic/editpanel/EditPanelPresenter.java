@@ -8,13 +8,14 @@ import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCrite
 import org.konkuk.degreeverifier.editorframe.components.editpanel.EditInnerPannel;
 
 import javax.swing.*;
+import java.util.LinkedList;
 
-public class EditPanelController {
+public class EditPanelPresenter {
     private final EditorModel editorModel = EditorModel.getInstance();
 
     private final EditInnerPannel panel;
 
-    public EditPanelController(EditInnerPannel editPanel) {
+    public EditPanelPresenter(EditInnerPannel editPanel) {
         this.panel = editPanel;
 
         initEnableLink();
@@ -23,11 +24,12 @@ public class EditPanelController {
         if (editorModel.getSelectedDegree() != null) {
             enableAll();
         }
-        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> {
+        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegrees_ -> {
+            LinkedList<EditableDegreeCriteria> selectedDegrees = (LinkedList<EditableDegreeCriteria>) selectedDegrees_;
             disableAll();
-            if (selectedDegree != null) {
+            if (selectedDegrees.size() == 1) {
                 enableDegreeForm();
-                updateDegree();
+                updateDegree(selectedDegrees.get(0));
             } else {
                 clearDegreeForm();
                 clearCriteriaForm();
@@ -37,8 +39,8 @@ public class EditPanelController {
         });
         editorModel.observe(EditorModel.On.NODE_SELECTED, unused -> {
             disableAll();
-            if (editorModel.getSelectedNodes().size() == 1
-                    && !(editorModel.getSelectedNodes().get(0) instanceof EditableDegreeCriteria)) {
+            if (editorModel.getSelectedNodeObjects().size() == 1
+                    && !(editorModel.getSelectedNode() instanceof EditableDegreeCriteria)) {
                 enableAll();
                 updateRecursive();
             } else {
@@ -50,15 +52,14 @@ public class EditPanelController {
         });
     }
 
-    private void updateDegree() {
-        EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+    private void updateDegree(EditableDegreeCriteria degree) {
         panel.degreeNameField.setText(degree.degreeName);
         panel.degreeMinimumCreditSpinner.setValue(degree.minimumCredit);
         panel.degreeDescriptionField.setText(degree.description);
     }
 
     private void updateRecursive() {
-        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodes().get(0);
+        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNode();
         panel.setImportantCheckBox.setSelected(recursive.isImportant());
         panel.criteriaDescriptionField.setText(recursive.getDescription());
         if (recursive.lectureCriteria != null) {

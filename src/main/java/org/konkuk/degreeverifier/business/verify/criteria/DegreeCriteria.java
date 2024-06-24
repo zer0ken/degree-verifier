@@ -35,20 +35,20 @@ public class DegreeCriteria {
     public RecursiveCriteria recursiveCriteria;
 
     public DegreeCriteria(DegreeCriteria toCopy) {
-        description = toCopy.description;
         degreeName = toCopy.degreeName;
+        description = toCopy.description;
         minimumCredit = toCopy.minimumCredit;
         recursiveCriteria = toCopy.recursiveCriteria;
     }
 
     public DegreeCriteria(
-            String description,
             String degreeName,
+            String description,
             Integer minimumCredit,
             RecursiveCriteria recursiveCriteria
     ) {
-        this.description = description;
         this.degreeName = degreeName;
+        this.description = description;
         this.minimumCredit =  minimumCredit;
         this.recursiveCriteria = recursiveCriteria;
     }
