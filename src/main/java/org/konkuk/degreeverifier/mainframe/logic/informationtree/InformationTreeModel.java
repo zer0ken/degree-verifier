@@ -96,8 +96,7 @@ public class InformationTreeModel extends DefaultTreeModel {
         if (snapshot.criteria.minimumGrade != null) {
             parent.add(new DefaultMutableTreeNode("인정 성적: " + snapshot.criteria.minimumGrade + " 이상"));
         }
-        String validPeriodPrefix = "유효 기간:";
-        String validPeriodPostfix = " 교과목만 인정";
+        String validPeriodPrefix = "유효 이수 기간:";
         String validPeriod = "";
         Semester minSemester = snapshot.criteria.getMinimumSemester();
         Semester maxSemester = snapshot.criteria.getMaximumSemester();
@@ -111,9 +110,8 @@ public class InformationTreeModel extends DefaultTreeModel {
             validPeriod += maxSemester;
         }
         if (!validPeriod.isEmpty()) {
-            parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod + validPeriodPostfix));
+            parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod));
         }
-        parent.add(new DefaultMutableTreeNode("다른 학위에서 사용: " + (snapshot.criteria.isNonExclusive() ? "허가" : "불허")));
         if (snapshot.duplicatedDegrees.length > 0) {
             DefaultMutableTreeNode duplicated = new DefaultMutableTreeNode("사용 학위: " + snapshot.duplicatedDegrees.length + "개");
             parent.add(duplicated);

@@ -1,4 +1,4 @@
-package org.konkuk.degreeverifier.mainframe.actions;
+package org.konkuk.degreeverifier.common.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.DefaultPaths;
@@ -14,7 +14,7 @@ public class OpenVerifierDirectoryAction extends AbstractAction {
         putValue(NAME, OPEN_VERIFIER_DIRECTORY);
         putValue(SHORT_DESCRIPTION, OPEN_VERIFIER_DIRECTORY);
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/verifier_folder_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/folder_icon.svg", getClass().getClassLoader()));
     }
 
     @Override

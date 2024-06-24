@@ -47,7 +47,7 @@ public class EditorModel extends Observable {
 
     public void setSelectedDegree(EditableDegreeCriteria selectedDegree) {
         this.selectedDegree = selectedDegree;
-        notify(On.CRITERIA_SELECTED, selectedDegree);
+        notify(On.DEGREE_SELECTED, selectedDegree);
     }
 
     public EditableDegreeCriteria getSelectedDegree() {
@@ -69,7 +69,7 @@ public class EditorModel extends Observable {
     }
 
     public enum On implements Event {
-        CRITERIA_SELECTED,
+        DEGREE_SELECTED,
         NODE_SELECTED,
         SAVED
     }

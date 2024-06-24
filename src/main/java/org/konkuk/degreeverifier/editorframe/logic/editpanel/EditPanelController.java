@@ -1,38 +1,190 @@
 package org.konkuk.degreeverifier.editorframe.logic.editpanel;
 
 import org.konkuk.degreeverifier.business.Semester;
-import org.konkuk.degreeverifier.editorframe.components.editpanel.EditPanel;
+import org.konkuk.degreeverifier.business.models.EditorModel;
+import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
+import org.konkuk.degreeverifier.business.verify.editable.EditableLectureCriteria;
+import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
+import org.konkuk.degreeverifier.editorframe.components.editpanel.EditInnerPannel;
 
-import java.util.Calendar;
+import javax.swing.*;
 
 public class EditPanelController {
-    private final EditPanel editPanel;
+    private final EditorModel editorModel = EditorModel.getInstance();
 
-    public EditPanelController(EditPanel editPanel) {
-        this.editPanel = editPanel;
+    private final EditInnerPannel panel;
+
+    public EditPanelController(EditInnerPannel editPanel) {
+        this.panel = editPanel;
+
+        initEnableLink();
+        disableAll();
+
+        if (editorModel.getSelectedDegree() != null) {
+            enableAll();
+        }
+        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> {
+            disableAll();
+            if (selectedDegree != null) {
+                enableDegreeEdit();
+                updateDegree();
+            }
+        });
+        editorModel.observe(EditorModel.On.NODE_SELECTED, unused -> {
+            disableAll();
+            if (editorModel.getSelectedNodes().size() == 1
+                    && !(editorModel.getSelectedNodes().get(0) instanceof EditableDegreeCriteria)) {
+                enableAll();
+                updateRecursive();
+            } else {
+                enableDegreeEdit();
+                clearCriteria();
+                clearLecture();
+                clearRecursive();
+            }
+        });
     }
 
-    private void linkEnable() {
-        Semester s = new Semester(2022, Semester.Type.FIRST);
-        while (s.year <= Calendar.getInstance().get(Calendar.YEAR) + 4) {
-            editPanel.minimumSemesterComboBox.addItem(s);
-            editPanel.maximumSemesterComboBox.addItem(s);
-            s = s.next();
+    private void updateDegree() {
+        EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+        panel.degreeNameField.setText(degree.degreeName);
+        panel.degreeDescriptionField.setText(degree.description);
+    }
+
+    private void updateRecursive() {
+        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodes().get(0);
+        panel.setImportantCheckBox.setSelected(recursive.isImportant());
+        panel.criteriaDescriptionField.setText(recursive.getDescription());
+        if (recursive.lectureCriteria != null) {
+            EditableLectureCriteria lecture = recursive.getEditableLectureCriteria();
+            panel.useLectureRadioButton.setSelected(true);
+            panel.lectureNameField.setText(lecture.lectureName);
+            if (lecture.getMinimumSemester() != null) {
+                Semester min = lecture.getMinimumSemester();
+                panel.useMinimumSemesterCheckBox.setSelected(true);
+                panel.minimumSemesterComboBox.setSelectedItem(min);
+            } else {
+                panel.useMinimumSemesterCheckBox.setSelected(false);
+                panel.minimumSemesterComboBox.setSelectedIndex(0);
+            }
+            if (lecture.getMaximumSemester() != null) {
+                Semester max = lecture.getMaximumSemester();
+                panel.useMaximumSemesterCheckBox.setSelected(true);
+                panel.maximumSemesterComboBox.setSelectedItem(max);
+            } else {
+                panel.useMaximumSemesterCheckBox.setSelected(false);
+                panel.maximumSemesterComboBox.setSelectedIndex(0);
+            }
+            if (lecture.description != null) {
+                panel.lectureDescriptionField.setText(lecture.description);
+            } else {
+                panel.lectureDescriptionField.setText("");
+            }
+            panel.setNonExclusiveCheckBox.setSelected(lecture.isNonExclusive());
+            clearRecursive();
+        } else {
+            panel.useRecursiveRadioButton.setSelected(true);
+            if (recursive.minimumPass != null) {
+                panel.useMinimumPassCheckBox.setSelected(true);
+                panel.minimumPassSpinner.setValue(recursive.minimumPass);
+            } else {
+                panel.useMinimumPassCheckBox.setSelected(false);
+                panel.minimumPassSpinner.setValue(0);
+            }
+            if (recursive.maximumPass != null) {
+                panel.useMaximumPassCheckBox.setSelected(true);
+                panel.maximumPassSpinner.setValue(recursive.maximumPass);
+            } else {
+                panel.useMaximumPassCheckBox.setSelected(false);
+                panel.maximumPassSpinner.setValue(0);
+            }
+            clearLecture();
         }
-        editPanel.useLectureRadioButton.addChangeListener(
-                e -> {
-                    editPanel.lectureNameField.setEnabled(editPanel.useLectureRadioButton.isSelected());
-                    editPanel.useMinimumSemesterCheckBox.setEnabled(editPanel.useLectureRadioButton.isSelected());
-                    editPanel.useMaximumSemesterCheckBox.setEnabled(editPanel.useLectureRadioButton.isSelected());
-                    editPanel.setNonExclusiveCheckBox.setEnabled(editPanel.useLectureRadioButton.isSelected());
-                }
-        );
-        editPanel.useMinimumSemesterCheckBox.addChangeListener(
-                e -> editPanel.minimumSemesterComboBox.setEnabled(editPanel.useMinimumSemesterCheckBox.isSelected())
-        );
-        editPanel.useMaximumSemesterCheckBox.addChangeListener(
-                e -> editPanel.maximumSemesterComboBox.setEnabled(editPanel.useMaximumSemesterCheckBox.isSelected())
+    }
+
+    private void clearCriteria() {
+        panel.setImportantCheckBox.setSelected(false);
+        panel.criteriaDescriptionField.setText("");
+    }
+
+    private void clearRecursive() {
+        panel.useRecursiveRadioButton.setSelected(false);
+        panel.useMinimumPassCheckBox.setSelected(false);
+        panel.minimumPassSpinner.setValue(0);
+        panel.useMaximumPassCheckBox.setSelected(false);
+        panel.maximumPassSpinner.setValue(0);
+    }
+
+    private void clearLecture() {
+        panel.useLectureRadioButton.setSelected(false);
+        panel.lectureNameField.setText("");
+        panel.useMinimumSemesterCheckBox.setSelected(false);
+        panel.minimumSemesterComboBox.setSelectedIndex(0);
+        panel.useMaximumSemesterCheckBox.setSelected(false);
+        panel.maximumSemesterComboBox.setSelectedIndex(0);
+        panel.setNonExclusiveCheckBox.setSelected(false);
+        panel.lectureDescriptionField.setText("");
+    }
+
+    private void disableAll() {
+        panel.degreeNameLabel.setEnabled(false);
+        panel.setImportantCheckBox.setEnabled(false);
+    }
+
+    private void enableDegreeEdit() {
+        panel.degreeNameLabel.setEnabled(true);
+    }
+
+    private void enableAll() {
+        enableDegreeEdit();
+        panel.setImportantCheckBox.setEnabled(true);
+    }
+
+    private void initEnableLink() {
+        linkEnable(panel.degreeNameLabel,
+                panel.degreeNameField,
+                panel.degreeDescriptionLabel,
+                panel.degreeDescriptionField
         );
 
+        linkEnable(panel.setImportantCheckBox,
+                linkSelectEnable(panel.useRecursiveRadioButton,
+                        linkSelectEnable(panel.useMinimumPassCheckBox, panel.minimumPassSpinner),
+                        linkSelectEnable(panel.useMaximumPassCheckBox, panel.maximumPassSpinner)
+                ),
+                linkSelectEnable(panel.useLectureRadioButton,
+                        linkSelectEnable(panel.useMinimumSemesterCheckBox, panel.minimumSemesterComboBox),
+                        linkSelectEnable(panel.useMaximumSemesterCheckBox, panel.maximumSemesterComboBox),
+                        panel.lectureNameField,
+                        panel.setNonExclusiveCheckBox,
+                        panel.lectureNameLabel,
+                        panel.lectureDescriptionLabel,
+                        panel.lectureDescriptionField
+                ),
+                panel.criteriaDescriptionLabel,
+                panel.criteriaDescriptionField
+        );
+    }
+
+    private AbstractButton linkSelectEnable(AbstractButton parent, JComponent... children) {
+        parent.addChangeListener(e -> {
+            boolean enabled = parent.isEnabled();
+            boolean selected = parent.isSelected();
+
+            for (JComponent child : children) {
+                child.setEnabled(enabled && selected);
+            }
+        });
+        return parent;
+    }
+
+    private JComponent linkEnable(JComponent parent, JComponent... children) {
+        parent.addPropertyChangeListener("enabled", e -> {
+            boolean enabled = parent.isEnabled();
+            for (JComponent child : children) {
+                child.setEnabled(enabled);
+            }
+        });
+        return parent;
     }
 }

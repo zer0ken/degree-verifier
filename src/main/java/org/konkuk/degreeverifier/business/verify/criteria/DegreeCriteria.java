@@ -53,6 +53,10 @@ public class DegreeCriteria {
         this.recursiveCriteria = recursiveCriteria;
     }
 
+    public String getDescription() {
+        return description == null ? "" : description;
+    }
+
     @Override
     public String toString() {
         return degreeName;

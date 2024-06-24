@@ -7,9 +7,13 @@ public class MenuBar extends JMenuBar {
         add(new FileMenu());
         add(new VerifyMenu());
         add(new CommitMenu());
+        add(new SettingMenu());
 
         add(Box.createHorizontalStrut(30));
         add(new QuickToolbar());
+        add(Box.createGlue());
+        add(new SettingToolbar());
+        add(Box.createHorizontalStrut(10));
     }
 
     public JButton add(Action action) {

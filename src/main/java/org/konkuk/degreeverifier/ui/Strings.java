@@ -8,6 +8,7 @@ public class Strings {
     public static final String FILE_MENU = "파일";
     public static final String VERIFY_MENU = "검사";
     public static final String COMMIT_MENU = "검토";
+    public static final String SETTING_MENU = "설정";
 
     public static final String LECTURES_LOADING_MESSAGES = "수강 내역을 불러오는 중... [%s]";
     public static final String VERIFYING = "인정 가능한 학위를 검사하는 중... [%s]";
@@ -29,7 +30,7 @@ public class Strings {
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";
     public static final String LOAD_STUDENT_LIST = "학생 목록 불러오기";
     public static final String OPEN_STUDENT_DIRECTORY = "학생 목록 위치 열기";
-    public static final String CREATE_STUDENT = "새 학생 추가";
+    public static final String CREATE_STUDENT = "새 학생 추가하기";
     public static final String CREATE_STUDENT_MESSAGE = "<html>추가할 학생의 정보를 입력하고 [확인]을 누르세요.<br>&nbsp;</html>";
     public static final String STUDENT_ID = "학번*";
     public static final String STUDENT_NAME = "이름*";
@@ -70,15 +71,25 @@ public class Strings {
     public static final String UNFOLD_INFORMATION_TREE = "한 단계 펼치기";
 
     /** EditorFrame */
-    public static final String EDIT_FRAME_TITLE = "학위 검사 기준 수정";
+    public static final String EDIT_FRAME_TITLE = "검사 기준 수정하기";
     
-    public static final String APPLY_EDIT = "변경사항 적용하기";
-    public static final String CANCEL_EDIT = "변경사항 취소하기";
+    public static final String APPLY_EDIT = "적용하기";
+    public static final String CANCEL_EDIT = "취소";
 
     public static final String VERIFIER_TREE = "자세히 보기";
 
     public static final String VERIFIER_LIST = "학위 검사 기준";
 
-    public static final String LECTURE_VERIFIER = "교과목 검사";
-    public static final String CRITERIA_VERIFIER = "검사 그룹";
+    public static final String LECTURE_VERIFIER = "교과목 검사로 설정";
+    public static final String CRITERIA_VERIFIER = "검사 그룹으로 설정";
+
+    public static final String EDIT_PANEL_TITLE = "검사 기준 편집";
+
+    public static final String OPEN_VERIFIER_FILE = "검사 기준 파일 열기";
+    public static final String CREATE_DEGREE_VERIFIER = "새 학위 추가하기";
+    public static final String REMOVE_DEGREE_VERIFIER = "학위 삭제하기";
+    public static final String CREATE_RECURSIVE_VERIFIER = "새 검사 기준 추가하기";
+    public static final String REMOVE_RECURSIVE_VERIFIER = "검사 기준 삭제하기";
+    public static final String ROLLBACK_SELECTED_NODE = "변경 되돌리기";
+    public static final String ROLLBACK_ALL = "모든 변경 취소하기";
 }

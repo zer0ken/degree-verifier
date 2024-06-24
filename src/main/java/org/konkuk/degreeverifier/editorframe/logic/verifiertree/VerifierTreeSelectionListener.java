@@ -36,9 +36,5 @@ public class VerifierTreeSelectionListener implements TreeSelectionListener {
                 editorModel.removeSelectedNode(editable);
             }
         }
-        System.out.println("valueChanged");
-        for (Editable selectedNode : editorModel.getSelectedNodes()) {
-            System.out.println(selectedNode);
-        }
     }
 }

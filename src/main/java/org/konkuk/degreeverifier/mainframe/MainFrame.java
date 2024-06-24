@@ -4,7 +4,6 @@ import com.formdev.flatlaf.extras.FlatInspector;
 import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.common.components.DegreeVerifierFrame;
 import org.konkuk.degreeverifier.common.components.statusbar.StatusBar;
-import org.konkuk.degreeverifier.editorframe.EditorFrame;
 import org.konkuk.degreeverifier.mainframe.components.SplitPanel;
 import org.konkuk.degreeverifier.mainframe.components.menubar.MenuBar;
 import org.konkuk.degreeverifier.ui.Themes;
@@ -41,9 +40,6 @@ public class MainFrame extends DegreeVerifierFrame {
         AppModel.getInstance().loadVerifier();
         AppModel.getInstance().loadStudentList();
         FlatInspector.install("ctrl shift alt X");
-
-        // TODO: 2024-06-08 delete line below
-        EditorFrame editorFrame = new EditorFrame();
     }
 
     public static void main(String[] args) {
