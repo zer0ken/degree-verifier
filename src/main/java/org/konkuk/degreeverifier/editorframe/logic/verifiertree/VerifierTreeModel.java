@@ -32,6 +32,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
     private void updateTree(EditableDegreeCriteria selectedDegree) {
         root.removeAllChildren();
         if (selectedDegree == null) {
+            reload();
             return;
         }
 

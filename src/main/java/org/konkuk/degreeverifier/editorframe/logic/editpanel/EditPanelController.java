@@ -26,8 +26,13 @@ public class EditPanelController {
         editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> {
             disableAll();
             if (selectedDegree != null) {
-                enableDegreeEdit();
+                enableDegreeForm();
                 updateDegree();
+            } else {
+                clearDegreeForm();
+                clearCriteriaForm();
+                clearLectureForm();
+                clearRecursiveForm();
             }
         });
         editorModel.observe(EditorModel.On.NODE_SELECTED, unused -> {
@@ -37,10 +42,10 @@ public class EditPanelController {
                 enableAll();
                 updateRecursive();
             } else {
-                enableDegreeEdit();
-                clearCriteria();
-                clearLecture();
-                clearRecursive();
+                enableDegreeForm();
+                clearCriteriaForm();
+                clearLectureForm();
+                clearRecursiveForm();
             }
         });
     }
@@ -48,6 +53,7 @@ public class EditPanelController {
     private void updateDegree() {
         EditableDegreeCriteria degree = editorModel.getSelectedDegree();
         panel.degreeNameField.setText(degree.degreeName);
+        panel.degreeMinimumCreditSpinner.setValue(degree.minimumCredit);
         panel.degreeDescriptionField.setText(degree.description);
     }
 
@@ -81,7 +87,7 @@ public class EditPanelController {
                 panel.lectureDescriptionField.setText("");
             }
             panel.setNonExclusiveCheckBox.setSelected(lecture.isNonExclusive());
-            clearRecursive();
+            clearRecursiveForm();
         } else {
             panel.useRecursiveRadioButton.setSelected(true);
             if (recursive.minimumPass != null) {
@@ -98,16 +104,22 @@ public class EditPanelController {
                 panel.useMaximumPassCheckBox.setSelected(false);
                 panel.maximumPassSpinner.setValue(0);
             }
-            clearLecture();
+            clearLectureForm();
         }
     }
 
-    private void clearCriteria() {
+    private void clearDegreeForm() {
+        panel.degreeNameField.setText("");
+        panel.degreeMinimumCreditSpinner.setValue(0);
+        panel.degreeDescriptionField.setText("");
+    }
+
+    private void clearCriteriaForm() {
         panel.setImportantCheckBox.setSelected(false);
         panel.criteriaDescriptionField.setText("");
     }
 
-    private void clearRecursive() {
+    private void clearRecursiveForm() {
         panel.useRecursiveRadioButton.setSelected(false);
         panel.useMinimumPassCheckBox.setSelected(false);
         panel.minimumPassSpinner.setValue(0);
@@ -115,7 +127,7 @@ public class EditPanelController {
         panel.maximumPassSpinner.setValue(0);
     }
 
-    private void clearLecture() {
+    private void clearLectureForm() {
         panel.useLectureRadioButton.setSelected(false);
         panel.lectureNameField.setText("");
         panel.useMinimumSemesterCheckBox.setSelected(false);
@@ -131,18 +143,20 @@ public class EditPanelController {
         panel.setImportantCheckBox.setEnabled(false);
     }
 
-    private void enableDegreeEdit() {
+    private void enableDegreeForm() {
         panel.degreeNameLabel.setEnabled(true);
     }
 
     private void enableAll() {
-        enableDegreeEdit();
+        enableDegreeForm();
         panel.setImportantCheckBox.setEnabled(true);
     }
 
     private void initEnableLink() {
         linkEnable(panel.degreeNameLabel,
                 panel.degreeNameField,
+                panel.degreeMinimumCreditLabel,
+                panel.degreeMinimumCreditSpinner,
                 panel.degreeDescriptionLabel,
                 panel.degreeDescriptionField
         );
