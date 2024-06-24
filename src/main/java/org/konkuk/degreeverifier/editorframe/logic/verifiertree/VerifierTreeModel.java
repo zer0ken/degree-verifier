@@ -1,20 +1,19 @@
 package org.konkuk.degreeverifier.editorframe.logic.verifiertree;
 
-import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.models.EditorModel;
-import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
-import org.konkuk.degreeverifier.business.verify.editable.EditableLectureCriteria;
-import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
 import org.konkuk.degreeverifier.editorframe.components.verifiertree.VerifierTree;
+import org.konkuk.degreeverifier.editorframe.logic.verifiertree.node.DegreeNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.util.LinkedList;
 
 public class VerifierTreeModel extends DefaultTreeModel {
     private final EditorModel editorModel = EditorModel.getInstance();
 
     private final DefaultMutableTreeNode root;
+    private DegreeNode degreeNode;
     private final VerifierTree tree;
 
     public VerifierTreeModel(VerifierTree tree) {
@@ -22,85 +21,35 @@ public class VerifierTreeModel extends DefaultTreeModel {
         root = (DefaultMutableTreeNode) getRoot();
         this.tree = tree;
 
-        if (editorModel.getSelectedDegree() != null) {
-            updateTree(editorModel.getSelectedDegree());
+        if (editorModel.getSelectedDegrees().size() == 1) {
+            initTree(editorModel.getSelectedDegree());
         }
 
-        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> updateTree((EditableDegreeCriteria) selectedDegree));
+        editorModel.observe(EditorModel.On.DEGREE_SELECTED, _selectedDegrees -> {
+            LinkedList<EditableDegreeCriteria> selectedDegrees = (LinkedList<EditableDegreeCriteria>) _selectedDegrees;
+            if (selectedDegrees.size() == 1) {
+                initTree(selectedDegrees.get(0));
+            } else {
+                initTree(null);
+            }
+        });
+        editorModel.observe(EditorModel.On.DEGREE_UPDATED, unused -> updateTree());
     }
 
-    private void updateTree(EditableDegreeCriteria selectedDegree) {
+    private void initTree(EditableDegreeCriteria selectedDegree) {
         root.removeAllChildren();
         if (selectedDegree == null) {
             reload();
             return;
         }
-
-        DefaultMutableTreeNode degreeNode = new DefaultMutableTreeNode(selectedDegree);
-        DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode(
-                "필요 학점: " + selectedDegree.minimumCredit + " 학점 이상"
-        );
-        degreeNode.add(minimumCreditNode);
-
-        addNode(degreeNode, selectedDegree.getEditableRecursiveCriteria());
+        degreeNode = new DegreeNode(selectedDegree);
         root.add(degreeNode);
         reload();
         tree.updateFoldingState();
     }
 
-    private void addNode(DefaultMutableTreeNode parent, EditableRecursiveCriteria criteria) {
-        DefaultMutableTreeNode recursiveNode = new DefaultMutableTreeNode(criteria);
-
-        if (criteria.lectureCriteria != null) {
-            addNode(recursiveNode, criteria.getEditableLectureCriteria());
-        } else {
-            if (criteria.needsAllPass()) {
-                recursiveNode.add(new DefaultMutableTreeNode("통과 기준: 모든 하위 검사 통과"));
-            } else {
-                String needPassPrefix = "필요 통과 수: ";
-                String needPass = "";
-                if (criteria.minimumPass != null) {
-                    needPass += criteria.minimumPass + " ~";
-                }
-                if (criteria.maximumPass != null) {
-                    if (needPass.isEmpty()) {
-                        needPass = "~";
-                    }
-                    needPass += " " + criteria.maximumPass;
-                }
-                if (!needPass.isEmpty()) {
-                    recursiveNode.add(new DefaultMutableTreeNode(needPassPrefix + needPass));
-                }
-            }
-
-            for (RecursiveCriteria subcriteria_ : criteria.getSubcriteria()) {
-                EditableRecursiveCriteria subcriteria = (EditableRecursiveCriteria) subcriteria_;
-                addNode(recursiveNode, subcriteria);
-            }
-        }
-
-        parent.add(recursiveNode);
-    }
-
-    private void addNode(DefaultMutableTreeNode parent, EditableLectureCriteria criteria) {
-        if (criteria.minimumGrade != null) {
-            parent.add(new DefaultMutableTreeNode("인정 성적: " + criteria.minimumGrade + " 이상"));
-        }
-        String validPeriodPrefix = "유효 이수 기간: ";
-        String validPeriod = "";
-        Semester minSemester = criteria.getMinimumSemester();
-        Semester maxSemester = criteria.getMaximumSemester();
-        if (minSemester != null) {
-            validPeriod += minSemester.toString();
-        }
-        if (!validPeriod.isEmpty()) {
-            validPeriod += " ~";
-        }
-        if (maxSemester != null) {
-            validPeriod += " " + maxSemester;
-        }
-        if (!validPeriod.isEmpty()) {
-            parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod));
-        }
+    private void updateTree() {
+        degreeNode.update(this);
+        nodeChanged(degreeNode);
     }
 }

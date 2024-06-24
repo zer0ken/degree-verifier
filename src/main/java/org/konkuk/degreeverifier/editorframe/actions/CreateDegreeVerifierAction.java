@@ -4,9 +4,10 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.models.EditorModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import static org.konkuk.degreeverifier.ui.Strings.CREATE_DEGREE_VERIFIER;
+import static org.konkuk.degreeverifier.ui.Strings.*;
 
 public class CreateDegreeVerifierAction extends AbstractAction {
     private final EditorModel editorModel = EditorModel.getInstance();
@@ -20,6 +21,6 @@ public class CreateDegreeVerifierAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: 2024-06-24 implement this
+        editorModel.createDegree();
     }
 }

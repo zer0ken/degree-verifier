@@ -4,10 +4,8 @@ import org.konkuk.degreeverifier.business.verify.editable.Editable;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.*;
 
 public class EditorModel extends Observable {
     private static final EditorModel instance = new EditorModel();
@@ -25,8 +23,9 @@ public class EditorModel extends Observable {
     private final AppModel appModel = AppModel.getInstance();
 
     private final HashMap<String, EditableDegreeCriteria> degreeMap = new LinkedHashMap<>();
-    private EditableDegreeCriteria selectedDegree = null;
-    private final LinkedList<Editable> selectedNodes = new LinkedList<>();
+    private LinkedList<EditableDegreeCriteria> selectedDegrees = new LinkedList<>();
+    private final LinkedList<Editable> selectedNodeObjects = new LinkedList<>();
+    private final LinkedList<DefaultMutableTreeNode> selectedNodes = new LinkedList<>();
 
     public void loadVerifiers() {
         for (DegreeVerifier degreeVerifier : appModel.getVerifierFactory()) {
@@ -34,9 +33,33 @@ public class EditorModel extends Observable {
         }
     }
 
+    public void createDegree() {
+        String degreeName;
+        do {
+            degreeName = "새 학위 - " +
+                    (new Random()).ints(97, 123)
+                            .limit(10)
+                            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                            .toString();
+        } while (degreeMap.containsKey(degreeName));
+        EditableDegreeCriteria degreeCriteria = new EditableDegreeCriteria(degreeName);
+        degreeMap.put(degreeName, degreeCriteria);
+        notify(On.DEGREE_CREATED, degreeCriteria);
+    }
+
+    public void removeSelectedDegree() {
+        LinkedList<EditableDegreeCriteria> selectedDegrees = new LinkedList<>(this.selectedDegrees);
+        setSelectedDegrees(null);
+
+        for (EditableDegreeCriteria degree : selectedDegrees) {
+            degreeMap.remove(degree.degreeName);
+        }
+        notify(On.DEGREE_REMOVED, selectedDegrees);
+    }
+
     public void saveChanges() {
         for (String key : degreeMap.keySet()) {
-            // TODO: try save, rollback on fail. also update original.
+
         }
         notify(On.SAVED, degreeMap);
     }
@@ -45,31 +68,51 @@ public class EditorModel extends Observable {
         return degreeMap.values();
     }
 
-    public void setSelectedDegree(EditableDegreeCriteria selectedDegree) {
-        this.selectedDegree = selectedDegree;
-        notify(On.DEGREE_SELECTED, selectedDegree);
+    public void setSelectedDegrees(Collection<EditableDegreeCriteria> selectedDegrees) {
+        this.selectedDegrees.clear();
+        if (selectedDegrees != null) {
+            this.selectedDegrees.addAll(selectedDegrees);
+        }
+        notify(On.DEGREE_SELECTED, this.selectedDegrees);
+    }
+
+    public LinkedList<EditableDegreeCriteria> getSelectedDegrees() {
+        return selectedDegrees;
     }
 
     public EditableDegreeCriteria getSelectedDegree() {
-        return selectedDegree;
+        return selectedDegrees.isEmpty() ? null : selectedDegrees.getFirst();
     }
 
-    public void addSelectedNode(Editable selectedNode) {
+    public void addSelectedNode(DefaultMutableTreeNode selectedNode, Editable selectedNodeObject) {
         selectedNodes.add(selectedNode);
-        notify(On.NODE_SELECTED, selectedNodes);
+        selectedNodeObjects.add(selectedNodeObject);
+        notify(On.NODE_SELECTED, selectedNodeObjects);
     }
 
-    public void removeSelectedNode(Editable selectedNode) {
-        selectedNodes.remove(selectedNode);
-        notify(On.NODE_SELECTED, selectedNodes);
+    public void removeSelectedNode(DefaultMutableTreeNode selectedNode, Editable selectedNodeObject) {
+        selectedNodes.add(selectedNode);
+        selectedNodeObjects.remove(selectedNodeObject);
+        notify(On.NODE_SELECTED, selectedNodeObjects);
     }
 
-    public LinkedList<Editable> getSelectedNodes() {
-        return selectedNodes;
+    public void notifyUpdatedSelectedDegree() {
+        notify(On.DEGREE_UPDATED, getSelectedDegree());
+    }
+
+    public LinkedList<Editable> getSelectedNodeObjects() {
+        return selectedNodeObjects;
+    }
+
+    public Editable getSelectedNode() {
+        return selectedNodeObjects.isEmpty() ? null : selectedNodeObjects.getFirst();
     }
 
     public enum On implements Event {
         DEGREE_SELECTED,
+        DEGREE_CREATED,
+        DEGREE_REMOVED,
+        DEGREE_UPDATED,
         NODE_SELECTED,
         SAVED
     }

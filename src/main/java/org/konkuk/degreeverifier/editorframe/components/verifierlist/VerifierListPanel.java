@@ -17,7 +17,6 @@ public class VerifierListPanel extends JPanel {
         JList<EditableDegreeCriteria> list = new JList<>();
         list.setBackground(UIManager.getColor("RootPane.background"));
         list.setModel(new VerifierListModel());
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.addListSelectionListener(new VerifierListSelectionListener());
 
         JScrollPane scrollPane = new JScrollPane(

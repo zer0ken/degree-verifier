@@ -31,9 +31,9 @@ public class VerifierTreeSelectionListener implements TreeSelectionListener {
             }
 
             if (e.isAddedPath(path)) {
-                editorModel.addSelectedNode(editable);
+                editorModel.addSelectedNode((DefaultMutableTreeNode) cur.getLastPathComponent(), editable);
             } else {
-                editorModel.removeSelectedNode(editable);
+                editorModel.removeSelectedNode((DefaultMutableTreeNode) cur.getLastPathComponent(), editable);
             }
         }
     }
