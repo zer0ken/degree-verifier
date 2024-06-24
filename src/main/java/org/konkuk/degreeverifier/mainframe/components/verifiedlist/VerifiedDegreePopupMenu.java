@@ -1,8 +1,8 @@
 package org.konkuk.degreeverifier.mainframe.components.verifiedlist;
 
+import org.konkuk.degreeverifier.common.actions.OpenVerifierDirectoryAction;
 import org.konkuk.degreeverifier.mainframe.actions.CommitDegreeAction;
 import org.konkuk.degreeverifier.mainframe.actions.CommitRecommendedDegreesAction;
-import org.konkuk.degreeverifier.mainframe.actions.OpenVerifierDirectoryAction;
 
 import javax.swing.*;
 

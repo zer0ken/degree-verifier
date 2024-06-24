@@ -11,7 +11,13 @@ import static org.konkuk.degreeverifier.ui.Dimensions.PREFERRED_EDIT_FRAME_SIZE;
 import static org.konkuk.degreeverifier.ui.Strings.EDIT_FRAME_TITLE;
 
 public class EditorFrame extends DegreeVerifierFrame {
-    public EditorFrame() {
+    private static final EditorFrame instance = new EditorFrame();
+
+    public static EditorFrame getInstance() {
+        return instance;
+    }
+    
+    protected EditorFrame() {
         super();
 
         setTitle(EDIT_FRAME_TITLE);
@@ -22,7 +28,13 @@ public class EditorFrame extends DegreeVerifierFrame {
 
         add(new SplitPanel());
         add(new ApplyPanel(), BorderLayout.SOUTH);
+    }
 
-        setVisible(true);
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (b) {
+            setState(Frame.NORMAL);
+        }
     }
 }

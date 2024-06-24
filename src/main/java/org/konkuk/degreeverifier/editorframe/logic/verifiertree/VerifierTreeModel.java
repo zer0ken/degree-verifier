@@ -26,7 +26,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
             updateTree(editorModel.getSelectedDegree());
         }
 
-        editorModel.observe(EditorModel.On.CRITERIA_SELECTED, selectedDegree -> updateTree((EditableDegreeCriteria) selectedDegree));
+        editorModel.observe(EditorModel.On.DEGREE_SELECTED, selectedDegree -> updateTree((EditableDegreeCriteria) selectedDegree));
     }
 
     private void updateTree(EditableDegreeCriteria selectedDegree) {
@@ -67,7 +67,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
                     }
                     needPass += " " + criteria.maximumPass;
                 }
-                if (!needPass.isEmpty()){
+                if (!needPass.isEmpty()) {
                     recursiveNode.add(new DefaultMutableTreeNode(needPassPrefix + needPass));
                 }
             }
@@ -85,9 +85,7 @@ public class VerifierTreeModel extends DefaultTreeModel {
         if (criteria.minimumGrade != null) {
             parent.add(new DefaultMutableTreeNode("인정 성적: " + criteria.minimumGrade + " 이상"));
         }
-        parent.add(new DefaultMutableTreeNode("다른 학위에서 사용: " + (criteria.isNonExclusive() ? "허가" : "불허")));
-        String validPeriodPrefix = "유효 기간:";
-        String validPeriodPostfix = " 교과목만 인정";
+        String validPeriodPrefix = "유효 이수 기간: ";
         String validPeriod = "";
         Semester minSemester = criteria.getMinimumSemester();
         Semester maxSemester = criteria.getMaximumSemester();
@@ -98,10 +96,10 @@ public class VerifierTreeModel extends DefaultTreeModel {
             validPeriod += " ~";
         }
         if (maxSemester != null) {
-            validPeriod += maxSemester.toString();
+            validPeriod += " " + maxSemester;
         }
         if (!validPeriod.isEmpty()) {
-            parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod + validPeriodPostfix));
+            parent.add(new DefaultMutableTreeNode(validPeriodPrefix + validPeriod));
         }
     }
 }

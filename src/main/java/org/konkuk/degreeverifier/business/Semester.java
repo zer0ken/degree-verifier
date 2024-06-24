@@ -62,6 +62,15 @@ public class Semester implements Comparable<Semester> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Semester) {
+            Semester o = (Semester) obj;
+            return year == o.year && semester.equals(o.semester);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
     public String toString() {
         return year + "년도 " + semester.value;
     }

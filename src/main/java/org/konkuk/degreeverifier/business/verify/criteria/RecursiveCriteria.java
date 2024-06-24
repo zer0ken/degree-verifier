@@ -115,6 +115,10 @@ public class RecursiveCriteria {
         return minimumPass != null ? minimumPass : 0;
     }
 
+    public String getDescription() {
+        return description == null ? "" : description;
+    }
+
     public RecursiveCriteria[] getSubcriteria() {
         return subcriteria;
     }

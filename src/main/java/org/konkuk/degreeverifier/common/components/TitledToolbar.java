@@ -13,6 +13,7 @@ import static org.konkuk.degreeverifier.ui.Dimensions.*;
 public class TitledToolbar extends SizedToolbar {
     private final List<Component> whenNarrow = new LinkedList<>();
     private final List<Component> whenWide = new LinkedList<>();
+    private final JLabel titleLabel;
 
     private boolean narrow = true;
 
@@ -23,7 +24,7 @@ public class TitledToolbar extends SizedToolbar {
         setPreferredSize(TITLED_TOOLBAR_SIZE);
         setAlignmentY(JComponent.CENTER_ALIGNMENT);
         setBorder(TITLED_TOOLBAR_BORDER);
-        add(new JLabel(title));
+        add(titleLabel = new JLabel(title));
 
         whenNarrow.add(add(Box.createGlue()));
         whenWide.add(add(Box.createHorizontalStrut(TITLED_TOOLBAR_RIGHT_GAP)));
@@ -38,6 +39,10 @@ public class TitledToolbar extends SizedToolbar {
                 }
             }
         });
+    }
+
+    public void setTitle(String title) {
+        titleLabel.setText(title);
     }
 
     private void setNarrow(boolean narrow) {

@@ -29,15 +29,15 @@ public class Dimensions {
 
     public static final int ITEM_ICON_SIZE = 16;
 
-    public static final Dimension QUICK_TOOLBAR_BUTTON_SIZE = new Dimension(32, 28);
-    public static final float QUICK_TOOLBAR_ICON_SCALE = 0.8f;
+    public static final Dimension MENU_TOOLBAR_BUTTON_SIZE = new Dimension(32, 28);
+    public static final float MENU_TOOLBAR_ICON_SCALE = 0.8f;
 
     public static final Dimension MINIMUM_EDIT_FRAME_SIZE = new Dimension(700, 340);
-    public static final Dimension PREFERRED_EDIT_FRAME_SIZE = new Dimension(1100, 560);
+    public static final Dimension PREFERRED_EDIT_FRAME_SIZE = new Dimension(1100, 660);
 
     public static final Dimension MINIMUM_VERIFIER_LIST_SIZE = new Dimension(220, 180);
-    public static final Dimension MINIMUM_VERIFIER_TREE_SIZE = new Dimension(220, 180);
-    public static final Dimension MINIMUM_EDIT_PANEL_SIZE = new Dimension(220, 180);
+    public static final Dimension MINIMUM_VERIFIER_TREE_SIZE = new Dimension(300, 180);
+    public static final Dimension MINIMUM_EDIT_PANEL_SIZE = new Dimension(320, 180);
 
     public static final Dimension MAXIMUM_LABELED_SEPARATOR_SIZE = new Dimension(Integer.MAX_VALUE, 20);
 }
