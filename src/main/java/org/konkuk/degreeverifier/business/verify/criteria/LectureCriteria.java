@@ -91,6 +91,14 @@ public class LectureCriteria {
         return null;
     }
 
+    public String getValidGradeString() {
+        return "인정 성적: " + getMinimumGrade() + " 이상";
+    }
+
+    public String getValidPeriodString() {
+        return Semester.buildValidPeriodString(getMinimumSemester(), getMaximumSemester());
+    }
+
     public LectureCriteria(LectureCriteria toCopy) {
         description = toCopy.description;
         lectureName = toCopy.lectureName;

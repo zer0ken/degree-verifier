@@ -73,7 +73,8 @@ public class Strings {
     /** EditorFrame */
     public static final String EDIT_FRAME_TITLE = "검사 기준 수정하기";
     
-    public static final String APPLY_EDIT = "적용하기";
+    public static final String APPLY_EDIT = "적용";
+    public static final String CONFIRM_EDIT = "확인";
     public static final String CANCEL_EDIT = "취소";
 
     public static final String VERIFIER_TREE = "자세히 보기";
@@ -91,6 +92,7 @@ public class Strings {
     public static final String CONFIRM_REMOVE_DEGREE_MESSAGE = "선택한 학위를 삭제하려면 [확인]을 누르세요.";
     public static final String CREATE_RECURSIVE_VERIFIER = "새 검사 기준 추가하기";
     public static final String REMOVE_RECURSIVE_VERIFIER = "검사 기준 삭제하기";
+    public static final String CONFIRM_REMOVE_RECURSIVE_MESSAGE = "선택한 검사 기준을 삭제하려면 [확인]을 누르세요.";
     public static final String ROLLBACK_SELECTED_NODE = "변경 되돌리기";
     public static final String ROLLBACK_ALL = "모든 변경 취소하기";
 

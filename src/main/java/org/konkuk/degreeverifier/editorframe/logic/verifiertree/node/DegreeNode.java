@@ -16,13 +16,18 @@ public class DegreeNode extends DefaultMutableTreeNode {
         this.degree = degree;
         recursiveNode = new RecursiveNode(degree.getEditableRecursiveCriteria());
 
+        minimumCreditNode.setUserObject(degree.getValidCreditString());
         add(minimumCreditNode);
-        add(new RecursiveNode(degree.getEditableRecursiveCriteria()));
+        add(recursiveNode);
     }
 
     public void update(VerifierTreeModel model) {
-        minimumCreditNode.setUserObject("필요 학점: " + degree.minimumCredit + " ~");
+        setUserObject(degree);
+        model.nodeChanged(this);
+
+        minimumCreditNode.setUserObject(degree.getValidCreditString());
         model.nodeChanged(minimumCreditNode);
-//        recursiveNode.update(model);
+
+        recursiveNode.update(model);
     }
 }

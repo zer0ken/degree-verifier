@@ -31,6 +31,7 @@ public class EditInnerPannel extends JPanel {
     public final JTextField criteriaDescriptionField = new JTextField();
 
     public final JRadioButton useRecursiveRadioButton = new JRadioButton(CRITERIA_VERIFIER);
+    public final JCheckBox setNeedAllPassCheckBox = new JCheckBox("모든 하위 검사를 통과해야 함");
     public final JCheckBox useMinimumPassCheckBox = new JCheckBox("통과 수 하한:");
     public final JSpinner minimumPassSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     public final JCheckBox useMaximumPassCheckBox = new JCheckBox("통과 수 상한:");
@@ -60,9 +61,10 @@ public class EditInnerPannel extends JPanel {
         initRecursiveEditor();
         initLectureEditor();
 
-        ButtonGroup group = new ButtonGroup();
-        group.add(useLectureRadioButton);
-        group.add(useRecursiveRadioButton);
+        ButtonGroup g1 = new ButtonGroup();
+        g1.add(useLectureRadioButton);
+        g1.add(useRecursiveRadioButton);
+        useRecursiveRadioButton.setSelected(true);
 
         Semester s = new Semester(2022, Semester.Type.FIRST);
         while (s.year <= Calendar.getInstance().get(Calendar.YEAR) + 4) {
@@ -88,6 +90,7 @@ public class EditInnerPannel extends JPanel {
 
     private void initRecursiveEditor() {
         addRow(useRecursiveRadioButton);
+        addRow(setNeedAllPassCheckBox, 1);
         addRow(useMinimumPassCheckBox, minimumPassSpinner, 1);
         addRow(useMaximumPassCheckBox, maximumPassSpinner, 1);
     }

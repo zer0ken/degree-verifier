@@ -37,17 +37,20 @@ public class EditPanelPresenter {
                 clearRecursiveForm();
             }
         });
-        editorModel.observe(EditorModel.On.NODE_SELECTED, unused -> {
+        editorModel.observe(EditorModel.On.NODES_SELECTED, unused -> {
             disableAll();
             if (editorModel.getSelectedNodeObjects().size() == 1
-                    && !(editorModel.getSelectedNode() instanceof EditableDegreeCriteria)) {
-                enableAll();
-                updateRecursive();
-            } else {
-                enableDegreeForm();
+                    && !(editorModel.getSelectedNodeObject() instanceof EditableDegreeCriteria)) {
                 clearCriteriaForm();
                 clearLectureForm();
                 clearRecursiveForm();
+                updateRecursive();
+                enableAll();
+            } else {
+                clearCriteriaForm();
+                clearLectureForm();
+                clearRecursiveForm();
+                enableDegreeForm();
             }
         });
     }
@@ -59,7 +62,7 @@ public class EditPanelPresenter {
     }
 
     private void updateRecursive() {
-        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNode();
+        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodeObject();
         panel.setImportantCheckBox.setSelected(recursive.isImportant());
         panel.criteriaDescriptionField.setText(recursive.getDescription());
         if (recursive.lectureCriteria != null) {
@@ -91,6 +94,11 @@ public class EditPanelPresenter {
             clearRecursiveForm();
         } else {
             panel.useRecursiveRadioButton.setSelected(true);
+            if (recursive.needAllPass != null) {
+                panel.setNeedAllPassCheckBox.setSelected(recursive.needsAllPass());
+            } else {
+                panel.setNeedAllPassCheckBox.setSelected(false);
+            }
             if (recursive.minimumPass != null) {
                 panel.useMinimumPassCheckBox.setSelected(true);
                 panel.minimumPassSpinner.setValue(recursive.minimumPass);
@@ -122,6 +130,7 @@ public class EditPanelPresenter {
 
     private void clearRecursiveForm() {
         panel.useRecursiveRadioButton.setSelected(false);
+        panel.setNeedAllPassCheckBox.setSelected(false);
         panel.useMinimumPassCheckBox.setSelected(false);
         panel.minimumPassSpinner.setValue(0);
         panel.useMaximumPassCheckBox.setSelected(false);
@@ -165,7 +174,8 @@ public class EditPanelPresenter {
         linkEnable(panel.setImportantCheckBox,
                 linkSelectEnable(panel.useRecursiveRadioButton,
                         linkSelectEnable(panel.useMinimumPassCheckBox, panel.minimumPassSpinner),
-                        linkSelectEnable(panel.useMaximumPassCheckBox, panel.maximumPassSpinner)
+                        linkSelectEnable(panel.useMaximumPassCheckBox, panel.maximumPassSpinner),
+                        panel.setNeedAllPassCheckBox
                 ),
                 linkSelectEnable(panel.useLectureRadioButton,
                         linkSelectEnable(panel.useMinimumSemesterCheckBox, panel.minimumSemesterComboBox),

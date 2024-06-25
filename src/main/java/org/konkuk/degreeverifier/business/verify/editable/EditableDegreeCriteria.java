@@ -10,15 +10,16 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
         added = false;
         removed = false;
         edited = false;
+        getEditableRecursiveCriteria().isRoot = true;
     }
 
     public EditableDegreeCriteria(String degreeName) {
         super(degreeName, null, 0, new EditableRecursiveCriteria());
-
         original = null;
         added = true;
         removed = false;
         edited = true;
+        getEditableRecursiveCriteria().isRoot = true;
     }
 
     private final DegreeCriteria original;

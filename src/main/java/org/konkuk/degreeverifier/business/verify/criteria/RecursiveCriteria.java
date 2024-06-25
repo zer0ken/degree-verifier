@@ -139,4 +139,25 @@ public class RecursiveCriteria {
         }
         return sb.toString();
     }
+
+    public String getValidPassString() {
+        String prefix = "필요 통과 수: ";
+        if (needsAllPass()) {
+            return prefix + "모든 하위 검사 통과";
+        }
+        String needPass = "";
+        if (minimumPass != null) {
+            needPass += minimumPass + " ~";
+        }
+        if ( maximumPass != null) {
+            if (needPass.isEmpty()) {
+                needPass = "~";
+            }
+            needPass += " " + maximumPass;
+        }
+        if (!needPass.isEmpty()) {
+            return prefix + needPass;
+        }
+        return prefix + "제한 없음";
+    }
 }

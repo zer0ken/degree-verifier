@@ -19,7 +19,7 @@ public class EditableLectureCriteria extends LectureCriteria implements Editable
     }
 
     public EditableLectureCriteria() {
-        super(null, null, null, null, null, null, null, null);
+        super(null, "", null, null, null, null, null, null);
 
         original = null;
         added = true;

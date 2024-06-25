@@ -61,4 +61,8 @@ public class DegreeCriteria {
     public String toString() {
         return degreeName;
     }
+    
+    public String getValidCreditString() {
+        return "필요 학점: " + minimumCredit + " ~";
+    }
 }
