@@ -2,6 +2,7 @@ package org.konkuk.degreeverifier.editorframe.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.models.EditorModel;
+import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,10 +17,21 @@ public class CreateRecursiveVerifierAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, CREATE_RECURSIVE_VERIFIER);
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/add_icon.svg", getClass().getClassLoader()));
+
+        setEnabled(editorModel.getSelectedNodeObjects().size() == 1
+                && editorModel.getSelectedNodeObject() instanceof EditableRecursiveCriteria
+                && ((EditableRecursiveCriteria) editorModel.getSelectedNodeObject()).lectureCriteria == null);
+        editorModel.observe(EditorModel.On.NODES_SELECTED, unused ->
+                setEnabled(editorModel.getSelectedNodeObjects().size() == 1
+                        && editorModel.getSelectedNodeObject() instanceof EditableRecursiveCriteria
+                        && ((EditableRecursiveCriteria) editorModel.getSelectedNodeObject()).lectureCriteria == null)
+        );
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: 2024-06-24 implement this
+        EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodeObject();
+        recursive.createSubcriteria();
+        editorModel.notifyUpdatedSelectedDegree();
     }
 }

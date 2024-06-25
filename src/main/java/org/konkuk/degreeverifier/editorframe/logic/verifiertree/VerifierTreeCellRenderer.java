@@ -2,19 +2,15 @@ package org.konkuk.degreeverifier.editorframe.logic.verifiertree;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
-import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
 import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
-import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
-import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
-import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.InsufficientRootNode;
+import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-import static org.konkuk.degreeverifier.ui.Colors.*;
+import static org.konkuk.degreeverifier.ui.Colors.DEFAULT_SVG_COLOR;
 import static org.konkuk.degreeverifier.ui.Dimensions.ITEM_ICON_SIZE;
 
 public class VerifierTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -28,6 +24,9 @@ public class VerifierTreeCellRenderer extends DefaultTreeCellRenderer {
             setIcon("icons/verified_icon.svg");
         } else if (data instanceof RecursiveCriteria) {
             RecursiveCriteria recursive = (RecursiveCriteria) data;
+            if (recursive instanceof EditableRecursiveCriteria && ((EditableRecursiveCriteria) recursive).removed) {
+                setText("<html><strike>" + getText() + "</strike></html>");
+            }
             if (recursive.lectureCriteria != null) {
                 setIcon("icons/book_icon.svg", component.getForeground());
             } else {

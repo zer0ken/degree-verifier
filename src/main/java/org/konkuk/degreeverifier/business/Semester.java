@@ -74,4 +74,16 @@ public class Semester implements Comparable<Semester> {
     public String toString() {
         return year + "년도 " + semester.value;
     }
+
+    public static String buildValidPeriodString(Semester from, Semester to) {
+        String prefix = "유효 이수 기간: ";
+        if (from == null && to == null) {
+            return prefix + "항상";
+        }
+        return prefix +
+                (from != null ? from + " " : "") +
+                "~" +
+                (to != null ? " " + to : "");
+
+    }
 }

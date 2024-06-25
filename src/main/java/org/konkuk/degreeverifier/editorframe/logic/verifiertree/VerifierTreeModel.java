@@ -50,6 +50,5 @@ public class VerifierTreeModel extends DefaultTreeModel {
 
     private void updateTree() {
         degreeNode.update(this);
-        nodeChanged(degreeNode);
     }
 }

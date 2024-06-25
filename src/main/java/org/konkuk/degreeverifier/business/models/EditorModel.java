@@ -59,7 +59,7 @@ public class EditorModel extends Observable {
 
     public void saveChanges() {
         for (String key : degreeMap.keySet()) {
-
+            // TODO: 2024-06-25 implement this
         }
         notify(On.SAVED, degreeMap);
     }
@@ -87,24 +87,24 @@ public class EditorModel extends Observable {
     public void addSelectedNode(DefaultMutableTreeNode selectedNode, Editable selectedNodeObject) {
         selectedNodes.add(selectedNode);
         selectedNodeObjects.add(selectedNodeObject);
-        notify(On.NODE_SELECTED, selectedNodeObjects);
+        notify(On.NODES_SELECTED, selectedNodeObjects);
     }
 
     public void removeSelectedNode(DefaultMutableTreeNode selectedNode, Editable selectedNodeObject) {
         selectedNodes.add(selectedNode);
         selectedNodeObjects.remove(selectedNodeObject);
-        notify(On.NODE_SELECTED, selectedNodeObjects);
+        notify(On.NODES_SELECTED, selectedNodeObjects);
     }
 
     public void notifyUpdatedSelectedDegree() {
-        notify(On.DEGREE_UPDATED, getSelectedDegree());
+        notify(On.DEGREE_UPDATED, null);
     }
 
     public LinkedList<Editable> getSelectedNodeObjects() {
         return selectedNodeObjects;
     }
 
-    public Editable getSelectedNode() {
+    public Editable getSelectedNodeObject() {
         return selectedNodeObjects.isEmpty() ? null : selectedNodeObjects.getFirst();
     }
 
@@ -113,7 +113,7 @@ public class EditorModel extends Observable {
         DEGREE_CREATED,
         DEGREE_REMOVED,
         DEGREE_UPDATED,
-        NODE_SELECTED,
+        NODES_SELECTED,
         SAVED
     }
 }
