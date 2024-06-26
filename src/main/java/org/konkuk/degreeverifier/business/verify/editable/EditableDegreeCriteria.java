@@ -7,7 +7,6 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
         super(toCopy);
         recursiveCriteria = new EditableRecursiveCriteria(recursiveCriteria);
         original = toCopy;
-        added = false;
         removed = false;
         edited = false;
         getEditableRecursiveCriteria().isRoot = true;
@@ -16,7 +15,6 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
     public EditableDegreeCriteria(String degreeName) {
         super(degreeName, null, 0, new EditableRecursiveCriteria());
         original = null;
-        added = true;
         removed = false;
         edited = true;
         getEditableRecursiveCriteria().isRoot = true;
@@ -24,7 +22,6 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
 
     private final DegreeCriteria original;
 
-    public boolean added;
     public boolean removed;
     public boolean edited;
 
@@ -32,12 +29,16 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
         return (EditableRecursiveCriteria) recursiveCriteria;
     }
 
+    @Override
+    public boolean isEdited() {
+        return edited;
+    }
+
+    @Override
     public void rollback() {
         this.description = original.description;
         this.degreeName = original.degreeName;
         this.minimumCredit = original.minimumCredit;
-        this.recursiveCriteria = new EditableRecursiveCriteria(original.recursiveCriteria);
-        removed = false;
     }
 
     public void updateDescription(String description) {

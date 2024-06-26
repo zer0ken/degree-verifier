@@ -131,9 +131,12 @@ public class EditPanelListener {
                 return;
             }
             if (selected) {
-                recursive.updateMinimumPass((Integer) panel.minimumPassSpinner.getValue());
-                editorModel.notifyUpdatedSelectedDegree();
-            } else {
+                Integer value = (Integer) panel.minimumPassSpinner.getValue();
+                if (!value.equals(recursive.minimumPass)) {
+                    recursive.updateMinimumPass(value);
+                    editorModel.notifyUpdatedSelectedDegree();
+                }
+            } else if (!Objects.equals(null, recursive.minimumPass)) {
                 recursive.updateMinimumPass(null);
                 editorModel.notifyUpdatedSelectedDegree();
             }
@@ -152,11 +155,16 @@ public class EditPanelListener {
                 return;
             }
             if (selected) {
-                recursive.updateMaximumPass((Integer) panel.maximumPassSpinner.getValue());
-                editorModel.notifyUpdatedSelectedDegree();
+                Integer value = (Integer) panel.maximumPassSpinner.getValue();
+                if (!value.equals(recursive.maximumPass)) {
+                    recursive.updateMaximumPass(value);
+                    editorModel.notifyUpdatedSelectedDegree();
+                }
             } else {
-                recursive.updateMaximumPass(null);
-                editorModel.notifyUpdatedSelectedDegree();
+                if (!Objects.equals(null, recursive.maximumPass)) {
+                    recursive.updateMaximumPass(null);
+                    editorModel.notifyUpdatedSelectedDegree();
+                }
             }
         });
 
@@ -242,12 +250,15 @@ public class EditPanelListener {
             if (!panel.useMinimumSemesterCheckBox.isEnabled()) {
                 return;
             }
-            Boolean selected = panel.useMinimumSemesterCheckBox.isSelected();
+            boolean selected = panel.useMinimumSemesterCheckBox.isSelected();
             EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodeObject();
             if (recursive == null || recursive.getEditableLectureCriteria() == null) {
                 return;
             }
             Semester semester = (Semester) panel.minimumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
             if (selected) {
                 recursive.getEditableLectureCriteria().updateMinimumYearSemester(semester.year, semester.semester.value);
             } else {
@@ -260,12 +271,15 @@ public class EditPanelListener {
             if (!panel.useMaximumSemesterCheckBox.isEnabled()) {
                 return;
             }
-            Boolean selected = panel.useMaximumSemesterCheckBox.isSelected();
+            boolean selected = panel.useMaximumSemesterCheckBox.isSelected();
             EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodeObject();
             if (recursive == null || recursive.getEditableLectureCriteria() == null) {
                 return;
             }
             Semester semester = (Semester) panel.maximumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
             if (selected) {
                 recursive.getEditableLectureCriteria().updateMaximumYearSemester(semester.year, semester.semester.value);
             } else {
@@ -283,6 +297,9 @@ public class EditPanelListener {
                 return;
             }
             Semester semester = (Semester) panel.minimumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
             recursive.getEditableLectureCriteria().updateMinimumYearSemester(semester.year, semester.semester.value);
             editorModel.notifyUpdatedSelectedDegree();
         });
@@ -296,6 +313,9 @@ public class EditPanelListener {
                 return;
             }
             Semester semester = (Semester) panel.maximumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
             recursive.getEditableLectureCriteria().updateMaximumYearSemester(semester.year, semester.semester.value);
             editorModel.notifyUpdatedSelectedDegree();
         });

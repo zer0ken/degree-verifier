@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 public class EditableRecursiveCriteria extends RecursiveCriteria implements Editable {
     private final RecursiveCriteria original;
-    public boolean added = false;
-    public boolean removed = false;
-    public boolean edited = false;
+    public boolean removed;
+    public boolean edited;
     public boolean isRoot = false;
+    public EditableRecursiveCriteria parent = null;
 
     public EditableRecursiveCriteria(RecursiveCriteria toCopy) {
         super(toCopy);
@@ -19,11 +19,11 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
         if (subcriteria != null) {
             for (int i = 0; i < subcriteria.length; i++) {
                 subcriteria[i] = new EditableRecursiveCriteria(subcriteria[i]);
+                ((EditableRecursiveCriteria) subcriteria[i]).parent = this;
             }
         }
 
         original = toCopy;
-        added = false;
         removed = false;
         edited = false;
     }
@@ -32,7 +32,6 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
         super(null, null, null, null, null, null, new RecursiveCriteria[]{});
 
         original = null;
-        added = true;
         removed = false;
         edited = true;
     }
@@ -41,25 +40,30 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
         return (EditableLectureCriteria) lectureCriteria;
     }
 
+    @Override
+    public boolean isEdited() {
+        return edited;
+    }
+
+    @Override
     public void rollback() {
-        description = original.description;
-        important = original.important;
-        lectureCriteria = original.lectureCriteria;
-        needAllPass = original.needAllPass;
-        minimumPass = original.minimumPass;
-        maximumPass = original.maximumPass;
-        subcriteria = original.subcriteria.clone();
-
-        if (lectureCriteria != null) {
-            lectureCriteria = new EditableLectureCriteria(lectureCriteria);
-        }
-        if (subcriteria != null) {
-            for (int i = 0; i < subcriteria.length; i++) {
-                subcriteria[i] = new EditableRecursiveCriteria(subcriteria[i]);
+        if (original != null) {
+            removed = false;
+            description = original.description;
+            important = original.important;
+            lectureCriteria = original.lectureCriteria;
+            needAllPass = original.needAllPass;
+            minimumPass = original.minimumPass;
+            maximumPass = original.maximumPass;
+            subcriteria = original.subcriteria;
+            if (lectureCriteria != null) {
+                lectureCriteria = new EditableLectureCriteria(lectureCriteria);
             }
+        } else if (!isRoot) {
+            removed = true;
+            parent.removeSubcriteria(this);
         }
-
-        removed = false;
+        edited = false;
     }
 
     public void updateDescription(String description) {
@@ -120,7 +124,18 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
         RecursiveCriteria[] old = subcriteria;
         subcriteria = new RecursiveCriteria[subcriteria.length + 1];
         subcriteria[subcriteria.length - 1] = new EditableRecursiveCriteria();
+        ((EditableRecursiveCriteria) subcriteria[subcriteria.length - 1]).parent = this;
         if (old.length > 0) System.arraycopy(old, 0, subcriteria, 0, old.length);
+        edited = true;
+    }
+
+    public void removeSubcriteria(RecursiveCriteria removedSubcriteria) {
+        int i;
+        for (i = 0; i < subcriteria.length; i++) {
+            if (subcriteria[i] == removedSubcriteria) {
+                subcriteria[i] = null;
+            }
+        }
         edited = true;
     }
 
