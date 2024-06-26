@@ -18,8 +18,8 @@ public class EditPanelListener {
                 return;
             }
             EditableDegreeCriteria degree = editorModel.getSelectedDegree();
-            String text = panel.degreeNameField.getText();
-            if (!text.equals(degree.degreeName)) {
+            String text = panel.degreeNameField.getText().trim();
+            if (!text.equals(degree.degreeName) && !editorModel.containsDegree(text)) {
                 degree.updateDegreeName(text);
                 editorModel.notifyUpdatedSelectedDegree();
             }

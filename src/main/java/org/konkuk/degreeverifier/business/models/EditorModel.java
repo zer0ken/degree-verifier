@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.business.models;
 
+import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.Editable;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
@@ -24,7 +25,7 @@ public class EditorModel extends Observable {
 
     private final AppModel appModel = AppModel.getInstance();
 
-    private final HashMap<String, EditableDegreeCriteria> degreeMap = new LinkedHashMap<>();
+    private final Map<String, EditableDegreeCriteria> degreeMap = new TreeMap<>();
     private final LinkedList<EditableDegreeCriteria> selectedDegrees = new LinkedList<>();
     private final LinkedList<Editable> selectedNodeObjects = new LinkedList<>();
     private final LinkedList<DefaultMutableTreeNode> selectedNodes = new LinkedList<>();
@@ -60,10 +61,26 @@ public class EditorModel extends Observable {
     }
 
     public void saveChanges() {
+        Map<String, EditableDegreeCriteria> changedDegreeMap = new LinkedHashMap<>();
         for (String key : degreeMap.keySet()) {
-            // TODO: 2024-06-25 implement this
+            DegreeCriteria original = degreeMap.get(key);
+            DegreeCriteria changed = degreeMap.get(key).upcast();
+            if (changed != null) {
+                EditableDegreeCriteria changedEditable = new EditableDegreeCriteria(changed);
+                changedDegreeMap.put(key, changedEditable);
+
+                // TODO: 2024-06-27 export new criteria
+                System.out.println(original);
+                System.out.println("-> \t" + changed);
+            }
+        }
+        for (String key : changedDegreeMap.keySet()) {
+            EditableDegreeCriteria changed = changedDegreeMap.get(key);
+            degreeMap.remove(key);
+            degreeMap.put(changed.degreeName, changed);
         }
         notify(On.SAVED, degreeMap);
+        notifyUpdatedSelectedDegree();
     }
 
     public Collection<EditableDegreeCriteria> getDegrees() {
@@ -99,7 +116,7 @@ public class EditorModel extends Observable {
     }
 
     public void notifyUpdatedSelectedDegree() {
-        notify(On.DEGREE_UPDATED, null);
+        notify(On.DEGREE_UPDATED, getSelectedDegree());
     }
 
     public LinkedList<Editable> getSelectedNodeObjects() {
@@ -123,6 +140,10 @@ public class EditorModel extends Observable {
         return getSelectedNodeObjects().stream()
                 .filter(Editable::isEdited)
                 .collect(Collectors.toList());
+    }
+
+    public boolean containsDegree(String degreeName) {
+        return degreeMap.containsKey(degreeName);
     }
 
     public enum On implements Event {

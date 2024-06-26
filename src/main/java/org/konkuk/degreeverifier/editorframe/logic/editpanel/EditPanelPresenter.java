@@ -28,8 +28,8 @@ public class EditPanelPresenter {
             LinkedList<EditableDegreeCriteria> selectedDegrees = (LinkedList<EditableDegreeCriteria>) selectedDegrees_;
             disableAll();
             if (selectedDegrees.size() == 1) {
-                enableDegreeForm();
                 updateDegree(selectedDegrees.get(0));
+                enableDegreeForm();
             } else {
                 clearDegreeForm();
                 clearCriteriaForm();
