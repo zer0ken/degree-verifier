@@ -1,8 +1,10 @@
 package org.konkuk.degreeverifier.business.verify.editable;
 
+import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
 import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class EditableRecursiveCriteria extends RecursiveCriteria implements Editable {
     private final RecursiveCriteria original;
@@ -136,6 +138,7 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
                 subcriteria[i] = null;
             }
         }
+        subcriteria = Arrays.stream(subcriteria).filter(Objects::nonNull).toArray(RecursiveCriteria[]::new);
         edited = true;
     }
 
@@ -154,5 +157,30 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
             sb.append("검사 그룹(").append(Arrays.stream(subcriteria).filter(c -> !((EditableRecursiveCriteria) c).removed).count()).append(")");
         }
         return sb.toString();
+    }
+
+    public boolean hasChangedChildren() {
+        if (edited) {
+            return true;
+        }
+        if (lectureCriteria != null) {
+            return getEditableLectureCriteria().edited;
+        } else {
+            return Arrays.stream(subcriteria)
+                    .anyMatch(c -> ((EditableRecursiveCriteria) c).edited);
+        }
+    }
+
+    public RecursiveCriteria upcast() {
+        RecursiveCriteria upcasted = new RecursiveCriteria(this);
+        if (lectureCriteria != null) {
+            upcasted.lectureCriteria = new LectureCriteria(lectureCriteria);
+        } else {
+            upcasted.subcriteria = Arrays.stream(subcriteria)
+                    .filter(c -> !((EditableRecursiveCriteria)c).removed)
+                    .map(c -> ((EditableRecursiveCriteria) c).upcast())
+                    .toArray(RecursiveCriteria[]::new);
+        }
+        return upcasted;
     }
 }

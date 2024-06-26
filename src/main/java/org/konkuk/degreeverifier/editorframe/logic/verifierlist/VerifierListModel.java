@@ -4,7 +4,6 @@ import org.konkuk.degreeverifier.business.models.EditorModel;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 
 import javax.swing.*;
-import java.util.Collection;
 import java.util.LinkedList;
 
 public class VerifierListModel extends DefaultListModel<EditableDegreeCriteria> {
@@ -12,19 +11,19 @@ public class VerifierListModel extends DefaultListModel<EditableDegreeCriteria> 
 
     public VerifierListModel() {
         if (!editorModel.getDegrees().isEmpty()) {
-            update(editorModel.getDegrees());
+            init();
         }
 
-        editorModel.observe(EditorModel.On.SAVED, unused -> update(editorModel.getDegrees()));
+        editorModel.observe(EditorModel.On.SAVED, unused -> init());
         editorModel.observe(EditorModel.On.DEGREE_CREATED, o ->
                 this.create((EditableDegreeCriteria) o));
         editorModel.observe(EditorModel.On.DEGREE_REMOVED, o ->
                 this.removeSelected((LinkedList<EditableDegreeCriteria>) o));
     }
 
-    private void update(Collection<EditableDegreeCriteria> degrees) {
+    private void init() {
         clear();
-        for (EditableDegreeCriteria degree : degrees) {
+        for (EditableDegreeCriteria degree : editorModel.getDegrees()) {
             addElement(degree);
         }
     }

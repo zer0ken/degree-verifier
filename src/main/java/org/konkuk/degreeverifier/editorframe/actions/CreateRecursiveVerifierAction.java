@@ -26,6 +26,11 @@ public class CreateRecursiveVerifierAction extends AbstractAction {
                         && editorModel.getSelectedNodeObject() instanceof EditableRecursiveCriteria
                         && ((EditableRecursiveCriteria) editorModel.getSelectedNodeObject()).lectureCriteria == null)
         );
+        editorModel.observe(EditorModel.On.DEGREE_UPDATED, unused ->
+                setEnabled(editorModel.getSelectedNodeObjects().size() == 1
+                        && editorModel.getSelectedNodeObject() instanceof EditableRecursiveCriteria
+                        && ((EditableRecursiveCriteria) editorModel.getSelectedNodeObject()).lectureCriteria == null)
+        );
     }
 
     @Override

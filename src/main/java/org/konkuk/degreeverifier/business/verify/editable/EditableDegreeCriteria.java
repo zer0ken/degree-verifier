@@ -16,7 +16,7 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
         super(degreeName, null, 0, new EditableRecursiveCriteria());
         original = null;
         removed = false;
-        edited = true;
+        edited = false;
         getEditableRecursiveCriteria().isRoot = true;
     }
 
@@ -36,9 +36,21 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
 
     @Override
     public void rollback() {
-        this.description = original.description;
-        this.degreeName = original.degreeName;
-        this.minimumCredit = original.minimumCredit;
+        if (original != null) {
+            this.description = original.description;
+            this.degreeName = original.degreeName;
+            this.minimumCredit = original.minimumCredit;
+        }
+        edited = false;
+    }
+
+    public DegreeCriteria upcast() {
+        if (!edited && !getEditableRecursiveCriteria().hasChangedChildren()) {
+            return null;
+        }
+        DegreeCriteria upcasted = new DegreeCriteria(this);
+        upcasted.recursiveCriteria = getEditableRecursiveCriteria().upcast();
+        return upcasted;
     }
 
     public void updateDescription(String description) {
