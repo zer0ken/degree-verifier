@@ -2,10 +2,12 @@ package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.verify.editable.Editable;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
+import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EditorModel extends Observable {
     private static final EditorModel instance = new EditorModel();
@@ -23,7 +25,7 @@ public class EditorModel extends Observable {
     private final AppModel appModel = AppModel.getInstance();
 
     private final HashMap<String, EditableDegreeCriteria> degreeMap = new LinkedHashMap<>();
-    private LinkedList<EditableDegreeCriteria> selectedDegrees = new LinkedList<>();
+    private final LinkedList<EditableDegreeCriteria> selectedDegrees = new LinkedList<>();
     private final LinkedList<Editable> selectedNodeObjects = new LinkedList<>();
     private final LinkedList<DefaultMutableTreeNode> selectedNodes = new LinkedList<>();
 
@@ -106,6 +108,21 @@ public class EditorModel extends Observable {
 
     public Editable getSelectedNodeObject() {
         return selectedNodeObjects.isEmpty() ? null : selectedNodeObjects.getFirst();
+    }
+
+    public List<EditableRecursiveCriteria> getRemovableSelectedNodeObjects() {
+        return getSelectedNodeObjects().stream()
+                .filter(c -> c instanceof EditableRecursiveCriteria
+                        && !((EditableRecursiveCriteria) c).removed
+                        && !((EditableRecursiveCriteria) c).isRoot)
+                .map(c -> (EditableRecursiveCriteria) c)
+                .collect(Collectors.toList());
+    }
+
+    public List<Editable> getRollbackableSelectedNodeObjects() {
+        return getSelectedNodeObjects().stream()
+                .filter(Editable::isEdited)
+                .collect(Collectors.toList());
     }
 
     public enum On implements Event {
