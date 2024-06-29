@@ -44,6 +44,11 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
         edited = false;
     }
 
+    public void rollbackRecursively() {
+        rollback();
+        getEditableRecursiveCriteria().rollbackRecursively();
+    }
+
     public DegreeCriteria upcast() {
         if (!edited && !getEditableRecursiveCriteria().hasChangedChildren()) {
             return null;

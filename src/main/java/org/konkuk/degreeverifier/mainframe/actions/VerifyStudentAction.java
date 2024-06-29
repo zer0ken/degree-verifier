@@ -19,7 +19,7 @@ public class VerifyStudentAction extends AbstractAction {
         putValue(NAME, VERIFY_STUDENT);
         putValue(SHORT_DESCRIPTION, VERIFY_STUDENT + " (Alt+V)");
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/rule_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/sync_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_DOWN_MASK));
 
         setEnabled(!appModel.getStudents().isEmpty());

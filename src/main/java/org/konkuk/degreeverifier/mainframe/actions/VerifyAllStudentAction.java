@@ -18,7 +18,7 @@ public class VerifyAllStudentAction extends AbstractAction {
         putValue(NAME, VERIFY_ALL_STUDENT);
         putValue(SHORT_DESCRIPTION, VERIFY_ALL_STUDENT + " (F5)");
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/rule_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/sync_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
 
         setEnabled(!appModel.getStudents().isEmpty());

@@ -19,7 +19,7 @@ public class ClearCommitAction extends AbstractAction {
         putValue(NAME, CLEAR_COMMITTED_DEGREE);
         putValue(SHORT_DESCRIPTION, CLEAR_COMMITTED_DEGREE + " (Ctrl+Alt+Backspace)");
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/remove_all_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/clear_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,
                 InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
 

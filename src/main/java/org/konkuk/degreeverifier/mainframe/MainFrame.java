@@ -37,7 +37,7 @@ public class MainFrame extends DegreeVerifierFrame {
     }
 
     public void afterLaunched() {
-        AppModel.getInstance().loadVerifier();
+        AppModel.getInstance().loadLatestVerifiers();
         AppModel.getInstance().loadStudentList();
         FlatInspector.install("ctrl shift alt X");
     }

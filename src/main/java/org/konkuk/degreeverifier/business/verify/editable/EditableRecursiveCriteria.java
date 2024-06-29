@@ -19,6 +19,7 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
             lectureCriteria = new EditableLectureCriteria(lectureCriteria);
         }
         if (subcriteria != null) {
+            subcriteria = Arrays.copyOf(subcriteria, subcriteria.length);
             for (int i = 0; i < subcriteria.length; i++) {
                 subcriteria[i] = new EditableRecursiveCriteria(subcriteria[i]);
                 ((EditableRecursiveCriteria) subcriteria[i]).parent = this;
@@ -66,6 +67,18 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
             parent.removeSubcriteria(this);
         }
         edited = false;
+    }
+
+    public void rollbackRecursively() {
+        rollback();
+        if (lectureCriteria != null){
+            getEditableLectureCriteria().rollback();
+        }else {
+            for (RecursiveCriteria _criteria : subcriteria) {
+                EditableRecursiveCriteria criteria = (EditableRecursiveCriteria) _criteria;
+                criteria.rollbackRecursively();
+            }
+        }
     }
 
     public void updateDescription(String description) {

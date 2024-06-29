@@ -1,6 +1,7 @@
 package org.konkuk.business.verify;
 
 import org.junit.jupiter.api.Test;
+import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ class VerifierFactoryTest extends VerifierFactory {
 
     @Test
     void loaded_VerifierFactory() {
-        loadAllVerifiers();
+        loadVerifiers(DefaultPaths.VERIFIERS_PATH);
 
         assertTrue(isLoaded());
         assertEquals(11, size());
