@@ -73,7 +73,10 @@ public class Strings {
     /** EditorFrame */
     public static final String EDIT_FRAME_TITLE = "검사 기준 수정하기";
     
-    public static final String APPLY_EDIT = "적용";
+    public static final String APPLY_EDIT = "변경 사항 적용";
+    public static final String CONFIRM_APPLY_EDIT_MESSAGE = "모든 변경 사항을 저장하려면 [확인]을 누르세요.";
+    public static final String ROLLBACK_EDIT = "변경 사항 삭제";
+    public static final String CONFIRM_ROLLBACK_EDIT_MESSAGE = "모든 변경 사항을 되돌리려면 [확인]을 누르세요.";
     public static final String CONFIRM_EDIT = "확인";
     public static final String CANCEL_EDIT = "취소";
 
@@ -95,6 +98,6 @@ public class Strings {
     public static final String CONFIRM_REMOVE_RECURSIVE_MESSAGE = "선택한 검사 기준을 삭제하려면 [확인]을 누르세요.";
     public static final String ROLLBACK_SELECTED_NODE = "변경 되돌리기";
     public static final String CONFIRM_ROLLBACK_SELECTED_NODE_MESSAGE = "선택한 검사 기준의 변경을 모두 되돌리려면 [확인]을 누르세요.";
-    public static final String ROLLBACK_ALL = "모든 변경 취소하기";
-
+    
+    public static final String VERIFIER_SAVING_MESSAGE = "검사 기준을 저장하는 중";
 }

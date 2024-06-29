@@ -2,6 +2,7 @@ package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
+import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
@@ -77,11 +78,19 @@ public class AppModel extends Observable {
         );
     }
 
-    public void loadVerifier() {
+    public void loadLatestVerifiers() {
         submitTask(
                 () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
                 () -> notify(On.VERIFIER_LOADED, verifierFactory),
-                verifierFactory::loadAllVerifiers
+                verifierFactory::loadLatestVerifiers
+        );
+    }
+
+    public void loadVerifiers(String directory) {
+        submitTask(
+                () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
+                () -> notify(On.VERIFIER_LOADED, verifierFactory),
+                () -> verifierFactory.loadVerifiers(directory)
         );
     }
 
@@ -229,9 +238,11 @@ public class AppModel extends Observable {
         }
     }
 
-    public void setSelectedVerifier(DegreeVerifier verifier) {
-        selectedVerifier = verifier;
-        notify(On.VERIFIER_SELECTED, verifier);
+    public void updateVerifiers(Collection<DegreeCriteria> criteriaCollection) {
+        executorService.submit(() ->{
+            verifierFactory.updateAllVerifiers(criteriaCollection);
+            notify(On.VERIFIER_LOADED, verifierFactory);
+        });
     }
 
     public int getCommittingStudentIndex() {
@@ -294,7 +305,5 @@ public class AppModel extends Observable {
         COMMIT_UPDATED,
 
         LECTURE_UPDATED,
-
-        VERIFIER_SELECTED
     }
 }

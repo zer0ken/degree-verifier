@@ -17,6 +17,7 @@ public class EditorModel extends Observable {
         if (appModel.isVerifierLoaded()) {
             loadVerifiers();
         }
+        appModel.observe(AppModel.On.VERIFIER_LOADED, unused -> loadVerifiers());
     }
 
     public static EditorModel getInstance() {
@@ -31,9 +32,11 @@ public class EditorModel extends Observable {
     private final LinkedList<DefaultMutableTreeNode> selectedNodes = new LinkedList<>();
 
     public void loadVerifiers() {
+        degreeMap.clear();
         for (DegreeVerifier degreeVerifier : appModel.getVerifierFactory()) {
             degreeMap.put(degreeVerifier.degreeName, new EditableDegreeCriteria(degreeVerifier));
         }
+        notify(On.VERIFIER_LOADED, null);
     }
 
     public void createDegree() {
@@ -63,15 +66,10 @@ public class EditorModel extends Observable {
     public void saveChanges() {
         Map<String, EditableDegreeCriteria> changedDegreeMap = new LinkedHashMap<>();
         for (String key : degreeMap.keySet()) {
-            DegreeCriteria original = degreeMap.get(key);
             DegreeCriteria changed = degreeMap.get(key).upcast();
             if (changed != null) {
                 EditableDegreeCriteria changedEditable = new EditableDegreeCriteria(changed);
                 changedDegreeMap.put(key, changedEditable);
-
-                // TODO: 2024-06-27 export new criteria
-                System.out.println(original);
-                System.out.println("-> \t" + changed);
             }
         }
         for (String key : changedDegreeMap.keySet()) {
@@ -80,7 +78,12 @@ public class EditorModel extends Observable {
             degreeMap.put(changed.degreeName, changed);
         }
         notify(On.SAVED, degreeMap);
-        notifyUpdatedSelectedDegree();
+        appModel.updateVerifiers(degreeMap.values().stream()
+                .map(c -> {
+                    DegreeCriteria upcasted = c.upcast();
+                    return upcasted != null ? upcasted : new DegreeCriteria(c.getOriginal());
+                })
+                .collect(Collectors.toList()));
     }
 
     public Collection<EditableDegreeCriteria> getDegrees() {
@@ -147,6 +150,7 @@ public class EditorModel extends Observable {
     }
 
     public enum On implements Event {
+        VERIFIER_LOADED,
         DEGREE_SELECTED,
         DEGREE_CREATED,
         DEGREE_REMOVED,

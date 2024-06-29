@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business;
 
 public class DefaultPaths {
+    // TODO: 2024-06-27 change path after test
 //    public static final String VERIFIERS_PATH = "./verifiers";
 //    public static final String STUDENTS_PATH = "./students";
 //    public static final String OUTPUT_PATH = "./output";

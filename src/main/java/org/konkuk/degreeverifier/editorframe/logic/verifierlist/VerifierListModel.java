@@ -13,7 +13,7 @@ public class VerifierListModel extends DefaultListModel<EditableDegreeCriteria> 
         if (!editorModel.getDegrees().isEmpty()) {
             init();
         }
-
+        editorModel.observe(EditorModel.On.VERIFIER_LOADED, unused -> init());
         editorModel.observe(EditorModel.On.SAVED, unused -> init());
         editorModel.observe(EditorModel.On.DEGREE_CREATED, o ->
                 this.create((EditableDegreeCriteria) o));

@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 
 import java.io.*;
@@ -31,6 +32,32 @@ public class FileUtil {
         }
     }
 
+    synchronized public static <T> void toJsonFile(Object object, String directory, String name, Class<T> classOfT) {
+        String extension = ".json";
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+
+        Path dirPath = Paths.get(directory);
+        Path filePath = Paths.get(directory + name + extension);
+        try {
+            int exists = 2;
+            while (Files.exists(filePath)) {
+                filePath = Paths.get(directory + name + "(" + exists++ + ")" + extension);
+            }
+            String json = gson.toJson(object, classOfT);
+            if (json == null) {
+                return;
+            }
+            if (Files.notExists(dirPath)){
+                Files.createDirectory(dirPath);
+            }
+            Files.createFile(filePath);
+            Files.write(filePath, json.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     synchronized public static List<String[]> fromTsvFile(String fileName) {
         List<String[]> tokenizedLines = new ArrayList<>();
         File file = new File(fileName);
@@ -57,7 +84,7 @@ public class FileUtil {
         }
     }
 
-    synchronized public static SnapshotBundle loadCommit(File file){
+    synchronized public static SnapshotBundle loadCommit(File file) {
         SnapshotBundle bundle = new SnapshotBundle();
         try {
             Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).stream()

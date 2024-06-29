@@ -1,10 +1,7 @@
 package org.konkuk.degreeverifier.mainframe.components.menubar;
 
 import org.konkuk.degreeverifier.common.components.SizedToolbar;
-import org.konkuk.degreeverifier.mainframe.actions.CommitAllStudentAction;
-import org.konkuk.degreeverifier.mainframe.actions.CommitRecommendedDegreesAction;
-import org.konkuk.degreeverifier.mainframe.actions.StartCommitNextAction;
-import org.konkuk.degreeverifier.mainframe.actions.StartCommitPreviousAction;
+import org.konkuk.degreeverifier.mainframe.actions.*;
 
 import javax.swing.*;
 
@@ -19,5 +16,7 @@ public class QuickToolbar extends SizedToolbar {
         add(new StartCommitPreviousAction());
         add(new CommitRecommendedDegreesAction());
         add(new StartCommitNextAction());
+        add(Box.createHorizontalStrut(10));
+        add(new VerifyAllStudentAction());
     }
 }
