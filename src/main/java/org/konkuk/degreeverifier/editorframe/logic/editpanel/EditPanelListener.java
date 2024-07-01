@@ -26,7 +26,7 @@ public class EditPanelListener {
         }));
 
         panel.degreeVersionSpinner.addChangeListener(e -> {
-            if (!panel.degreeVersionSpinner.isEnabled()){
+            if (!panel.degreeVersionSpinner.isEnabled()) {
                 return;
             }
             EditableDegreeCriteria degree = editorModel.getSelectedDegree();
@@ -60,6 +60,80 @@ public class EditPanelListener {
                 degree.updateMinimumCredit(value);
                 editorModel.notifyUpdatedSelectedDegree();
             }
+        });
+
+        panel.useDegreeMinimumSemesterCheckBox.addChangeListener(e -> {
+            if (!panel.useDegreeMinimumSemesterCheckBox.isEnabled()) {
+                return;
+            }
+            EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+            if (degree == null) {
+                return;
+            }
+            Semester semester = (Semester) panel.degreeMinimumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
+            boolean selected = panel.useDegreeMinimumSemesterCheckBox.isSelected();
+            if (selected) {
+                degree.updateMinimumYearSemester(semester.year, semester.semester.value);
+            } else {
+                degree.updateMinimumYearSemester(null, null);
+            }
+            editorModel.notifyUpdatedSelectedDegree();
+        });
+
+        panel.useDegreeMaximumSemesterCheckBox.addChangeListener(e -> {
+            if (!panel.useDegreeMaximumSemesterCheckBox.isEnabled()) {
+                return;
+            }
+            EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+            if (degree == null) {
+                return;
+            }
+            Semester semester = (Semester) panel.degreeMaximumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
+            boolean selected = panel.useDegreeMaximumSemesterCheckBox.isSelected();
+            if (selected) {
+                degree.updateMaximumYearSemester(semester.year, semester.semester.value);
+            } else {
+                degree.updateMaximumYearSemester(null, null);
+            }
+            editorModel.notifyUpdatedSelectedDegree();
+        });
+
+        panel.degreeMinimumSemesterComboBox.addActionListener(e -> {
+            if (!panel.degreeMinimumSemesterComboBox.isEnabled()) {
+                return;
+            }
+            EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+            if (degree == null) {
+                return;
+            }
+            Semester semester = (Semester) panel.degreeMinimumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
+            degree.updateMinimumYearSemester(semester.year, semester.semester.value);
+            editorModel.notifyUpdatedSelectedDegree();
+        });
+
+        panel.degreeMaximumSemesterComboBox.addActionListener(e -> {
+            if (!panel.degreeMaximumSemesterComboBox.isEnabled()) {
+                return;
+            }
+            EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+            if (degree == null) {
+                return;
+            }
+            Semester semester = (Semester) panel.degreeMaximumSemesterComboBox.getSelectedItem();
+            if (semester == null) {
+                return;
+            }
+            degree.updateMaximumYearSemester(semester.year, semester.semester.value);
+            editorModel.notifyUpdatedSelectedDegree();
         });
 
         panel.setImportantCheckBox.addChangeListener(e -> {

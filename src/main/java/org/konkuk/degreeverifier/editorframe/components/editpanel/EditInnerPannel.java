@@ -25,6 +25,10 @@ public class EditInnerPannel extends JPanel {
     public final JTextField degreeNameField = new JTextField();
     public final JLabel degreeMinimumCreditLabel = new JLabel("필요 학점:");
     public final JSpinner degreeMinimumCreditSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    public final JCheckBox useDegreeMinimumSemesterCheckBox = new JCheckBox("유효 기간 시작:");
+    public final JComboBox<Semester> degreeMinimumSemesterComboBox = new JComboBox<>();
+    public final JCheckBox useDegreeMaximumSemesterCheckBox = new JCheckBox("유효 기간 종료:");
+    public final JComboBox<Semester> degreeMaximumSemesterComboBox = new JComboBox<>();
     public final JLabel degreeDescriptionLabel = new JLabel("메모:");
     public final JTextField degreeDescriptionField = new JTextField();
 
@@ -70,6 +74,8 @@ public class EditInnerPannel extends JPanel {
 
         Semester s = new Semester(2022, Semester.Type.FIRST);
         while (s.year <= Calendar.getInstance().get(Calendar.YEAR) + 4) {
+            degreeMinimumSemesterComboBox.addItem(s);
+            degreeMaximumSemesterComboBox.addItem(s);
             minimumSemesterComboBox.addItem(s);
             maximumSemesterComboBox.addItem(s);
             s = s.next();
@@ -83,6 +89,8 @@ public class EditInnerPannel extends JPanel {
         addRow(degreeNameLabel, degreeNameField);
         addRow(degreeVersionLabel, degreeVersionSpinner);
         addRow(degreeMinimumCreditLabel, degreeMinimumCreditSpinner);
+        addRow(useDegreeMinimumSemesterCheckBox, degreeMinimumSemesterComboBox);
+        addRow(useDegreeMaximumSemesterCheckBox, degreeMaximumSemesterComboBox);
         addRow(degreeDescriptionLabel, degreeDescriptionField);
     }
 

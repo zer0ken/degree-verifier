@@ -61,6 +61,22 @@ public class EditPanelPresenter {
         panel.degreeVersionSpinner.setValue(degree.version);
         panel.degreeMinimumCreditSpinner.setValue(degree.minimumCredit);
         panel.degreeDescriptionField.setText(degree.description);
+        if (degree.getMinimumSemester() != null) {
+            Semester min = degree.getMinimumSemester();
+            panel.useDegreeMinimumSemesterCheckBox.setSelected(true);
+            panel.degreeMinimumSemesterComboBox.setSelectedItem(min);
+        } else {
+            panel.useDegreeMinimumSemesterCheckBox.setSelected(false);
+            panel.degreeMinimumSemesterComboBox.setSelectedItem(0);
+        }
+        if (degree.getMaximumSemester() != null) {
+            Semester max = degree.getMaximumSemester();
+            panel.useDegreeMaximumSemesterCheckBox.setSelected(true);
+            panel.degreeMaximumSemesterComboBox.setSelectedItem(max);
+        } else {
+            panel.useDegreeMaximumSemesterCheckBox.setSelected(false);
+            panel.degreeMaximumSemesterComboBox.setSelectedItem(0);
+        }
     }
 
     private void updateRecursive() {
@@ -124,6 +140,10 @@ public class EditPanelPresenter {
         panel.degreeVersionSpinner.setValue(1);
         panel.degreeMinimumCreditSpinner.setValue(0);
         panel.degreeDescriptionField.setText("");
+        panel.useDegreeMaximumSemesterCheckBox.setSelected(false);
+        panel.useDegreeMaximumSemesterCheckBox.setSelected(false);
+        panel.degreeMinimumSemesterComboBox.setSelectedItem(0);
+        panel.degreeMaximumSemesterComboBox.setSelectedItem(0);
     }
 
     private void clearCriteriaForm() {
@@ -173,7 +193,9 @@ public class EditPanelPresenter {
                 panel.degreeMinimumCreditLabel,
                 panel.degreeMinimumCreditSpinner,
                 panel.degreeDescriptionLabel,
-                panel.degreeDescriptionField
+                panel.degreeDescriptionField,
+                linkSelectEnable(panel.useDegreeMinimumSemesterCheckBox, panel.degreeMinimumSemesterComboBox),
+                linkSelectEnable(panel.useDegreeMaximumSemesterCheckBox, panel.degreeMaximumSemesterComboBox)
         );
 
         linkEnable(panel.setImportantCheckBox,

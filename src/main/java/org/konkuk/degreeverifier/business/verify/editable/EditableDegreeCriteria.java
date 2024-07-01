@@ -13,7 +13,7 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
     }
 
     public EditableDegreeCriteria(String degreeName) {
-        super(degreeName, 1,null, 0, new EditableRecursiveCriteria());
+        super(degreeName, 1,null, 0, null, null, null, null, new EditableRecursiveCriteria());
         original = null;
         removed = false;
         edited = false;
@@ -76,6 +76,18 @@ public class EditableDegreeCriteria extends DegreeCriteria implements Editable {
 
     public void updateMinimumCredit(Integer minimumCredit) {
         this.minimumCredit = minimumCredit;
+        edited = true;
+    }
+
+    public void updateMinimumYearSemester(Integer year, String semester) {
+        this.minimumYear = year;
+        this.minimumSemester = semester;
+        edited = true;
+    }
+
+    public void updateMaximumYearSemester(Integer year, String semester) {
+        this.maximumYear = year;
+        this.maximumSemester = semester;
         edited = true;
     }
 
