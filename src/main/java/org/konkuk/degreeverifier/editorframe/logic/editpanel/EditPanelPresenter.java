@@ -2,6 +2,7 @@ package org.konkuk.degreeverifier.editorframe.logic.editpanel;
 
 import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.models.EditorModel;
+import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.EditableDegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.EditableLectureCriteria;
 import org.konkuk.degreeverifier.business.verify.editable.EditableRecursiveCriteria;
@@ -57,6 +58,7 @@ public class EditPanelPresenter {
 
     private void updateDegree(EditableDegreeCriteria degree) {
         panel.degreeNameField.setText(degree.degreeName);
+        panel.degreeVersionSpinner.setValue(degree.version);
         panel.degreeMinimumCreditSpinner.setValue(degree.minimumCredit);
         panel.degreeDescriptionField.setText(degree.description);
     }
@@ -119,6 +121,7 @@ public class EditPanelPresenter {
 
     private void clearDegreeForm() {
         panel.degreeNameField.setText("");
+        panel.degreeVersionSpinner.setValue(1);
         panel.degreeMinimumCreditSpinner.setValue(0);
         panel.degreeDescriptionField.setText("");
     }
@@ -144,7 +147,7 @@ public class EditPanelPresenter {
         panel.minimumSemesterComboBox.setSelectedIndex(0);
         panel.useMaximumSemesterCheckBox.setSelected(false);
         panel.maximumSemesterComboBox.setSelectedIndex(0);
-        panel.setNonExclusiveCheckBox.setSelected(false);
+        panel.setNonExclusiveCheckBox.setSelected(LectureCriteria.DEFAULT_NON_EXCLUSIVE);
         panel.lectureDescriptionField.setText("");
     }
 
@@ -165,6 +168,8 @@ public class EditPanelPresenter {
     private void initEnableLink() {
         linkEnable(panel.degreeNameLabel,
                 panel.degreeNameField,
+                panel.degreeVersionLabel,
+                panel.degreeVersionSpinner,
                 panel.degreeMinimumCreditLabel,
                 panel.degreeMinimumCreditSpinner,
                 panel.degreeDescriptionLabel,

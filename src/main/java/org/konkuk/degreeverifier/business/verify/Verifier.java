@@ -22,7 +22,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
         List<Lecture> lectures = new LinkedList<>(student);
         ProgressTracker tracker = new ProgressTracker(String.format(VERIFYING, student));
 
-        // 1. Match and Prune
+        // 1. Match
         List<LectureVerifier> exclusiveLectureVerifiers = new ArrayList<>();
         for (DegreeVerifier degreeVerifier : this) {
             exclusiveLectureVerifiers.addAll(degreeVerifier.match(lectures));
@@ -56,7 +56,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             SnapshotBundle snapshotBundle = new SnapshotBundle();
             for (DegreeVerifier degreeVerifier : this) {
                 if (degreeVerifier.verify()) {
-                    snapshotBundle.put(degreeVerifier.degreeName, (DegreeSnapshot) degreeVerifier.takeSnapshot());
+                    snapshotBundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
                 }
             }
             snapshotBundles.add(snapshotBundle);
@@ -109,8 +109,8 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             }
         }
         for (DegreeVerifier degreeVerifier : this) {
-            if (snapshotBundles.stream().noneMatch(snapshotBundle -> snapshotBundle.containsKey(degreeVerifier.degreeName))) {
-                notVerifiedDegrees.put(degreeVerifier.degreeName, (DegreeSnapshot) degreeVerifier.takeSnapshot());
+            if (snapshotBundles.stream().noneMatch(snapshotBundle -> snapshotBundle.containsKey(degreeVerifier.toString()))) {
+                notVerifiedDegrees.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
             }
         }
         student.setNotVerifiedDegrees(notVerifiedDegrees);
@@ -127,7 +127,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
                 SnapshotBundle bundle = new SnapshotBundle();
                 for (DegreeVerifier degreeVerifier : this) {
                     if (degreeVerifier.verify()) {
-                        bundle.put(degreeVerifier.degreeName, (DegreeSnapshot) degreeVerifier.takeSnapshot());
+                        bundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
                     }
                 }
                 if (!bundle.isEmpty()) {

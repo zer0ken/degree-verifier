@@ -57,9 +57,4 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
     public RecursiveVerifier getRecursiveVerifier() {
         return recursiveVerifier;
     }
-
-    @Override
-    public String toString() {
-        return degreeName;
-    }
 }

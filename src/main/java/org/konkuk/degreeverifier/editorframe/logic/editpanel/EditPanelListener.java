@@ -25,6 +25,18 @@ public class EditPanelListener {
             }
         }));
 
+        panel.degreeVersionSpinner.addChangeListener(e -> {
+            if (!panel.degreeVersionSpinner.isEnabled()){
+                return;
+            }
+            EditableDegreeCriteria degree = editorModel.getSelectedDegree();
+            Integer value = (Integer) panel.degreeVersionSpinner.getValue();
+            if (!value.equals(degree.version)) {
+                degree.updateVersion(value);
+                editorModel.notifyUpdatedSelectedDegree();
+            }
+        });
+
         panel.degreeDescriptionField.getDocument().addDocumentListener(new SimplifiedDocumentListener(e -> {
             if (!panel.degreeDescriptionField.isEnabled()) {
                 return;

@@ -72,7 +72,7 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
         }
         String directory = DefaultPaths.VERIFIERS_PATH + "\\" + new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초\\").format(new Date());
         for (DegreeCriteria degreeCriteria : criteriaCollection) {
-            FileUtil.toJsonFile(degreeCriteria, directory, degreeCriteria.degreeName, DegreeCriteria.class);
+            FileUtil.toJsonFile(degreeCriteria, directory, degreeCriteria.toString(), DegreeCriteria.class);
             tracker.increment();
         }
         tracker.finish();

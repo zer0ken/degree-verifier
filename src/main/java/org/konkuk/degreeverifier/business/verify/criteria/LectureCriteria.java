@@ -12,7 +12,7 @@ import org.konkuk.degreeverifier.business.Semester;
  */
 public class LectureCriteria {
     public static final String DEFAULT_MINIMUM_GRADE = "D-";
-    public static final Boolean DEFAULT_NON_EXCLUSIVE = false;
+    public static final Boolean DEFAULT_NON_EXCLUSIVE = true;
 
     /**
      * 검사 기준에 대한 짧은 설명입니다.

@@ -58,7 +58,6 @@ public class EditableRecursiveCriteria extends RecursiveCriteria implements Edit
             needAllPass = original.needAllPass;
             minimumPass = original.minimumPass;
             maximumPass = original.maximumPass;
-            subcriteria = original.subcriteria;
             if (lectureCriteria != null) {
                 lectureCriteria = new EditableLectureCriteria(lectureCriteria);
             }
