@@ -20,6 +20,8 @@ public class EditInnerPannel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public final JLabel degreeNameLabel = new JLabel("학위 이름:");
+    public final JLabel degreeVersionLabel = new JLabel("학위 버전(개정 차수):");
+    public final JSpinner degreeVersionSpinner = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     public final JTextField degreeNameField = new JTextField();
     public final JLabel degreeMinimumCreditLabel = new JLabel("필요 학점:");
     public final JSpinner degreeMinimumCreditSpinner = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -79,6 +81,7 @@ public class EditInnerPannel extends JPanel {
 
     private void initDegreeEditor() {
         addRow(degreeNameLabel, degreeNameField);
+        addRow(degreeVersionLabel, degreeVersionSpinner);
         addRow(degreeMinimumCreditLabel, degreeMinimumCreditSpinner);
         addRow(degreeDescriptionLabel, degreeDescriptionField);
     }

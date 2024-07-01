@@ -11,16 +11,23 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DegreeCriteria {
     /**
+     * 이 학위의 이름입니다.
+     */
+    @SerializedName("degree_name")
+    public String degreeName;
+
+    /**
+     * 이 학위의 개정 차수(버전)입니다.
+     */
+    @SerializedName("version")
+    public Integer version;
+
+    /**
      * 검사 기준에 대한 짧은 설명입니다.
      */
     @SerializedName("label")
     public String description;
 
-    /**
-     * 이 학위의 이름입니다.
-     */
-    @SerializedName("degree_name")
-    public String degreeName;
 
     /**
      * 이 학위를 인정받기 위해 이수해야 하는 학점의 최소값을 나타냅니다.
@@ -36,6 +43,7 @@ public class DegreeCriteria {
 
     public DegreeCriteria(DegreeCriteria toCopy) {
         degreeName = toCopy.degreeName;
+        version = toCopy.version;
         description = toCopy.description;
         minimumCredit = toCopy.minimumCredit;
         recursiveCriteria = toCopy.recursiveCriteria;
@@ -43,13 +51,15 @@ public class DegreeCriteria {
 
     public DegreeCriteria(
             String degreeName,
+            Integer version,
             String description,
             Integer minimumCredit,
             RecursiveCriteria recursiveCriteria
     ) {
         this.degreeName = degreeName;
+        this.version = version;
         this.description = description;
-        this.minimumCredit =  minimumCredit;
+        this.minimumCredit = minimumCredit;
         this.recursiveCriteria = recursiveCriteria;
     }
 
@@ -59,9 +69,9 @@ public class DegreeCriteria {
 
     @Override
     public String toString() {
-        return degreeName;
+        return "개정" + version + "차 " + degreeName;
     }
-    
+
     public String getValidCreditString() {
         return "필요 학점: " + minimumCredit + " ~";
     }

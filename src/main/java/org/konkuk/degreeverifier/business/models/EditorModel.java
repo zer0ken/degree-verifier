@@ -34,7 +34,7 @@ public class EditorModel extends Observable {
     public void loadVerifiers() {
         degreeMap.clear();
         for (DegreeVerifier degreeVerifier : appModel.getVerifierFactory()) {
-            degreeMap.put(degreeVerifier.degreeName, new EditableDegreeCriteria(degreeVerifier));
+            degreeMap.put(degreeVerifier.toString(), new EditableDegreeCriteria(degreeVerifier));
         }
         notify(On.VERIFIER_LOADED, null);
     }
@@ -75,7 +75,7 @@ public class EditorModel extends Observable {
         for (String key : changedDegreeMap.keySet()) {
             EditableDegreeCriteria changed = changedDegreeMap.get(key);
             degreeMap.remove(key);
-            degreeMap.put(changed.degreeName, changed);
+            degreeMap.put(changed.toString(), changed);
         }
         notify(On.SAVED, degreeMap);
         appModel.updateVerifiers(degreeMap.values().stream()
