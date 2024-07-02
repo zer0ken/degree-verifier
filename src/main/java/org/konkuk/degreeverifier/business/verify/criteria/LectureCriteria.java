@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business.verify.criteria;
 
 import com.google.gson.annotations.SerializedName;
+import org.konkuk.degreeverifier.business.Grade;
 import org.konkuk.degreeverifier.business.Semester;
 
 /**
@@ -69,8 +70,11 @@ public class LectureCriteria {
     @SerializedName("to_semester")
     public String maximumSemester;
 
-    public String getMinimumGrade() {
-        return minimumGrade == null ? DEFAULT_MINIMUM_GRADE : minimumGrade;
+    public Grade getMinimumGrade() {
+        if (minimumGrade != null) {
+            return Grade.fromString(minimumGrade);
+        }
+        return null;
     }
 
     public boolean isNonExclusive() {
@@ -128,5 +132,9 @@ public class LectureCriteria {
         this.maximumYear = maximumYear;
         this.minimumSemester = minimumSemester;
         this.maximumSemester = maximumSemester;
+    }
+
+    public String getNonExclusiveString() {
+        return "다른 학위에서 사용: " + (isNonExclusive() ? "허용" : "불허");
     }
 }

@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.business.verify.verifier;
 
+import org.konkuk.degreeverifier.business.Grade;
 import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.LectureData;
@@ -17,9 +18,10 @@ import java.util.List;
  * @author 이현령
  * @since 2024-05-25T15:39:55.673Z
  */
-public class LectureVerifier extends LectureCriteria implements Verifiable, Creditizable, Estimable, Snapshotable {
+public class LectureVerifier extends LectureCriteria implements Creditizable, Estimable, Snapshotable {
     public final Semester minSemester;
     public final Semester maxSemester;
+    public final Grade minGrade;
 
     private Lecture matchedLecture = null;  // TODO: 2024-05-31 한 교과목 검사 기준이 여러 교과목에 대해 매치할 수 있도록 수정할 필요가 있을까?
 
@@ -32,13 +34,13 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         super(toCopy);
         minSemester = getMinimumSemester();
         maxSemester = getMaximumSemester();
+        minGrade = getMinimumGrade();
     }
 
-    @Override
-    public List<LectureVerifier> match(List<Lecture> lectures) {
+    public List<LectureVerifier> match(List<Lecture> lectures, Semester minimumSemester, Semester maximumSemester) {
         List<LectureVerifier> exclusiveLectureVerifiers = new LinkedList<>();
         for (Lecture lecture : lectures) {
-            if (match(lecture)) {
+            if (match(lecture, minimumSemester, maximumSemester)) {
                 matchedLecture = lecture;
                 if (isNonExclusive()) {
                     hold();
@@ -51,12 +53,11 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
         return exclusiveLectureVerifiers;
     }
 
-    @Override
     public boolean verify() {
         return holding;
     }
 
-    private boolean match(Lecture lecture) {
+    private boolean match(Lecture lecture, Semester defaultMinimumSemester, Semester defaultMaximumSemester) {
         if (!lecture.name.equals(lectureName)) {
             return false;
         }
@@ -68,6 +69,21 @@ public class LectureVerifier extends LectureCriteria implements Verifiable, Cred
             return false;
         }
         if (maxSemester != null && maxSemester.compareTo(lectureSemester) < 0) {
+            return false;
+        }
+        if (minSemester == null
+                && defaultMinimumSemester != null
+                && defaultMinimumSemester.compareTo(lectureSemester) > 0) {
+            return false;
+        }
+        if (maxSemester == null
+                && defaultMaximumSemester != null
+                && defaultMaximumSemester.compareTo(lectureSemester) < 0) {
+            return false;
+        }
+        Grade lectureGrade = Grade.fromString(lecture.grade);
+        lectureGrade = lectureGrade != null ? lectureGrade : Grade.A_PLUS;
+        if (minGrade != null && minGrade.compareTo(lectureGrade) > 0) {
             return false;
         }
         return true;

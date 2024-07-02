@@ -14,7 +14,7 @@ import java.util.List;
  * @author 이현령
  * @since 2024-05-24T16:51:21.363Z
  */
-public class DegreeVerifier extends DegreeCriteria implements Verifiable, Creditizable, Snapshotable {
+public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snapshotable {
     private final RecursiveVerifier recursiveVerifier;
 
     private boolean verified = false;
@@ -25,12 +25,10 @@ public class DegreeVerifier extends DegreeCriteria implements Verifiable, Credit
         recursiveVerifier.setDegreeName(toCopy.degreeName);
     }
 
-    @Override
     public List<LectureVerifier> match(List<Lecture> lectures) {
-        return recursiveVerifier.match(lectures);
+        return recursiveVerifier.match(lectures, getMinimumSemester(), getMaximumSemester());
     }
 
-    @Override
     public boolean verify() {
         try {
             verified = recursiveVerifier.verify() && creditize() >= minimumCredit;

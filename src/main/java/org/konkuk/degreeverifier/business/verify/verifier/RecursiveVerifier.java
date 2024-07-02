@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.business.verify.verifier;
 
+import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author 이현령
  * @since 2024-05-25T15:41:30.622Z
  */
-public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, Creditizable, Estimable, Snapshotable {
+public class RecursiveVerifier extends RecursiveCriteria implements Creditizable, Estimable, Snapshotable {
     private final LectureVerifier lectureVerifier;
     private final List<RecursiveVerifier> subRecursiveVerifiers;
 
@@ -32,21 +33,19 @@ public class RecursiveVerifier extends RecursiveCriteria implements Verifiable, 
         }
     }
 
-    @Override
-    public List<LectureVerifier> match(List<Lecture> lectures) throws ImportantCriteriaFailedException {
+    public List<LectureVerifier> match(List<Lecture> lectures, Semester minimumSemester, Semester maximumSemester) throws ImportantCriteriaFailedException {
         List<LectureVerifier> exclusiveLectureVerifiers;
         if (lectureVerifier != null) {
-            exclusiveLectureVerifiers = lectureVerifier.match(lectures);
+            exclusiveLectureVerifiers = lectureVerifier.match(lectures, minimumSemester, maximumSemester);
         } else {
             exclusiveLectureVerifiers = new LinkedList<>();
             for (RecursiveVerifier recursiveVerifier : subRecursiveVerifiers) {
-                exclusiveLectureVerifiers.addAll(recursiveVerifier.match(lectures));
+                exclusiveLectureVerifiers.addAll(recursiveVerifier.match(lectures, minimumSemester, maximumSemester));
             }
         }
         return exclusiveLectureVerifiers;
     }
 
-    @Override
     public boolean verify() throws ImportantCriteriaFailedException {
         if (lectureVerifier != null) {
             verified = lectureVerifier.verify();

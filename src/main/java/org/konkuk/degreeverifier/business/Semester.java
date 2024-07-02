@@ -24,7 +24,7 @@ public class Semester implements Comparable<Semester> {
 
         public static Type fromOrdinal(int ordinal) {
             for (Type type : Type.values()) {
-                if (type.ordinal() == ordinal % 4) {
+                if (type.ordinal() == ordinal % Type.values().length) {
                     return type;
                 }
             }
