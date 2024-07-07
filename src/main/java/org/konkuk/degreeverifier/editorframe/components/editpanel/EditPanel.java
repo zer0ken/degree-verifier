@@ -19,6 +19,8 @@ public class EditPanel extends JPanel {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
+        editScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
         add(editScrollPane);
         add(new EditToolbar(), BorderLayout.NORTH);
     }

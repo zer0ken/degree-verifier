@@ -1,17 +1,16 @@
 package org.konkuk.degreeverifier.business.models;
 
+import org.konkuk.degreeverifier.business.DefaultPaths;
+import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,7 +36,6 @@ public class AppModel extends Observable {
     private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
-    private DegreeVerifier selectedVerifier = null;
 
     public void submitTask(
             Runnable beforeSubmit,
@@ -203,11 +201,10 @@ public class AppModel extends Observable {
         notify(On.STUDENT_LOADED, students);
     }
 
-    public void exportManually() {
-        if (committingStudent != null && !committingStudent.isVerified()) {
-            return;
-        }
-        executorService.submit(() -> committingStudent.exportCommit(true));
+    synchronized public void export() {
+        File file = new File(DefaultPaths.EXPORT_PATH + "\\"
+                + new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".csv");
+        FileUtil.toCsvFile(file, students);
     }
 
     public void commitAllStudentAutomatically(boolean excludeAlreadyCommittedStudent) {
@@ -239,14 +236,14 @@ public class AppModel extends Observable {
     }
 
     public void updateVerifiers(Collection<DegreeCriteria> criteriaCollection) {
-        executorService.submit(() ->{
+        executorService.submit(() -> {
             verifierFactory.updateAllVerifiers(criteriaCollection);
             notify(On.VERIFIER_LOADED, verifierFactory);
         });
     }
 
     public int getCommittingStudentIndex() {
-        return committingStudent == null? -1 : students.indexOf(committingStudent);
+        return committingStudent == null ? -1 : students.indexOf(committingStudent);
     }
 
     public List<Student> getStudents() {
@@ -279,10 +276,6 @@ public class AppModel extends Observable {
 
     public VerifierFactory getVerifierFactory() {
         return verifierFactory;
-    }
-
-    public DegreeVerifier getSelectedVerifier() {
-        return selectedVerifier;
     }
 
     public enum On implements Event {

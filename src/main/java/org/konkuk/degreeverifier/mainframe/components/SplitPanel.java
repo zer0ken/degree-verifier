@@ -14,8 +14,6 @@ import static org.konkuk.degreeverifier.ui.Borders.SEPARATOR_EVERY_SIDE;
 
 
 public class SplitPanel extends JPanel {
-    private JSplitPane withLectureList;
-
     public SplitPanel() {
         setLayout(new BorderLayout());
 
@@ -34,7 +32,7 @@ public class SplitPanel extends JPanel {
         );
         commitPane.setResizeWeight(0.5d);
 
-        withLectureList = new JSplitPane(
+        JSplitPane withLectureList = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 commitPane,
                 lectureListPanel

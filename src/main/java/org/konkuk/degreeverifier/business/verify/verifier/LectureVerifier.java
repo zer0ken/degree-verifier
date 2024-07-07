@@ -83,10 +83,7 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
         }
         Grade lectureGrade = Grade.fromString(lecture.grade);
         lectureGrade = lectureGrade != null ? lectureGrade : Grade.A_PLUS;
-        if (minGrade != null && minGrade.compareTo(lectureGrade) > 0) {
-            return false;
-        }
-        return true;
+        return minGrade == null || minGrade.compareTo(lectureGrade) <= 0;
     }
 
     public void hold() {

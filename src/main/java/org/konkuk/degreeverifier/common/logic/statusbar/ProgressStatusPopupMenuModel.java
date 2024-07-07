@@ -8,7 +8,7 @@ import static org.konkuk.degreeverifier.ui.Strings.TASKS_IN_PROGRESS_DETAILED;
 public class ProgressStatusPopupMenuModel {
     private final TaskModel taskModel = TaskModel.getInstance();
 
-    private ProgressStatusPopupMenu popupMenu;
+    private final ProgressStatusPopupMenu popupMenu;
 
     public ProgressStatusPopupMenuModel(ProgressStatusPopupMenu popupMenu) {
         this.popupMenu = popupMenu;

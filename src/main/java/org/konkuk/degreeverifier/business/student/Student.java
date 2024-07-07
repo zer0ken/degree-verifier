@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.business.student;
 
+import org.konkuk.degreeverifier.business.CsvExportable;
 import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.konkuk.degreeverifier.ui.Strings.EXPORTING_COMMIT_MESSAGE;
 import static org.konkuk.degreeverifier.ui.Strings.LECTURES_LOADING_MESSAGES;
 
-public class Student extends LinkedHashSet<Lecture> {
+public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
     private final String directoryName;
     public final String id;
     public final String name;
@@ -209,9 +210,6 @@ public class Student extends LinkedHashSet<Lecture> {
         tracker.finish();
     }
 
-    public void getExportContent() {
-    }
-
     public void loadFrom(File file) {
         committedDegrees.clear();
         committedDegrees.putAll(FileUtil.loadCommit(file));
@@ -283,5 +281,16 @@ public class Student extends LinkedHashSet<Lecture> {
         Student other = (Student) o;
 
         return id.equals(other.id) && name.equals(other.name);
+    }
+
+    @Override
+    public String toCsv() {
+        StringBuilder sb = new StringBuilder();
+        for (DegreeSnapshot degreeSnapshot : committedDegrees.values()) {
+            sb.append(name).append(",")
+                    .append(id).append(",")
+                    .append(degreeSnapshot.toCsv()).append("\n");
+        }
+        return sb.toString();
     }
 }

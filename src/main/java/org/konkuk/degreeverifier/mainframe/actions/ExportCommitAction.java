@@ -27,6 +27,6 @@ public class ExportCommitAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        appModel.exportManually();
+        appModel.export();
     }
 }

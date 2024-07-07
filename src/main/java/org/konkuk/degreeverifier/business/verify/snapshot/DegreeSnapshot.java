@@ -3,7 +3,10 @@ package org.konkuk.degreeverifier.business.verify.snapshot;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.Creditizable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class DegreeSnapshot implements Snapshot, Creditizable {
     public final DegreeCriteria criteria;
@@ -20,7 +23,7 @@ public class DegreeSnapshot implements Snapshot, Creditizable {
 
         LinkedList<RecursiveSnapshot> queue = new LinkedList<>();
         queue.add(recursiveSnapshot);
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             RecursiveSnapshot cur = queue.pop();
             if (cur.lectureSnapshot != null) {
                 lectureSnapshots.add(cur.lectureSnapshot);
@@ -42,16 +45,13 @@ public class DegreeSnapshot implements Snapshot, Creditizable {
 
     public String toCsv() {
         StringBuilder sb = new StringBuilder();
-        LinkedList<LectureSnapshot> lectures = new LinkedList<>();
-        LinkedList<RecursiveSnapshot> queue = new LinkedList<>();
-        queue.add(recursiveSnapshot);
+        sb.append(criteria.version).append(",")
+                .append(criteria.degreeName).append(",");
 
-        while (!queue.isEmpty()) {
-            RecursiveSnapshot recursiveSnapshot = queue.pop();
-            if (recursiveSnapshot.lectureSnapshot != null && recursiveSnapshot.lectureSnapshot.verified) {
-                lectures.add(recursiveSnapshot.lectureSnapshot);
-            } else if (recursiveSnapshot.subSnapshots != null) {
-                Collections.addAll(queue, recursiveSnapshot.subSnapshots);
+        for (LectureSnapshot lectureSnapshot : lectureSnapshots) {
+            if (lectureSnapshot.matched != null) {
+                sb.append(lectureSnapshot.matched.name).append(",")
+                        .append(lectureSnapshot.matched.credit).append(",");
             }
         }
 

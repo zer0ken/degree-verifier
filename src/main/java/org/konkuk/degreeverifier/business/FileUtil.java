@@ -6,11 +6,15 @@ import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -48,7 +52,7 @@ public class FileUtil {
             if (json == null) {
                 return;
             }
-            if (Files.notExists(dirPath)){
+            if (Files.notExists(dirPath)) {
                 Files.createDirectory(dirPath);
             }
             Files.createFile(filePath);
@@ -91,10 +95,45 @@ public class FileUtil {
                     .filter(line -> !line.trim().isEmpty()).forEach(line -> bundle.put(line.trim(), null));
         } catch (IOException e) {
             System.err.println("Exception occurred while reading TXT file: " + file.getName());
-            throw new RuntimeException(e);
-        } finally {
-            return bundle;
         }
+        return bundle;
+    }
+
+    synchronized public static void toCsvFile(File file, List<? extends CsvExportable> data) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))
+        ) {
+            file.createNewFile();
+            for (CsvExportable datum : data) {
+                writer.write(datum.toCsv());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    synchronized public static List<List<String>> fromCsvFile(File file) {
+        List<List<String>> table = new LinkedList<>();
+        StringBuilder line = new StringBuilder();
+        try (SeekableByteChannel channel = Files.newByteChannel(file.toPath())) {
+            ByteBuffer buffer = ByteBuffer.allocateDirect(128);
+            while (channel.read(buffer) != -1) {
+                buffer.flip();
+                while (buffer.hasRemaining()) {
+                    char c = (char) buffer.get();
+                    if (c == '\n') {
+                        table.add(new LinkedList<>(Arrays.asList(line.toString().split(","))));
+                        line.setLength(0);
+                    } else {
+                        line.append(c);
+                    }
+                }
+                buffer.clear();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return table;
     }
 
     /**

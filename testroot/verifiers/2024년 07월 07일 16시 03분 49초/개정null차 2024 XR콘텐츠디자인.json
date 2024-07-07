@@ -1,0 +1,28 @@
+{
+  "degree_name": "2024 XR콘텐츠디자인",
+  "min_credit": 9,
+  "criteria": {
+    "subcriteria": [
+      {
+        "lecture": {
+          "name": "가상현실(360VR)영상제작"
+        }
+      },
+      {
+        "lecture": {
+          "name": "이머시브전시디자인"
+        }
+      },
+      {
+        "lecture": {
+          "name": "XR콘텐츠디자인워크숍"
+        }
+      },
+      {
+        "lecture": {
+          "name": "AR/VR콘텐츠실무"
+        }
+      }
+    ]
+  }
+}

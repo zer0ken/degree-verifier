@@ -1,0 +1,58 @@
+{
+  "degree_name": "2024 로컬문화실감미디어",
+  "min_credit": 9,
+  "criteria": {
+    "subcriteria": [
+      {
+        "lecture": {
+          "name": "문화테크놀로지연구"
+        }
+      },
+      {
+        "lecture": {
+          "name": "비교문화메타버스콘텐츠탐구"
+        }
+      },
+      {
+        "lecture": {
+          "name": "축제이벤트산업론"
+        }
+      },
+      {
+        "lecture": {
+          "name": "실감형축제콘텐츠기획"
+        }
+      },
+      {
+        "lecture": {
+          "name": "도시문화콤텐츠기획실습"
+        }
+      },
+      {
+        "lecture": {
+          "name": "지역문화콤텐츠기획실습"
+        }
+      },
+      {
+        "lecture": {
+          "name": "관광콘텐츠기획론"
+        }
+      },
+      {
+        "lecture": {
+          "name": "로컬콘텐츠실감미디어PBL"
+        }
+      },
+      {
+        "lecture": {
+          "name": "문화유산실감형콘텐츠기획실습"
+        }
+      },
+      {
+        "lecture": {
+          "name": "문화관광종합설계"
+        }
+      }
+    ]
+  }
+}

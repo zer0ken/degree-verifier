@@ -1,0 +1,33 @@
+{
+  "degree_name": "2024 실감미디어콘텐츠디자인",
+  "min_credit": 9,
+  "criteria": {
+    "subcriteria": [
+      {
+        "lecture": {
+          "name": "실감콘텐츠디자인"
+        }
+      },
+      {
+        "lecture": {
+          "name": "실감디지털페인팅"
+        }
+      },
+      {
+        "lecture": {
+          "name": "실감3D캐릭터모델링"
+        }
+      },
+      {
+        "lecture": {
+          "name": "실감UX제품디자인"
+        }
+      },
+      {
+        "lecture": {
+          "name": "고급실감디지털스토리텔링"
+        }
+      }
+    ]
+  }
+}
