@@ -209,6 +209,9 @@ public class Student extends LinkedHashSet<Lecture> {
         tracker.finish();
     }
 
+    public void getExportContent() {
+    }
+
     public void loadFrom(File file) {
         committedDegrees.clear();
         committedDegrees.putAll(FileUtil.loadCommit(file));

@@ -22,7 +22,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
         List<Lecture> lectures = new LinkedList<>(student);
         ProgressTracker tracker = new ProgressTracker(String.format(VERIFYING, student));
 
-        // 1. Match
+        // 1. Match and Hold Lectures
         List<LectureVerifier> exclusiveLectureVerifiers = new ArrayList<>();
         for (DegreeVerifier degreeVerifier : this) {
             exclusiveLectureVerifiers.addAll(degreeVerifier.match(lectures));
@@ -56,6 +56,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             SnapshotBundle snapshotBundle = new SnapshotBundle();
             for (DegreeVerifier degreeVerifier : this) {
                 if (degreeVerifier.verify()) {
+                    degreeVerifier.optimize();
                     snapshotBundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
                 }
             }
@@ -74,7 +75,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             snapshotBundles.sort((a, b) -> b.size() - a.size());
         }
 
-        // 3. Finish
+        // 3. Check Sufficiency
         Map<String, List<DegreeSnapshot>> flattened = new LinkedHashMap<>();
         for (SnapshotBundle bundle : snapshotBundles) {
             for (DegreeSnapshot degreeInBundle : bundle.values()) {
@@ -100,8 +101,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             }
         }
 
-        student.setVerifiedSnapshotBundles(snapshotBundles);
-
+        // 4. Set
         SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
         for (List<LectureVerifier> value : groupedExclusiveVerifiers.values()) {
             for (LectureVerifier lectureVerifier : value) {
@@ -113,6 +113,8 @@ public class Verifier extends LinkedList<DegreeVerifier> {
                 notVerifiedDegrees.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
             }
         }
+
+        student.setVerifiedSnapshotBundles(snapshotBundles);
         student.setNotVerifiedDegrees(notVerifiedDegrees);
 
         tracker.finish();
@@ -127,6 +129,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
                 SnapshotBundle bundle = new SnapshotBundle();
                 for (DegreeVerifier degreeVerifier : this) {
                     if (degreeVerifier.verify()) {
+                        degreeVerifier.optimize();
                         bundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
                     }
                 }

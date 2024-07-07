@@ -405,5 +405,20 @@ public class EditPanelListener {
             recursive.getEditableLectureCriteria().updateMaximumYearSemester(semester.year, semester.semester.value);
             editorModel.notifyUpdatedSelectedDegree();
         });
+
+        panel.setNonExclusiveCheckBox.addActionListener(e -> {
+            if(!panel.setNonExclusiveCheckBox.isEnabled()) {
+                return;
+            }
+            EditableRecursiveCriteria recursive = (EditableRecursiveCriteria) editorModel.getSelectedNodeObject();
+            if (recursive == null || recursive.getEditableLectureCriteria() == null) {
+                return;
+            }
+            boolean selected = panel.setNonExclusiveCheckBox.isSelected();
+            if (selected != recursive.getEditableLectureCriteria().isNonExclusive()) {
+                recursive.getEditableLectureCriteria().updateNonExclusive(selected);
+                editorModel.notifyUpdatedSelectedDegree();
+            }
+        });
     }
 }

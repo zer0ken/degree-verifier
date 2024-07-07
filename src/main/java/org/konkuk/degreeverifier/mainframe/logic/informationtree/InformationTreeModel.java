@@ -7,10 +7,12 @@ import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.mainframe.components.informationtree.InformationTree;
 import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.InsufficientRootNode;
+import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.LecturesRootNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InformationTreeModel extends DefaultTreeModel {
     private final InformationModel informationModel = InformationModel.getInstance();
@@ -45,7 +47,7 @@ public class InformationTreeModel extends DefaultTreeModel {
             degreeNode.add(minimumCreditNode);
 
             if (!selectedDegree.insufficientDegrees.isEmpty()) {
-                DefaultMutableTreeNode insufficientRootNode = new DefaultMutableTreeNode(new InsufficientRootNode());
+                DefaultMutableTreeNode insufficientRootNode = new InsufficientRootNode();
                 for (String insufficientDegree : selectedDegree.insufficientDegrees) {
                     insufficientRootNode.add(new DefaultMutableTreeNode(insufficientDegree));
                 }
@@ -53,6 +55,15 @@ public class InformationTreeModel extends DefaultTreeModel {
             }
 
             addNode(degreeNode, selectedDegree.recursiveSnapshot);
+
+            List<LectureSnapshot> lectures = selectedDegree.lectureSnapshots.stream().filter(l -> l.verified).collect(Collectors.toList());
+            DefaultMutableTreeNode lecturesNode = new LecturesRootNode(lectures.size());
+            for (LectureSnapshot lecture : lectures) {
+                lecturesNode.add(new DefaultMutableTreeNode(lecture.criteria.lectureName));
+            }
+
+            degreeNode.add(lecturesNode);
+
             root.add(degreeNode);
         }
         reload();

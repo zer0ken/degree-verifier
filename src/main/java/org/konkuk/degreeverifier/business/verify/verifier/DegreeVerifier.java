@@ -6,6 +6,9 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.Snapshot;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,6 +39,47 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
             verified = false;
         }
         return verified;
+    }
+
+    public void optimize() {
+        if (!verified) {
+            return;
+        }
+
+        List<LectureVerifier> lectureVerifiers = new ArrayList<>();
+
+        LinkedList<RecursiveVerifier> queue = new LinkedList<>();
+        queue.add(recursiveVerifier);
+        while (!queue.isEmpty()) {
+            RecursiveVerifier cur = queue.pop();
+            if (cur.getLectureVerifier() != null && cur.getLectureVerifier().getMatchedLecture() != null) {
+                LectureVerifier lectureVerifier = cur.getLectureVerifier();
+                lectureVerifiers.add(lectureVerifier);
+            } else {
+                queue.addAll(cur.getSubRecursiveVerifiers());
+            }
+        }
+        lectureVerifiers.sort(Comparator.comparingInt(LectureVerifier::creditize));
+
+        int totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
+        while (totalCredit >= minimumCredit + lectureVerifiers.get(0).creditize()) {
+            LectureVerifier discarded = null;
+            for (LectureVerifier lectureVerifier : lectureVerifiers) {
+                lectureVerifier.release();
+                if (!verify()) {
+                    lectureVerifier.hold();
+                } else {
+                    discarded = lectureVerifier;
+                    break;
+                }
+            }
+            if (discarded == null) {
+                break;
+            } else {
+                lectureVerifiers.remove(discarded);
+                totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
+            }
+        }
     }
 
     @Override

@@ -54,6 +54,9 @@ public class RecursiveVerifier extends RecursiveCriteria implements Creditizable
                     .filter(RecursiveVerifier::verify)
                     .count();
             verified = needsAllPass() ? passedCount == subRecursiveVerifiers.size() : passedCount >= getMinimumPass();
+            if (verified && passedCount == 0) {
+                verified = false;
+            }
         }
 
         if (isImportant() && !verified) {

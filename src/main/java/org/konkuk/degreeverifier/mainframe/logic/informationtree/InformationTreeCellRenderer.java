@@ -5,6 +5,7 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.InsufficientRootNode;
+import org.konkuk.degreeverifier.mainframe.logic.informationtree.nodes.LecturesRootNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -27,7 +28,7 @@ public class InformationTreeCellRenderer extends DefaultTreeCellRenderer {
             RecursiveSnapshot recursive = (RecursiveSnapshot) data;
             if (recursive.lectureSnapshot != null) {
                 LectureSnapshot lecture = recursive.lectureSnapshot;
-                if (lecture.matched == null) {
+                if (!lecture.verified) {
                     component.setForeground(NOT_PASSED_NODE_FOREGROUND);
                 } else if (lecture.duplicatedDegrees.length > 0) {
                     component.setForeground(DUPLICATED_NODE_FOREGROUND);
@@ -43,9 +44,11 @@ public class InformationTreeCellRenderer extends DefaultTreeCellRenderer {
                 }
                 setIcon("icons/rule_icon.svg", component.getForeground());
             }
-        } else if (data instanceof InsufficientRootNode) {
+        } else if (node instanceof InsufficientRootNode) {
             component.setForeground(INFORMATION_INSUFFICIENT_ROOT_NODE_FOREGROUND);
             setIcon("icons/warning_icon.svg", component.getForeground());
+        } else if (node instanceof LecturesRootNode) {
+            setIcon("icons/book_icon.svg", component.getForeground());
         }
         return component;
     }
