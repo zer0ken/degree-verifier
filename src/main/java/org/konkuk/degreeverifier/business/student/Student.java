@@ -281,4 +281,9 @@ public class Student extends LinkedHashSet<Lecture> {
 
         return id.equals(other.id) && name.equals(other.name);
     }
+
+    //추가
+    public List<SnapshotBundle> getVerifiedSnapshotBundles() {
+        return verifiedSnapshotBundles;
+    }
 }
