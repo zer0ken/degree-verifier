@@ -67,7 +67,7 @@ public class VerifierFactoryTest2 {
 
         LectureCriteria lectureCriteria = new LectureCriteria(null, "Degree1을 위한 강의","A",true,2021, 2025, "1", "2");
         RecursiveCriteria recursiveCriteria1 = new RecursiveCriteria("~", false, lectureCriteria, false, 0, null, null);
-        DegreeCriteria criteria1 = new DegreeCriteria("Degree1", 1, "",3, recursiveCriteria1);
+        DegreeCriteria criteria1 = new DegreeCriteria("Degree1", 1, null,3,2023,null,"1",null, recursiveCriteria1);
 
         criteriaCollection.add(criteria1);
         return criteriaCollection;
