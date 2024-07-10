@@ -3,19 +3,15 @@ package org.konkuk.degreeverifier.business;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
+import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 파일로부터 데이터를 불러오는 함수들을 묶어둔 클래스입니다.
@@ -99,11 +95,12 @@ public class FileUtil {
         return bundle;
     }
 
-    synchronized public static void toCsvFile(File file, List<? extends CsvExportable> data) {
+    synchronized public static void toCsvFile(File file, String[] header, Collection<? extends CsvExportable> data) {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))
         ) {
             file.createNewFile();
+            writer.write(String.join(",", header) + "\n");
             for (CsvExportable datum : data) {
                 writer.write(datum.toCsv());
             }
@@ -114,23 +111,11 @@ public class FileUtil {
 
     synchronized public static List<List<String>> fromCsvFile(File file) {
         List<List<String>> table = new LinkedList<>();
-        StringBuilder line = new StringBuilder();
-        try (SeekableByteChannel channel = Files.newByteChannel(file.toPath())) {
-            ByteBuffer buffer = ByteBuffer.allocateDirect(128);
-            while (channel.read(buffer) != -1) {
-                buffer.flip();
-                while (buffer.hasRemaining()) {
-                    char c = (char) buffer.get();
-                    if (c == '\n') {
-                        table.add(new LinkedList<>(Arrays.asList(line.toString().split(","))));
-                        line.setLength(0);
-                    } else {
-                        line.append(c);
-                    }
-                }
-                buffer.clear();
+        try(Scanner sc = new Scanner(file, "UTF-8")) {
+            while (sc.hasNextLine()) {
+                table.add(new LinkedList<>(Arrays.asList(sc.nextLine().trim().split(","))));
             }
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
         return table;

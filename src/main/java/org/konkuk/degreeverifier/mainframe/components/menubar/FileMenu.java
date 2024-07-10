@@ -10,7 +10,7 @@ public class FileMenu extends ActionMenu {
     public FileMenu() {
         super(FILE_MENU);
 
-        add(new LoadStudentListAction());
+        add(new LoadTranscriptAction());
         add(new LoadVerifierAction());
         addSeparator();
         add(new ExportCommitAction());

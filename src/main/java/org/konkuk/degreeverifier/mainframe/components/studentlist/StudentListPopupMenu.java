@@ -1,6 +1,9 @@
 package org.konkuk.degreeverifier.mainframe.components.studentlist;
 
-import org.konkuk.degreeverifier.mainframe.actions.*;
+import org.konkuk.degreeverifier.mainframe.actions.LoadTranscriptAction;
+import org.konkuk.degreeverifier.mainframe.actions.OpenStudentDirectoryAction;
+import org.konkuk.degreeverifier.mainframe.actions.StartCommitAction;
+import org.konkuk.degreeverifier.mainframe.actions.VerifyStudentAction;
 
 import javax.swing.*;
 
@@ -9,8 +12,7 @@ public class StudentListPopupMenu extends JPopupMenu {
         add(new StartCommitAction());
         add(new VerifyStudentAction());
         addSeparator();
-        add(new CreateStudentAction());
-        add(new LoadStudentListAction());
+        add(new LoadTranscriptAction());
         add(new OpenStudentDirectoryAction());
     }
 }

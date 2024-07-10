@@ -19,25 +19,18 @@ public class StartCommitNextAction extends AbstractAction {
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/skip_next_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
 
-        setEnabled(appModel.isStudentListLoaded() &&
-                appModel.getCommittingStudentIndex() == appModel.getStudents().size() - 1);
+        setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit());
 
-        appModel.observe(AppModel.On.STUDENT_LOADED, students ->
-                setEnabled(appModel.isStudentListLoaded() &&
-                        appModel.getCommittingStudentIndex() < appModel.getStudents().size() - 1)
+        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, students ->
+                setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
         );
         appModel.observe(AppModel.On.COMMIT_UPDATED, students ->
-                setEnabled(appModel.isStudentListLoaded() &&
-                        appModel.getCommittingStudentIndex() < appModel.getStudents().size() - 1)
+                setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
         );
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (appModel.getCommittingStudent() == null) {
-            appModel.startCommit(appModel.getStudents().get(0));
-        }else {
-            appModel.startCommitNext();
-        }
+        appModel.startCommitNext();
     }
 }

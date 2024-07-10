@@ -4,14 +4,14 @@ import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.business.student.Student;
 
 import javax.swing.*;
-import java.util.List;
+import java.util.Map;
 
 public class StudentListModel extends DefaultListModel<Student> {
     public StudentListModel() {
         AppModel appModel = AppModel.getInstance();
-        appModel.observe(AppModel.On.STUDENT_LOADED, students -> {
+        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, students -> {
             this.removeAllElements();
-            ((List<Student>) students).forEach(this::addElement);
+            ((Map<String, Student>) students).values().forEach(this::addElement);
         });
     }
 }

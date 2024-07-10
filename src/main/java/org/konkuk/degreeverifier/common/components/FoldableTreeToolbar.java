@@ -1,10 +1,7 @@
 package org.konkuk.degreeverifier.common.components;
 
-import org.konkuk.degreeverifier.mainframe.actions.informationtree.FoldAction;
-import org.konkuk.degreeverifier.mainframe.actions.informationtree.UnfoldAction;
-import org.konkuk.degreeverifier.mainframe.components.informationtree.InformationTree;
-
-import static org.konkuk.degreeverifier.ui.Strings.INFORMATION;
+import org.konkuk.degreeverifier.common.actions.FoldAction;
+import org.konkuk.degreeverifier.common.actions.UnfoldAction;
 
 public class FoldableTreeToolbar extends TitledToolbar {
     public FoldableTreeToolbar(FoldableTree tree, String title) {

@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.common.components;
 
-import org.konkuk.degreeverifier.mainframe.actions.informationtree.FoldAction;
-import org.konkuk.degreeverifier.mainframe.actions.informationtree.UnfoldAction;
+import org.konkuk.degreeverifier.common.actions.FoldAction;
+import org.konkuk.degreeverifier.common.actions.UnfoldAction;
 
 public class InnerFoldableTreeToolbar extends InnerTitledToolbar {
     public InnerFoldableTreeToolbar(FoldableTree tree, String title) {

@@ -2,9 +2,13 @@ package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
+import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.Student;
+import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
+import org.konkuk.degreeverifier.business.verify.csv.Commit;
+import org.konkuk.degreeverifier.business.verify.csv.Transcript;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
@@ -14,8 +18,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.konkuk.degreeverifier.business.DefaultPaths.STUDENTS_PATH;
-import static org.konkuk.degreeverifier.ui.Strings.STUDENTS_LOADING_MESSAGE;
+import static org.konkuk.degreeverifier.ui.Strings.COMMIT_LOADING_MESSAGE;
+import static org.konkuk.degreeverifier.ui.Strings.TRANSCRIPT_LOADING_MESSAGE;
 
 public class AppModel extends Observable {
     protected static final AppModel instance = new AppModel();
@@ -28,19 +32,20 @@ public class AppModel extends Observable {
     }
 
     private Student committingStudent = null;
-    private boolean isStudentListLoaded = false;
+    private boolean transcriptLoaded = false;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final VerifierFactory verifierFactory = VerifierFactory.getInstance();
-    private final List<Student> students = Collections.synchronizedList(new ArrayList<>());
+    private final NavigableMap<String, Student> students = Collections.synchronizedNavigableMap(new TreeMap<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
 
     public void submitTask(
             Runnable beforeSubmit,
-            Runnable afterFinished,
-            Runnable task) {
+            Runnable task,
+            Runnable afterFinished
+    ) {
         beforeSubmit.run();
         executorService.submit(() -> {
             task.run();
@@ -48,76 +53,124 @@ public class AppModel extends Observable {
         });
     }
 
-    public void loadStudentList() {
+    public void loadTranscript(File file) {
         submitTask(
-                () -> notify(On.STUDENT_LOAD_STARTED, students),
-                () -> notify(On.STUDENT_LOADED, students),
+                () -> notify(On.TRANSCRIPT_LOAD_STARTED, students),
                 () -> {
                     students.clear();
-                    File directory = new File(STUDENTS_PATH);
-                    File[] studentDirectories = directory.listFiles();
-                    if (studentDirectories == null) {
+                    List<List<String>> table = FileUtil.fromCsvFile(file);
+                    if (!Transcript.isValidHeader(table.get(0).toArray(new String[0]))) {
                         return;
                     }
-                    ProgressTracker tracker = new ProgressTracker(STUDENTS_LOADING_MESSAGE);
-
-                    tracker.setMaximum(studentDirectories.length);
-                    for (File studentDirectory : studentDirectories) {
-                        try {
-                            students.add(new Student(studentDirectory.getAbsolutePath()));
-                        } catch (RuntimeException ignored) {
-                        } finally {
-                            tracker.increment();
+                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
+                    tracker.setMaximum(table.size() - 1);
+                    for (List<String> row : table.subList(1, table.size())) {
+                        Student student = new Student(row.get(0), row.get(1), row.get(2));
+                        if (!students.containsKey(student.toString())) {
+                            students.put(student.toString(), student);
                         }
+                        student = students.get(student.toString());
+                        Lecture lecture = new Lecture(
+                                row.get(3), row.get(4), row.get(5), Integer.parseInt(row.get(6)), row.get(7)
+                        );
+                        student.add(lecture);
                     }
-                    isStudentListLoaded = true;
+                    transcriptLoaded = true;
                     tracker.finish();
-                }
+                },
+                () -> notify(On.TRANSCRIPT_LOADED, students)
+        );
+    }
+
+    public void loadCommit(File file) {
+        submitTask(
+                () -> notify(On.COMMIT_LOAD_STARTED, students),
+                () -> {
+                    students.clear();
+                    List<List<String>> table = FileUtil.fromCsvFile(file);
+                    if (!Commit.isValidHeader(table.get(0).toArray(new String[0]))) {
+                        return;
+                    }
+                    ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
+                    tracker.setMaximum(table.size() - 1);
+                    Map<String, SnapshotBundle> bundleMap = new HashMap<>();
+                    for (List<String> row : table.subList(1, table.size())) {
+                        Student student = students.get(new Student(row.get(0), row.get(1), row.get(2)).toString());
+                        if (student == null) {
+                            continue;
+                        }
+                        SnapshotBundle bundle = bundleMap.get(student.toString());
+                        if (bundle == null){
+                            bundle = new SnapshotBundle();
+                            bundleMap.put(student.toString(), bundle);
+                        }
+
+                        String[] lectureNames = new String[10];
+                        Integer[] lectureCredits = new Integer[10];
+                        for (int i = 6, j = 0; i < row.size(); i += 2, j++) {
+                            lectureNames[j] = row.get(i);
+                            lectureCredits[j] = Integer.parseInt(row.get(i + 1));
+                        }
+
+                        DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
+                                row.get(4),
+                                Integer.parseInt(row.get(3)),
+                                Integer.parseInt(row.get(5)),
+                                lectureNames,
+                                lectureCredits
+                        );
+                        bundle.put(degreeSnapshot.toString(), degreeSnapshot);
+                    }
+                    for (String key : bundleMap.keySet()) {
+                        Student student = students.get(key);
+                        student.commitAll(bundleMap.get(student.toString()).values());
+                    }
+                    transcriptLoaded = true;
+                    tracker.finish();
+                },
+                () -> notify(On.COMMIT_LOADED, students)
         );
     }
 
     public void loadLatestVerifiers() {
         submitTask(
                 () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
-                () -> notify(On.VERIFIER_LOADED, verifierFactory),
-                verifierFactory::loadLatestVerifiers
+                verifierFactory::loadLatestVerifiers,
+                () -> notify(On.VERIFIER_LOADED, verifierFactory)
         );
     }
 
     public void loadVerifiers(String directory) {
         submitTask(
                 () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
-                () -> notify(On.VERIFIER_LOADED, verifierFactory),
-                () -> verifierFactory.loadVerifiers(directory)
+                () -> verifierFactory.loadVerifiers(directory),
+                () -> notify(On.VERIFIER_LOADED, verifierFactory)
         );
     }
 
     public void verifyStudent(Student student) {
-        executorService.submit(
+        submitTask(
+                () -> notify(On.VERIFY_STARTED, student),
+                () -> verifierFactory.createVerifier().verify(student),
                 () -> {
-                    if (!student.isLoaded()) {
-                        student.loadLectures();
-                        if (student.equals(committingStudent)) {
-                            notify(On.LECTURE_UPDATED, student);
-                        }
+                    notify(On.VERIFIED, student);
+                    if (student.equals(committingStudent)) {
+                        notify(On.COMMIT_UPDATED, student);
                     }
-                    submitTask(
-                            () -> notify(On.VERIFY_STARTED, student),
-                            () -> {
-                                notify(On.VERIFIED, student);
-                                if (student.equals(committingStudent)) {
-                                    notify(On.COMMIT_UPDATED, student);
-                                }
-                            },
-                            () -> {
-                                verifierFactory.createVerifier().verify(student);
-                                if (committingStudent.hasCommitFile()) {
-                                    committingStudent.loadFrom(committingStudent.getLastExported());
-                                }
-                            }
-                    );
                 }
         );
+    }
+
+    public void verifyAllStudents() {
+        for (Student student : students.values()) {
+            verifyStudent(student);
+        }
+    }
+
+    public void verifySelectedStudents() {
+        for (Student student : selectedStudents) {
+            verifyStudent(student);
+        }
     }
 
     public void setSelectedStudents(Collection<Student> selectedStudents) {
@@ -141,11 +194,18 @@ public class AppModel extends Observable {
     }
 
     public void startCommitNext() {
-        startCommit(students.get(students.indexOf(committingStudent) + 1));
+        if (committingStudent == null) {
+            startCommit(students.firstEntry().getValue());
+        } else {
+            startCommit(students.higherEntry(committingStudent.toString()).getValue());
+        }
     }
 
     public void startCommitPrevious() {
-        startCommit(students.get(students.indexOf(committingStudent) - 1));
+        Student previousStudent = students.lowerEntry(committingStudent.toString()).getValue();
+        if (previousStudent != null) {
+            startCommit(previousStudent);
+        }
     }
 
     public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
@@ -193,39 +253,18 @@ public class AppModel extends Observable {
         notify(On.COMMIT_UPDATED, committingStudent);
     }
 
-    public void addStudent(String directoryName) {
-        Student student;
-        student = new Student(directoryName);
-        student.loadLectures();
-        students.add(student);
-        notify(On.STUDENT_LOADED, students);
-    }
-
     synchronized public void export() {
         File file = new File(DefaultPaths.EXPORT_PATH + "\\"
                 + new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".csv");
-        FileUtil.toCsvFile(file, students);
+        FileUtil.toCsvFile(file, Commit.HEADER, students.values());
     }
 
-    public void commitAllStudentAutomatically(boolean excludeAlreadyCommittedStudent) {
-        for (Student student : students) {
-            if (student.hasCommitFile() && excludeAlreadyCommittedStudent) {
-                continue;
-            }
-
+    public void commitAllStudentAutomatically() {
+        for (Student student : students.values()) {
             executorService.submit(() -> {
-                        if (!student.isLoaded()) {
-                            student.loadLectures();
-                            if (student.equals(committingStudent)) {
-                                notify(On.LECTURE_UPDATED, student);
-                            }
-                        }
                         notify(On.VERIFY_STARTED, student);
                         verifierFactory.createVerifier().verify(student);
                         notify(On.VERIFIED, student);
-                        if (student.hasCommitFile()) {
-                            student.loadFrom(student.getLastExported());
-                        }
                         student.commitRecommendedBundle();
                         if (student.equals(committingStudent)) {
                             notify(On.COMMIT_UPDATED, student);
@@ -243,11 +282,19 @@ public class AppModel extends Observable {
     }
 
     public int getCommittingStudentIndex() {
-        return committingStudent == null ? -1 : students.indexOf(committingStudent);
+        return committingStudent == null ? -1 : new LinkedList<>(students.values()).indexOf(committingStudent);
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public boolean isStudentMapEmpty() {
+        return students.isEmpty();
+    }
+
+    public boolean hasNextStudentToCommit() {
+        return committingStudent == null || students.higherEntry(committingStudent.toString()) != null;
+    }
+
+    public boolean hasPreviousStudentToCommit() {
+        return committingStudent != null && students.lowerEntry(committingStudent.toString()) != null;
     }
 
     public List<Student> getSelectedStudents() {
@@ -266,8 +313,8 @@ public class AppModel extends Observable {
         return selectedCommittedDegree;
     }
 
-    public boolean isStudentListLoaded() {
-        return isStudentListLoaded;
+    public boolean isTranscriptLoaded() {
+        return transcriptLoaded;
     }
 
     public boolean isVerifierLoaded() {
@@ -285,8 +332,11 @@ public class AppModel extends Observable {
         VERIFY_STARTED,
         VERIFIED,
 
-        STUDENT_LOAD_STARTED,
-        STUDENT_LOADED,
+        TRANSCRIPT_LOAD_STARTED,
+        TRANSCRIPT_LOADED,
+
+        COMMIT_LOAD_STARTED,
+        COMMIT_LOADED,
 
         STUDENT_SELECTED,
 

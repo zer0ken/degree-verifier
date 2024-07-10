@@ -1,4 +1,4 @@
-package org.konkuk.degreeverifier.mainframe.actions.informationtree;
+package org.konkuk.degreeverifier.common.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.common.components.FoldableTree;

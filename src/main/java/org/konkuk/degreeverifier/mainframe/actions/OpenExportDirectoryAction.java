@@ -14,7 +14,7 @@ public class OpenExportDirectoryAction extends AbstractAction {
         putValue(NAME, OPEN_EXPORT_DIRECTORY);
         putValue(SHORT_DESCRIPTION, OPEN_EXPORT_DIRECTORY);
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/export_folder_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/open_folder_icon.svg", getClass().getClassLoader()));
     }
 
     @Override

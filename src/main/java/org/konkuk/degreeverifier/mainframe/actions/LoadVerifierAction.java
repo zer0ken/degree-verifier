@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
+import static org.konkuk.degreeverifier.ui.Strings.LOAD_VERIFIER_DIALOG_TITLE;
 import static org.konkuk.degreeverifier.ui.Strings.LOAD_VERIFIER_LIST;
 
 public class LoadVerifierAction extends AbstractAction {
@@ -35,6 +36,7 @@ public class LoadVerifierAction extends AbstractAction {
         chooser.setMultiSelectionEnabled(false);
         chooser.setCurrentDirectory(new File(DefaultPaths.VERIFIERS_PATH));
         chooser.setSelectedFile(new File(DefaultPaths.VERIFIERS_PATH));
+        chooser.setDialogTitle(LOAD_VERIFIER_DIALOG_TITLE);
         int result = chooser.showOpenDialog((Component) e.getSource());
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadVerifiers(chooser.getSelectedFile().getAbsolutePath());

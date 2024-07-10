@@ -1,26 +1,19 @@
 package org.konkuk.degreeverifier.business.student;
 
-import org.konkuk.degreeverifier.business.CsvExportable;
-import org.konkuk.degreeverifier.business.DefaultPaths;
-import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
+import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
-import static org.konkuk.degreeverifier.ui.Strings.EXPORTING_COMMIT_MESSAGE;
-import static org.konkuk.degreeverifier.ui.Strings.LECTURES_LOADING_MESSAGES;
-
-public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
-    private final String directoryName;
+public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Comparable<Student> {
     public final String id;
     public final String name;
+    public final String university;
 
-    private boolean loaded = false;
     private boolean verified = false;
 
     private List<SnapshotBundle> verifiedSnapshotBundles = null;
@@ -29,66 +22,12 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
     private final SnapshotBundle insufficientDegrees = new SnapshotBundle();
     private final SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
 
-    private File lastExported = null;
+    private final File lastExported = null;
 
-    public Student(String directoryName) throws RuntimeException {
-        File directory = new File(directoryName);
-        StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "-");
-        if (tokenizer.countTokens() != 2) {
-            throw new RuntimeException("Wrong directory name format: " + directoryName);
-        }
-        this.directoryName = directoryName;
-        this.id = tokenizer.nextToken().trim();
-        this.name = tokenizer.nextToken().trim();
-    }
-
-    synchronized public void loadLectures() {
-        if (loaded) {
-            return;
-        }
-        ProgressTracker tracker = new ProgressTracker(String.format(LECTURES_LOADING_MESSAGES, this));
-        File directory = new File(directoryName);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        fetchLastExportedFile();
-
-        File[] transcripts = directory.listFiles();
-        if (transcripts == null) {
-            tracker.finish();
-            return;
-        }
-        tracker.setMaximum(transcripts.length);
-        for (File transcript : transcripts) {
-            if (transcript.isFile() && transcript.getName().endsWith(".tsv")) {
-                List<String[]> tokenizedLines = FileUtil.fromTsvFile(transcript.getAbsolutePath());
-                for (String[] tokens : tokenizedLines) {
-                    Lecture lecture = new Lecture(
-                            tokens[0], tokens[1], tokens[2], tokens[3], tokens[4],
-                            Integer.parseInt(tokens[5]),
-                            tokens[6], tokens[7]
-                    );
-                    if (!contains(lecture)) {
-                        add(lecture);
-                    }
-                }
-            }
-            tracker.increment();
-        }
-        loaded = true;
-        tracker.finish();
-    }
-
-    private void fetchLastExportedFile() {
-        File exportDirectory = new File(getExportDirectoryPath());
-        if (!exportDirectory.exists()) {
-            exportDirectory.mkdir();
-        } else if (exportDirectory.listFiles().length != 0) {
-            lastExported = Arrays.stream(exportDirectory.listFiles())
-                    .sorted((f1, f2) -> f2.getName().substring(8).compareTo(f1.getName().substring(8)))
-                    .collect(Collectors.toList()).get(0);
-        }
+    public Student(String name, String id, String university) {
+        this.name = name;
+        this.id = id;
+        this.university = university;
     }
 
     synchronized public void setVerifiedSnapshotBundles(List<SnapshotBundle> verifiedSnapshotBundles) {
@@ -113,7 +52,6 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
                 continue;
             }
             committedDegrees.put(degree.toString(), degree);
-            exportCommit(false);
             updateSufficientInsufficientDegrees();
         }
     }
@@ -128,7 +66,6 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
 
         committedDegrees.putAll(getRecommendedBundle());
 
-        exportCommit(false);
         updateSufficientInsufficientDegrees();
     }
 
@@ -151,13 +88,11 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
             }
             committedDegrees.remove(degree.toString());
         }
-        exportCommit(false);
         updateSufficientInsufficientDegrees();
     }
 
     synchronized public void clearCommit() {
         committedDegrees.clear();
-        exportCommit(false);
         updateSufficientInsufficientDegrees();
     }
 
@@ -196,40 +131,8 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
         }
     }
 
-    public void exportCommit(boolean manually) {
-        ProgressTracker tracker = new ProgressTracker(String.format(EXPORTING_COMMIT_MESSAGE, this));
-
-        fetchLastExportedFile();
-
-        if (manually || lastExported == null || !lastExported.getName().startsWith("자동 저장")) {
-            lastExported = new File(
-                    manually ? getManualExportFilePath() : getAutoExportFilePath()
-            );
-        }
-        FileUtil.exportCommit(lastExported.getAbsolutePath(), getCommittedDegrees().keySet().stream().reduce("", (acc, str) -> acc + str + "\n"));
-        tracker.finish();
-    }
-
-    public void loadFrom(File file) {
-        committedDegrees.clear();
-        committedDegrees.putAll(FileUtil.loadCommit(file));
-        updateSufficientInsufficientDegrees();
-    }
-
     public File getLastExported() {
         return lastExported;
-    }
-
-    public String getManualExportFilePath() {
-        return getExportDirectoryPath() + "\\" + new SimpleDateFormat("수동 출력 - yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".txt";
-    }
-
-    public String getAutoExportFilePath() {
-        return getExportDirectoryPath() + "\\" + new SimpleDateFormat("자동 저장 - yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".txt";
-    }
-
-    public String getExportDirectoryPath() {
-        return DefaultPaths.EXPORT_PATH + "\\" + id + " - " + name;
     }
 
     public SnapshotBundle getCommittedDegrees() {
@@ -248,29 +151,13 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
         return notVerifiedDegrees;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
-
     public boolean isVerified() {
         return verified;
     }
 
-    public String getDirectoryName() {
-        return directoryName;
-    }
-
-    public boolean hasCommitFile() {
-        if (lastExported != null && lastExported.exists()) {
-            return true;
-        }
-        lastExported = null;
-        return false;
-    }
-
     @Override
     public String toString() {
-        return name + "(" + id + ")";
+        return name + "(" + university + " / " + id + ")";
     }
 
     @Override
@@ -289,8 +176,14 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable {
         for (DegreeSnapshot degreeSnapshot : committedDegrees.values()) {
             sb.append(name).append(",")
                     .append(id).append(",")
+                    .append(university).append(",")
                     .append(degreeSnapshot.toCsv()).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(Student o) {
+        return toString().compareTo(o.toString());
     }
 }

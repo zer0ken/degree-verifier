@@ -11,18 +11,11 @@ public class LectureTableModel extends DefaultTableModel {
 
     public LectureTableModel() {
         setColumnIdentifiers(LectureData.getColumns());
-        appModel.observe(AppModel.On.LECTURE_UPDATED, this::_updateTable);
-    }
-
-    private void _updateTable(Object o) {
-        Student student = (Student) o;
-        setRowCount(0);
-        if (student.isLoaded()) {
-            updateTable(student);
-        }
+        appModel.observe(AppModel.On.LECTURE_UPDATED, o -> updateTable((Student) o));
     }
 
     private void updateTable(Student student) {
+        setRowCount(0);
         student.forEach(lecture -> addRow(lecture.inRow()));
     }
 }

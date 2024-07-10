@@ -22,6 +22,14 @@ public class LectureSnapshot implements Snapshot, Creditizable {
         this.duplicatedDegrees = duplicatedDegrees;
     }
 
+    public LectureSnapshot(String lectureName, Integer lectureCredit) {
+        criteria = null;
+        matched = new LectureData(null, null, lectureName, lectureCredit, null);
+        verified = true;
+        degreeName = null;
+        duplicatedDegrees = null;
+    }
+
     @Override
     public int creditize() {
         if (verified) {

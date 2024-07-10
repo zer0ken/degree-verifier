@@ -10,10 +10,10 @@ public class Strings {
     public static final String COMMIT_MENU = "검토";
     public static final String SETTING_MENU = "설정";
 
-    public static final String LECTURES_LOADING_MESSAGES = "수강 내역을 불러오는 중... [%s]";
     public static final String VERIFYING = "인정 가능한 학위를 검사하는 중... [%s]";
     public static final String VERIFIER_LOADING_MESSAGE = "검사 기준을 불러오는 중";
-    public static final String STUDENTS_LOADING_MESSAGE = "학생 정보를 불러오는 중";
+    public static final String TRANSCRIPT_LOADING_MESSAGE = "성적표를 불러오는 중";
+    public static final String COMMIT_LOADING_MESSAGE = "인정한 학위를 불러오는 중";
 
     public static final String NO_TASK = "진행 중인 작업 없음";
     public static final String TASKS_IN_PROGRESS = "작업 진행 중... [%d개 중 %d개 완료]";
@@ -21,6 +21,7 @@ public class Strings {
     public static final String EXPORTING_COMMIT_MESSAGE = "인정한 학위 저장 중... [%s]";
 
     public static final String LOAD_VERIFIER_LIST = "검사 기준 불러오기";
+    public static final String LOAD_VERIFIER_DIALOG_TITLE = LOAD_VERIFIER_LIST + " - 검사 기준이 위치한 폴더 선택";
 
     public static final String STUDENT_LIST = "학생";
     public static final String VERIFY_STUDENT = "학위 검사하기";
@@ -28,19 +29,10 @@ public class Strings {
     public static final String START_COMMIT = "검토 시작하기";
     public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";
-    public static final String LOAD_STUDENT_LIST = "학생 목록 불러오기";
     public static final String OPEN_STUDENT_DIRECTORY = "학생 목록 위치 열기";
-    public static final String CREATE_STUDENT = "새 학생 추가하기";
-    public static final String CREATE_STUDENT_MESSAGE = "<html>추가할 학생의 정보를 입력하고 [확인]을 누르세요.<br>&nbsp;</html>";
-    public static final String STUDENT_ID = "학번*";
-    public static final String STUDENT_NAME = "이름*";
-
-    public static final String STUDENT_ID_IS_VALID = "<html>&nbsp;<br>&nbsp;</html>";
-    public static final String STUDENT_ID_IS_EMPTY = "<html>학번은 비워둘 수 없습니다.<br>&nbsp;</html>";
-    public static final String STUDENT_NAME_IS_EMPTY = "<html>이름은 비워둘 수 없습니다.<br>&nbsp;</html>";
-    public static final String STUDENT_NAME_IS_INVALID = "<html>이름은 다음을 포함할 수 없습니다:<br>" +
-            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-            "\\ / : * ? \" &lt; > | -</html>";
+    
+    public static final String LOAD_TRANSCRIPT = "성적표 불러오기";
+    public static final String LOAD_TRANSCRIPT_DIALOG_TITLE = LOAD_TRANSCRIPT + " - 성적표 파일 선택";
 
     public static final String VERIFIED_DEGREE_LIST = "검사한 학위";
     public static final String COMMIT_VERIFIED_DEGREE = "인정하기";

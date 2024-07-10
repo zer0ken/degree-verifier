@@ -92,6 +92,7 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         return new DegreeSnapshot(
                 new DegreeCriteria(this),
                 verified,
+                creditize(),
                 (RecursiveSnapshot) recursiveVerifier.takeSnapshot()
         );
     }

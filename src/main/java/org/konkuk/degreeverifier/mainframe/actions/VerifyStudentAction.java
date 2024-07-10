@@ -2,13 +2,11 @@ package org.konkuk.degreeverifier.mainframe.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.business.student.Student;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 
 import static org.konkuk.degreeverifier.ui.Strings.VERIFY_STUDENT;
 
@@ -22,14 +20,14 @@ public class VerifyStudentAction extends AbstractAction {
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/sync_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_DOWN_MASK));
 
-        setEnabled(!appModel.getStudents().isEmpty());
+        setEnabled(!appModel.getSelectedStudents().isEmpty());
 
-        appModel.observe(AppModel.On.STUDENT_LOADED, students ->
-                setEnabled(!((Collection<Student>) students).isEmpty()));
+        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, students ->
+                setEnabled(!appModel.getSelectedStudents().isEmpty()));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        appModel.getSelectedStudents().forEach(appModel::verifyStudent);
+        appModel.verifySelectedStudents();
     }
 }

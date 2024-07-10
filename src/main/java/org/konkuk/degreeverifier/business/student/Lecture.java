@@ -7,8 +7,8 @@ package org.konkuk.degreeverifier.business.student;
  * @since 2024-05-25T15:45:31.013Z
  */
 public class Lecture extends LectureData {
-    public Lecture(String year, String semester, String classification, String code, String name, int credit, String grade, String university) {
-        super(year, semester, classification, code, name, credit, grade, university);
+    public Lecture(String year, String semester, String name, int credit, String grade) {
+        super(year, semester, name, credit, grade);
     }
 
     public Lecture(Lecture toCopy) {

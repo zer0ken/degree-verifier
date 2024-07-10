@@ -1,11 +1,10 @@
 package org.konkuk.degreeverifier.mainframe.components.lecturelist;
 
-import org.konkuk.degreeverifier.mainframe.actions.OpenLectureDirectoryAction;
-
 import javax.swing.*;
 
 public class LectureListPopupMenu extends JPopupMenu {
     public LectureListPopupMenu() {
-        add(new OpenLectureDirectoryAction());
+        // TODO: 2024-07-09 remove this
+//        add(new OpenLectureDirectoryAction());
     }
 }
