@@ -1,21 +1,21 @@
 package org.konkuk.degreeverifier.business;
 
 public enum Grade {
-    PASS("P"),
-    A_PLUS("A+"),
-    A_ZERO("A0"),
-    A_MINUS("A-"),
-    B_PLUS("B+"),
-    B_ZERO("B0"),
-    B_MINUS("B-"),
-    C_PLUS("C+"),
-    C_ZERO("C0"),
-    C_MINUS("C-"),
-    D_PLUS("D+"),
-    D_ZERO("D0"),
-    D_MINUS("D-"),
+    NON_PASS("N"),
     F("F"),
-    NON_PASS("N");
+    D_MINUS("D-"),
+    D_ZERO("D0"),
+    D_PLUS("D+"),
+    C_MINUS("C-"),
+    C_ZERO("C0"),
+    C_PLUS("C+"),
+    B_MINUS("B-"),
+    B_ZERO("B0"),
+    B_PLUS("B+"),
+    A_MINUS("A-"),
+    A_ZERO("A0"),
+    A_PLUS("A+"),
+    PASS("P");
 
     public final String value;
 

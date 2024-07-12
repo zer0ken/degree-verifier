@@ -97,10 +97,11 @@ public class FileUtil {
 
     synchronized public static void toCsvFile(File file, String[] header, Collection<? extends CsvExportable> data) {
         try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))
+                new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8))
         ) {
             file.createNewFile();
             writer.write(String.join(",", header) + "\n");
+
             for (CsvExportable datum : data) {
                 writer.write(datum.toCsv());
             }

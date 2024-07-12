@@ -58,7 +58,7 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
     }
 
     private boolean match(Lecture lecture, Semester defaultMinimumSemester, Semester defaultMaximumSemester) {
-        if (!lecture.name.equals(lectureName)) {
+        if (!lecture.name.equalsIgnoreCase(lectureName)) {
             return false;
         }
         Semester lectureSemester = new Semester(
@@ -83,7 +83,7 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
         }
         Grade lectureGrade = Grade.fromString(lecture.grade);
         lectureGrade = lectureGrade != null ? lectureGrade : Grade.A_PLUS;
-        return minGrade == null || minGrade.compareTo(lectureGrade) <= 0;
+        return getMinimumGrade().compareTo(lectureGrade) <= 0;
     }
 
     public void hold() {

@@ -4,6 +4,8 @@ import com.formdev.flatlaf.extras.FlatInspector;
 import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.common.components.DegreeVerifierFrame;
 import org.konkuk.degreeverifier.common.components.statusbar.StatusBar;
+import org.konkuk.degreeverifier.mainframe.actions.CommitAllStudentAction;
+import org.konkuk.degreeverifier.mainframe.actions.LoadCommitAction;
 import org.konkuk.degreeverifier.mainframe.actions.LoadTranscriptAction;
 import org.konkuk.degreeverifier.mainframe.components.SplitPanel;
 import org.konkuk.degreeverifier.mainframe.components.menubar.MenuBar;
@@ -40,6 +42,8 @@ public class MainFrame extends DegreeVerifierFrame {
     public void afterLaunched() {
         AppModel.getInstance().loadLatestVerifiers();
         new LoadTranscriptAction().actionPerformed(null);
+        new LoadCommitAction().actionPerformed(null);
+        new CommitAllStudentAction().actionPerformed(null);
         FlatInspector.install("ctrl shift alt X");
     }
 

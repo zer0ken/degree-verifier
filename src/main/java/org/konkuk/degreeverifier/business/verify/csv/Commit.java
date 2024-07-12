@@ -9,10 +9,10 @@ public class Commit {
             // microdegree info
             "차수", "마이크로디그리명", "이수 학점",
             // lecture info
-            "과목명1", "학점",
-            "과목명2", "학점",
-            "과목명3", "학점",
-            "과목명4", "학점"
+            "과목명1", "학점1",
+            "과목명2", "학점2",
+            "과목명3", "학점3",
+            "과목명4", "학점4"
     };
 
     public static boolean isValidHeader(String[] header) {

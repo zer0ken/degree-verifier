@@ -29,10 +29,12 @@ public class Strings {
     public static final String START_COMMIT = "검토 시작하기";
     public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";
-    public static final String OPEN_STUDENT_DIRECTORY = "학생 목록 위치 열기";
+    public static final String OPEN_STUDENT_DIRECTORY = "성적표 위치 열기";
     
     public static final String LOAD_TRANSCRIPT = "성적표 불러오기";
-    public static final String LOAD_TRANSCRIPT_DIALOG_TITLE = LOAD_TRANSCRIPT + " - 성적표 파일 선택";
+    public static final String LOAD_TRANSCRIPT_DIALOG_TITLE = "성적표 파일을 선택한 후 [열기]를 누르세요.";
+    public static final String LOAD_COMMIT = "수여 학위 불러오기";
+    public static final String LOAD_COMMIT_DIALOG_TITLE = "기존 수여 학위 파일을 선택한 후 [열기], 파일이 없으면 [취소]를 누르세요.";
 
     public static final String VERIFIED_DEGREE_LIST = "검사한 학위";
     public static final String COMMIT_VERIFIED_DEGREE = "인정하기";
@@ -52,12 +54,13 @@ public class Strings {
     public static final String DECOMMIT_DEGREE = "인정 취소하기";
     public static final String CLEAR_COMMITTED_DEGREE = "인정한 학위 초기화하기";
     public static final String EXPORT_COMMITTED_DEGREE = "인정한 학위 내보내기";
+    public static final String OVERWRITE_EXPORT_MESSAGE = "<html><p>이 출력은 기존 파일을 덮어씁니다.</p>" +
+            "<p>계속 출력하시려면 [확인]을 누르세요.</p></html>";
     public static final String OPEN_EXPORT_DIRECTORY = "출력 위치 열기";
     public static final String CLEAR_COMMIT_DIALOG_TITLE = CLEAR_COMMITTED_DEGREE;
     public static final String CLEAR_COMMIT_DIALOG_MESSAGE = "<html><p>다음 학위의 인정을 취소하려면 [확인]을 누르세요.</p>%s</html>";
 
     public static final String LECTURE_LIST = "수강 내역";
-    public static final String OPEN_LECTURE_DIRECTORY = "수강 내역 위치 열기";
 
     public static final String INFORMATION = "자세히 보기";
     public static final String FOLD_INFORMATION_TREE = "한 단계 접기";

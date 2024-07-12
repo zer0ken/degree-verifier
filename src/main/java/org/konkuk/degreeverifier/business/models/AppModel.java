@@ -1,6 +1,5 @@
 package org.konkuk.degreeverifier.business.models;
 
-import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.FileUtil;
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.Student;
@@ -13,7 +12,6 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,11 +44,15 @@ public class AppModel extends Observable {
             Runnable task,
             Runnable afterFinished
     ) {
+//        beforeSubmit.run();
+//        executorService.submit(() -> {
+//            task.run();
+//            afterFinished.run();
+//        });
+
         beforeSubmit.run();
-        executorService.submit(() -> {
-            task.run();
-            afterFinished.run();
-        });
+        task.run();
+        afterFinished.run();
     }
 
     public void loadTranscript(File file) {
@@ -78,7 +80,10 @@ public class AppModel extends Observable {
                     transcriptLoaded = true;
                     tracker.finish();
                 },
-                () -> notify(On.TRANSCRIPT_LOADED, students)
+                () -> {
+                    notify(On.TRANSCRIPT_LOADED, students);
+                    verifyAllStudents();
+                }
         );
     }
 
@@ -86,7 +91,6 @@ public class AppModel extends Observable {
         submitTask(
                 () -> notify(On.COMMIT_LOAD_STARTED, students),
                 () -> {
-                    students.clear();
                     List<List<String>> table = FileUtil.fromCsvFile(file);
                     if (!Commit.isValidHeader(table.get(0).toArray(new String[0]))) {
                         return;
@@ -100,7 +104,7 @@ public class AppModel extends Observable {
                             continue;
                         }
                         SnapshotBundle bundle = bundleMap.get(student.toString());
-                        if (bundle == null){
+                        if (bundle == null) {
                             bundle = new SnapshotBundle();
                             bundleMap.put(student.toString(), bundle);
                         }
@@ -123,12 +127,19 @@ public class AppModel extends Observable {
                     }
                     for (String key : bundleMap.keySet()) {
                         Student student = students.get(key);
+                        student.clearCommit();
                         student.commitAll(bundleMap.get(student.toString()).values());
                     }
                     transcriptLoaded = true;
                     tracker.finish();
+
                 },
-                () -> notify(On.COMMIT_LOADED, students)
+                () -> {
+                    notify(On.COMMIT_LOADED, students);
+                    if (committingStudent != null) {
+                        notify(On.COMMIT_UPDATED, committingStudent);
+                    }
+                }
         );
     }
 
@@ -253,9 +264,7 @@ public class AppModel extends Observable {
         notify(On.COMMIT_UPDATED, committingStudent);
     }
 
-    synchronized public void export() {
-        File file = new File(DefaultPaths.EXPORT_PATH + "\\"
-                + new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초").format(new Date()) + ".csv");
+    synchronized public void export(File file) {
         FileUtil.toCsvFile(file, Commit.HEADER, students.values());
     }
 

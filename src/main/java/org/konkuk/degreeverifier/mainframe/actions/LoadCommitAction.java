@@ -10,17 +10,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT;
-import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT_DIALOG_TITLE;
+import static org.konkuk.degreeverifier.ui.Strings.LOAD_COMMIT;
+import static org.konkuk.degreeverifier.ui.Strings.LOAD_COMMIT_DIALOG_TITLE;
 
-public class LoadTranscriptAction extends AbstractAction {
+public class LoadCommitAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
 
-    public LoadTranscriptAction() {
-        putValue(NAME, LOAD_TRANSCRIPT);
-        putValue(SHORT_DESCRIPTION, LOAD_TRANSCRIPT);
+    public LoadCommitAction() {
+        putValue(NAME, LOAD_COMMIT);
+        putValue(SHORT_DESCRIPTION, LOAD_COMMIT_DIALOG_TITLE);
         putValue(SMALL_ICON, null);
-        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/sync_icon.svg", getClass().getClassLoader()));
+        putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/verified_icon.svg", getClass().getClassLoader()));
     }
 
     @Override
@@ -28,8 +28,8 @@ public class LoadTranscriptAction extends AbstractAction {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setMultiSelectionEnabled(false);
-        chooser.setCurrentDirectory(new File(DefaultPaths.TRANSCRIPT_PATH));
-        chooser.setDialogTitle(LOAD_TRANSCRIPT_DIALOG_TITLE);
+        chooser.setCurrentDirectory(new File(DefaultPaths.COMMIT_PATH));
+        chooser.setDialogTitle(LOAD_COMMIT_DIALOG_TITLE);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(new FileFilter() {
             @Override
@@ -39,12 +39,12 @@ public class LoadTranscriptAction extends AbstractAction {
 
             @Override
             public String getDescription() {
-                return "성적표 .csv 파일";
+                return "수여 학위 .csv 파일";
             }
         });
         int result = chooser.showOpenDialog(e != null? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            appModel.loadTranscript(chooser.getSelectedFile());
+            appModel.loadCommit(chooser.getSelectedFile());
         }
     }
 }

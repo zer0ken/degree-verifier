@@ -12,7 +12,7 @@ import org.konkuk.degreeverifier.business.Semester;
  * @since 2024-05-24T15:56:16.565Z
  */
 public class LectureCriteria {
-    public static final String DEFAULT_MINIMUM_GRADE = "D-";
+    public static final Grade DEFAULT_MINIMUM_GRADE = Grade.D_MINUS;
     public static final Boolean DEFAULT_NON_EXCLUSIVE = true;
 
     /**
@@ -74,7 +74,7 @@ public class LectureCriteria {
         if (minimumGrade != null) {
             return Grade.fromString(minimumGrade);
         }
-        return null;
+        return DEFAULT_MINIMUM_GRADE;
     }
 
     public boolean isNonExclusive() {

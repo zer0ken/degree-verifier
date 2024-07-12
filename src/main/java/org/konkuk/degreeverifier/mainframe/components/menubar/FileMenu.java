@@ -11,12 +11,12 @@ public class FileMenu extends ActionMenu {
         super(FILE_MENU);
 
         add(new LoadTranscriptAction());
+        add(new LoadCommitAction());
         add(new LoadVerifierAction());
         addSeparator();
         add(new ExportCommitAction());
         addSeparator();
-        add(new OpenStudentDirectoryAction());
         add(new OpenVerifierDirectoryAction());
-        add(new OpenExportDirectoryAction());
+        add(new OpenCommitDirectoryAction());
     }
 }
