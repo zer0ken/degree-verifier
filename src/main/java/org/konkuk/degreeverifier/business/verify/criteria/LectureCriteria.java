@@ -96,11 +96,15 @@ public class LectureCriteria {
     }
 
     public String getValidGradeString() {
-        return "인정 성적: " + getMinimumGrade() + " 이상";
+        return "인정 성적: " + getMinimumGrade().value + " 이상";
     }
 
     public String getValidPeriodString() {
         return Semester.buildValidPeriodString(getMinimumSemester(), getMaximumSemester());
+    }
+
+    public String getNonExclusiveString() {
+        return "다른 학위에서 사용: " + (isNonExclusive() ? "허용" : "불허");
     }
 
     public LectureCriteria(LectureCriteria toCopy) {
@@ -132,9 +136,5 @@ public class LectureCriteria {
         this.maximumYear = maximumYear;
         this.minimumSemester = minimumSemester;
         this.maximumSemester = maximumSemester;
-    }
-
-    public String getNonExclusiveString() {
-        return "다른 학위에서 사용: " + (isNonExclusive() ? "허용" : "불허");
     }
 }

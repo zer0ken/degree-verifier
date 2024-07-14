@@ -3,8 +3,11 @@ package org.konkuk.degreeverifier.ui;
 import java.awt.*;
 
 public class Dimensions {
-    public static final Dimension MINIMUM_MAIN_FRAME_SIZE = new Dimension(740, 500);
-    public static final Dimension PREFERRED_MAIN_FRAME_SIZE = new Dimension(1240, 760);
+    public static final Dimension MINIMUM_LAUNCHER_FRAME_SIZE = new Dimension(600, 300);
+    public static final Dimension PREFFERED_LAUNCHER_FRAME_SIZE = new Dimension(600, 300);
+
+    public static final Dimension MINIMUM_COMMIT_FRAME_SIZE = new Dimension(740, 500);
+    public static final Dimension PREFERRED_COMMIT_FRAME_SIZE = new Dimension(1240, 760);
 
     public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(180, 180);
     public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(220, 180);

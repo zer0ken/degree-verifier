@@ -27,22 +27,8 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     private boolean isLoaded = false;
 
-    synchronized public void loadLatestVerifiers() {
-        File root = new File(DefaultPaths.VERIFIERS_PATH);
-        long latest = 0;
-        File target = null;
-        for (File file : root.listFiles()) {
-            if (file.isDirectory() && file.lastModified() > latest) {
-                latest = file.lastModified();
-                target = file;
-            }
-        }
-        loadVerifiers(target == null ? DefaultPaths.VERIFIERS_PATH : target.getAbsolutePath());
-    }
-
-    synchronized public void loadVerifiers(String directory) {
-        File dir = new File(directory);
-        File[] specs = dir.listFiles();
+    synchronized public void loadVerifiers(File directory) {
+        File[] specs = directory.listFiles();
 
         if (specs == null) {
             return;

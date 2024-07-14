@@ -44,6 +44,7 @@ public class AppModel extends Observable {
             Runnable task,
             Runnable afterFinished
     ) {
+        // TODO: 2024-07-14 for debug. return this after test.
 //        beforeSubmit.run();
 //        executorService.submit(() -> {
 //            task.run();
@@ -143,15 +144,7 @@ public class AppModel extends Observable {
         );
     }
 
-    public void loadLatestVerifiers() {
-        submitTask(
-                () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
-                verifierFactory::loadLatestVerifiers,
-                () -> notify(On.VERIFIER_LOADED, verifierFactory)
-        );
-    }
-
-    public void loadVerifiers(String directory) {
+    public void loadVerifiers(File directory) {
         submitTask(
                 () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
                 () -> verifierFactory.loadVerifiers(directory),
@@ -332,6 +325,10 @@ public class AppModel extends Observable {
 
     public VerifierFactory getVerifierFactory() {
         return verifierFactory;
+    }
+
+    public NavigableMap<String, Student> getStudents() {
+        return students;
     }
 
     public enum On implements Event {

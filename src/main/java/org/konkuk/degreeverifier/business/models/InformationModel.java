@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.mainframe.logic.verifiedlist.items.ListItem;
+import org.konkuk.degreeverifier.commitframe.logic.verifiedlist.items.ListItem;
 
 import java.util.Collections;
 import java.util.LinkedList;

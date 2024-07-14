@@ -1,6 +1,6 @@
 package org.konkuk.degreeverifier.common.components;
 
-import org.konkuk.degreeverifier.mainframe.MainFrame;
+import org.konkuk.degreeverifier.commitframe.CommitFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class DegreeVerifierFrame extends JFrame {
         };
         List<Image> icons = new ArrayList<>();
         for (String iconName : iconNames) {
-            URL resource = MainFrame.class.getResource(iconName);
+            URL resource = CommitFrame.class.getResource(iconName);
             if (resource == null) {
                 return;
             }
