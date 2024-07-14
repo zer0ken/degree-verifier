@@ -19,6 +19,7 @@ public class VerifierListModel extends DefaultListModel<EditableDegreeCriteria> 
                 this.create((EditableDegreeCriteria) o));
         editorModel.observe(EditorModel.On.DEGREE_REMOVED, o ->
                 this.removeSelected((LinkedList<EditableDegreeCriteria>) o));
+        editorModel.observe(EditorModel.On.DEGREE_BULK_CREATED, unused -> init());
     }
 
     private void init() {

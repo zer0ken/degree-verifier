@@ -4,7 +4,6 @@ import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,8 +20,6 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     private final SnapshotBundle sufficientDegrees = new SnapshotBundle();
     private final SnapshotBundle insufficientDegrees = new SnapshotBundle();
     private final SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
-
-    private final File lastExported = null;
 
     public Student(String name, String id, String university) {
         this.name = name;
@@ -131,10 +128,6 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         }
     }
 
-    public File getLastExported() {
-        return lastExported;
-    }
-
     public SnapshotBundle getCommittedDegrees() {
         return committedDegrees;
     }
@@ -172,8 +165,16 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
     @Override
     public String toCsv() {
-        StringBuilder sb = new StringBuilder();
+        SnapshotBundle exportBundle = new SnapshotBundle();
         for (DegreeSnapshot degreeSnapshot : committedDegrees.values()) {
+            if (!exportBundle.containsKey(degreeSnapshot.criteria.degreeName) ||
+                    exportBundle.get(degreeSnapshot.criteria.degreeName).criteria.version < degreeSnapshot.criteria.version) {
+                exportBundle.put(degreeSnapshot.criteria.degreeName, degreeSnapshot);
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (DegreeSnapshot degreeSnapshot : exportBundle.values()) {
             sb.append(name).append(",")
                     .append(id).append(",")
                     .append(university).append(",")

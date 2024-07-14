@@ -94,6 +94,7 @@ public class Strings {
     public static final String CONFIRM_REMOVE_RECURSIVE_MESSAGE = "선택한 검사 기준을 삭제하려면 [확인]을 누르세요.";
     public static final String ROLLBACK_SELECTED_NODE = "변경 되돌리기";
     public static final String CONFIRM_ROLLBACK_SELECTED_NODE_MESSAGE = "선택한 검사 기준의 변경을 모두 되돌리려면 [확인]을 누르세요.";
-    
+    public static final String CREATE_NEW_VERSION = "새 버전 만들기";
+
     public static final String VERIFIER_SAVING_MESSAGE = "검사 기준을 저장하는 중";
 }

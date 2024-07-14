@@ -1,0 +1,22 @@
+{
+  "degree_name": "Degree1",
+  "version": 1,
+  "min_credit": 3,
+  "from_year": 2023,
+  "from_semester": "1",
+  "criteria": {
+    "label": "~",
+    "important": false,
+    "lecture": {
+      "name": "Degree1을 위한 강의",
+      "min_grade": "A",
+      "non_exclusive": true,
+      "from_year": 2021,
+      "from_semester": "1",
+      "to_year": 2025,
+      "to_semester": "2"
+    },
+    "all": false,
+    "min": 0
+  }
+}

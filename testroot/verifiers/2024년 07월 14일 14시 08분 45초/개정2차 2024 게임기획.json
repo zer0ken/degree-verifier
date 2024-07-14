@@ -1,0 +1,46 @@
+{
+  "degree_name": "2024 게임기획",
+  "version": 2,
+  "min_credit": 9,
+  "criteria": {
+    "subcriteria": [
+      {
+        "lecture": {
+          "name": "디지털스토리텔링"
+        }
+      },
+      {
+        "lecture": {
+          "name": "게임컨셉디자인"
+        }
+      },
+      {
+        "lecture": {
+          "name": "게임디자인"
+        }
+      },
+      {
+        "lecture": {
+          "name": "게임기획실무"
+        }
+      },
+      {
+        "label": "택 1",
+        "max": 1,
+        "subcriteria": [
+          {
+            "lecture": {
+              "name": "게임프로젝트",
+              "non_exclusive": false
+            }
+          },
+          {
+            "lecture": {
+              "name": "게임캡스톤디자인"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -15,6 +15,7 @@ public class RecursiveNode extends DefaultMutableTreeNode {
 
     private final DefaultMutableTreeNode minimumGradeNode = new DefaultMutableTreeNode();
     private final DefaultMutableTreeNode validPeriodNode = new DefaultMutableTreeNode();
+    private final DefaultMutableTreeNode nonExclusiveNode = new DefaultMutableTreeNode();
 
     private final DefaultMutableTreeNode validPassNode = new DefaultMutableTreeNode();
 
@@ -32,6 +33,9 @@ public class RecursiveNode extends DefaultMutableTreeNode {
 
             validPeriodNode.setUserObject(recursive.lectureCriteria.getValidPeriodString());
             add(validPeriodNode);
+
+            nonExclusiveNode.setUserObject(recursive.lectureCriteria.getNonExclusiveString());
+            add(nonExclusiveNode);
         } else {
             validPassNode.setUserObject(recursive.getValidPassString());
             add(validPassNode);
@@ -47,6 +51,7 @@ public class RecursiveNode extends DefaultMutableTreeNode {
     private void switchToRecursiveNode(VerifierTreeModel model) {
         model.removeNodeFromParent(minimumGradeNode);
         model.removeNodeFromParent(validPeriodNode);
+        model.removeNodeFromParent(nonExclusiveNode);
         model.insertNodeInto(validPassNode, this, 0);
     }
 
@@ -55,6 +60,7 @@ public class RecursiveNode extends DefaultMutableTreeNode {
 
         model.insertNodeInto(minimumGradeNode, this, 0);
         model.insertNodeInto(validPeriodNode, this, 1);
+        model.insertNodeInto(nonExclusiveNode, this, 2);
     }
 
     private void setNodeMode(boolean isLectureNode, VerifierTreeModel model) {
@@ -80,6 +86,9 @@ public class RecursiveNode extends DefaultMutableTreeNode {
 
             validPeriodNode.setUserObject(lecture.getValidPeriodString());
             model.nodeChanged(validPeriodNode);
+
+            nonExclusiveNode.setUserObject(lecture.getNonExclusiveString());
+            model.nodeChanged(nonExclusiveNode);
 
             if (!subNodes.isEmpty()) {
                 for (RecursiveNode subNode : subNodes) {

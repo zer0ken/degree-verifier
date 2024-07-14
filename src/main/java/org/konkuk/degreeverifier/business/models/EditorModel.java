@@ -41,16 +41,28 @@ public class EditorModel extends Observable {
 
     public void createDegree() {
         String degreeName;
+        EditableDegreeCriteria degreeCriteria;
         do {
             degreeName = "새 학위 - " +
                     (new Random()).ints(97, 123)
                             .limit(10)
                             .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                             .toString();
-        } while (degreeMap.containsKey(degreeName));
-        EditableDegreeCriteria degreeCriteria = new EditableDegreeCriteria(degreeName);
-        degreeMap.put(degreeName, degreeCriteria);
+            degreeCriteria = new EditableDegreeCriteria(degreeName);
+        } while (degreeMap.containsKey(degreeCriteria.toString()));
+        degreeMap.put(degreeCriteria.toString(), degreeCriteria);
         notify(On.DEGREE_CREATED, degreeCriteria);
+    }
+
+    public void createNewVersionOfSelectedDegrees() {
+        for (EditableDegreeCriteria selectedDegree : selectedDegrees) {
+            EditableDegreeCriteria newVersion = new EditableDegreeCriteria(selectedDegree);
+            while (degreeMap.containsKey(newVersion.toString())) {
+                newVersion.version++;
+            }
+            degreeMap.put(newVersion.toString(), newVersion);
+        }
+        notify(On.DEGREE_BULK_CREATED, null);
     }
 
     public void removeSelectedDegree() {
@@ -58,7 +70,7 @@ public class EditorModel extends Observable {
         setSelectedDegrees(null);
 
         for (EditableDegreeCriteria degree : selectedDegrees) {
-            degreeMap.remove(degree.degreeName);
+            degreeMap.remove(degree.toString());
         }
         notify(On.DEGREE_REMOVED, selectedDegrees);
     }
@@ -145,14 +157,15 @@ public class EditorModel extends Observable {
                 .collect(Collectors.toList());
     }
 
-    public boolean containsDegree(String degreeName) {
-        return degreeMap.containsKey(degreeName);
+    public boolean containsDegree(EditableDegreeCriteria degree) {
+        return degreeMap.containsKey(degree.toString());
     }
 
     public enum On implements Event {
         VERIFIER_LOADED,
         DEGREE_SELECTED,
         DEGREE_CREATED,
+        DEGREE_BULK_CREATED,
         DEGREE_REMOVED,
         DEGREE_UPDATED,
         NODES_SELECTED,

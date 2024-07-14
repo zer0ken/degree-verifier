@@ -44,6 +44,7 @@ public class AppModel extends Observable {
             Runnable task,
             Runnable afterFinished
     ) {
+        // TODO: 2024-07-14 for debug. return this after test.
 //        beforeSubmit.run();
 //        executorService.submit(() -> {
 //            task.run();
