@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,7 +34,8 @@ public class ExportCommitAction extends AbstractAction {
                     super.approveSelection();
                 } else if (getSelectedFile().getName().endsWith(".csv")) {
                     if (getSelectedFile().exists()) {
-                        int confirm = JOptionPane.showConfirmDialog((Component) e.getSource(), OVERWRITE_EXPORT_MESSAGE, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
+                        int confirm = JOptionPane.showConfirmDialog((e != null ? (Component) e.getSource() : null),
+                                OVERWRITE_EXPORT_MESSAGE, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
                         if (confirm == JOptionPane.OK_OPTION) {
                             super.approveSelection();
                         }
@@ -55,6 +57,15 @@ public class ExportCommitAction extends AbstractAction {
         int result = chooser.showSaveDialog(e != null ? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.export(chooser.getSelectedFile());
+
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                try {
+                    Runtime.getRuntime().exec("Explorer.exe " + chooser.getCurrentDirectory());
+                } catch (IOException exception) {
+                    throw new RuntimeException(exception);
+                }
+            }
         }
     }
 }

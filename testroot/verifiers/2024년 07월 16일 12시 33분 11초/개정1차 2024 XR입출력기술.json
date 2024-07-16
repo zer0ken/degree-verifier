@@ -1,7 +1,7 @@
 {
   "degree_name": "2024 XR입출력기술",
-  "version": 3,
-  "min_credit": 12,
+  "version": 1,
+  "min_credit": 9,
   "criteria": {
     "subcriteria": [
       {
@@ -38,6 +38,11 @@
       {
         "lecture": {
           "name": "풀스택서비스네트워킹"
+        }
+      },
+      {
+        "lecture": {
+          "name": "XR기술PBL"
         }
       }
     ]
