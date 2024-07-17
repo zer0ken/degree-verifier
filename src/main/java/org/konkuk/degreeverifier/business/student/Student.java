@@ -8,16 +8,21 @@ import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Comparable<Student> {
-    public final String id;
-    public final String name;
+    public final String campus;
     public final String university;
+    public final String department;
+    public final String id;
+    public final String gender;
+    public final String name;
+    public final String year;
 
     private boolean verified = false;
 
-    private List<VerifierBundle> verifiedBundles = null;
+    private final List<VerifierBundle> verifiedBundles = new LinkedList<>();
     private final VerifierBundle committedDegrees = new VerifierBundle();
     private final VerifierBundle sufficientDegrees = new VerifierBundle();
     private final VerifierBundle insufficientDegrees = new VerifierBundle();
@@ -25,14 +30,29 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
     private final SnapshotBundle earlyCommittedDegrees = new SnapshotBundle();
 
-    public Student(String name, String id, String university) {
+    public Student(String campus, String university, String department, String id, String gender, String name, String year) {
+        this.campus = campus;
+        this.department = department;
+        this.gender = gender;
         this.name = name;
         this.id = id;
         this.university = university;
+        this.year = year;
+    }
+
+    public Student(String university, String name, String id) {
+        this.university = university;
+        this.name = name;
+        this.id = id;
+
+        campus = null;
+        department = null;
+        gender = null;
+        year = null;
     }
 
     synchronized public void setVerifiedBundles(List<VerifierBundle> verifiedBundles) {
-        this.verifiedBundles = verifiedBundles;
+        this.verifiedBundles.addAll(verifiedBundles);
         verifiedBundles.forEach(sufficientDegrees::putAll);
         verified = true;
         committedDegrees.clear();
@@ -210,12 +230,27 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
         StringBuilder sb = new StringBuilder();
         for (DegreeSnapshot degreeSnapshot : exportBundle.values()) {
-            sb.append(name).append(",")
-                    .append(id).append(",")
-                    .append(university).append(",")
-                    .append(degreeSnapshot.toCsv()).append("\n");
+            sb.append(String.format(
+                    degreeSnapshot.toCsv(),
+                    university,
+                    department,
+                    name,
+                    id,
+                    year
+            )).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        verifiedBundles.clear();
+        notVerifiedDegrees.clear();
+        sufficientDegrees.clear();
+        insufficientDegrees.clear();
+        committedDegrees.clear();
+        verified = false;
     }
 
     @Override

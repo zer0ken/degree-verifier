@@ -60,8 +60,7 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         }
         lectureVerifiers.sort(Comparator.comparingInt(LectureVerifier::creditize));
 
-        int totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
-        while (totalCredit >= minimumCredit + lectureVerifiers.get(0).creditize()) {
+        while (creditize() > minimumCredit) {
             LectureVerifier discarded = null;
             for (LectureVerifier lectureVerifier : lectureVerifiers) {
                 if (lectureVerifier.isHolding()) {
@@ -82,7 +81,6 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
             } else {
                 lectureVerifiers.remove(discarded);
                 holdingLectureVerifiers.add(discarded);
-                totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
             }
         }
         verify();

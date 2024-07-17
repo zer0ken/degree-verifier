@@ -26,7 +26,7 @@ public class LectureSnapshot implements Snapshot, Creditizable {
 
     public LectureSnapshot(String lectureName, Integer lectureCredit) {
         criteria = null;
-        matched = new LectureData(null, null, lectureName, lectureCredit, null);
+        matched = new LectureData(null, null, null, null, lectureName, null, lectureCredit, null);
         verified = true;
         degreeName = null;
         duplicatedDegrees = null;

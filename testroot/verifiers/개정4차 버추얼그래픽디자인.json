@@ -1,0 +1,14 @@
+{
+    "degree_name": "버추얼그래픽디자인",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "실감디자인씽킹**실감디자인씽킹(XR) 동일교과목"}},
+        {"lecture": {"name": "VR/AR프로그래밍"}},
+        {"lecture": {"name": "실감형게임프로젝트"}},
+        {"lecture": {"name": "디지털이미징기초"}},
+        {"lecture": {"name": "디지털이미징설계"}}
+    ]},
+    "min_credit": 9,
+    "version": 4,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

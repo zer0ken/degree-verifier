@@ -4,12 +4,14 @@ import org.konkuk.degreeverifier.business.Grade;
 import org.konkuk.degreeverifier.business.Semester;
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.LectureData;
+import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
 import org.konkuk.degreeverifier.business.verify.snapshot.LectureSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.Snapshot;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -59,7 +61,16 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
 
     private boolean match(Lecture lecture, Semester defaultMinimumSemester, Semester defaultMaximumSemester) {
         if (!lecture.name.equalsIgnoreCase(lectureName)) {
-            return false;
+            boolean aliasFound = false;
+            for (Set<String> alias : VerifierFactory.getInstance().getAliases()) {
+                if (alias.contains(lecture.name.toLowerCase()) && alias.contains(lectureName.toLowerCase())) {
+                    aliasFound = true;
+                    break;
+                }
+            }
+            if (!aliasFound) {
+                return false;
+            }
         }
         Semester lectureSemester = new Semester(
                 Integer.parseInt(lecture.year),

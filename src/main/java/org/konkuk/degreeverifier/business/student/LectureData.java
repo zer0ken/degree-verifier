@@ -3,14 +3,20 @@ package org.konkuk.degreeverifier.business.student;
 public class LectureData {
     public final String year;
     public final String semester;
+    public final String referenceNumber;
+    public final String code;
     public final String name;
+    public final String classification;
     public final int credit;
     public final String grade;
 
-    public LectureData(String year, String semester, String name, int credit, String grade) {
+    public LectureData(String year, String semester, String referenceNumber, String code, String name, String classification, int credit, String grade) {
         this.year = year;
         this.semester = semester;
+        this.referenceNumber = referenceNumber;
+        this.code = code;
         this.name = name;
+        this.classification = classification;
         this.credit = credit;
         this.grade = grade;
     }
@@ -19,7 +25,10 @@ public class LectureData {
         this(
                 toCopy.year,
                 toCopy.semester,
+                toCopy.referenceNumber,
+                toCopy.code,
                 toCopy.name,
+                toCopy.classification,
                 toCopy.credit,
                 toCopy.grade
         );

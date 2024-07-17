@@ -25,4 +25,6 @@ public class Borders {
     public static final Border EDIT_PANEL_BORDER = new EmptyBorder(3, 16, 3, 16);
 
     public static final Border APPLY_PANEL_BORDER = new EmptyBorder(12, 16, 12, 16);
+
+    public static final Border ACTION_PANEL_BORDER = new EmptyBorder(12, 16, 12, 16);
 }

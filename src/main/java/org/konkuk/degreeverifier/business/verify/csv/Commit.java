@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 public class Commit {
     public final static String[] HEADER = {
-            // student info
-            "성명", "학번", "소속 대학명",
             // microdegree info
-            "차수", "마이크로디그리명", "이수 학점",
+            "개정차수", "마이크로디그리명", "이수 학점",
+            // student info
+            "소속 대학명", "소속 학과", "성명", "학번", "학년",
             // lecture info
             "과목명1", "학점1",
             "과목명2", "학점2",

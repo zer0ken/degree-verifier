@@ -4,10 +4,12 @@ import java.util.Arrays;
 
 public class Transcript {
     public final static String[] HEADER = {
-            // student info
-            "성명", "학번", "소속 대학명",
             // lecture info
-            "이수 년도", "이수 학기", "교과목명", "이수 학점", "이수 성적"
+            "학년도", "학기", "학수번호", "교과목번호", "교과목명",
+            // student info
+            "캠퍼스", "대학", "학부(과)/전공", "학번", "성별", "성명", "학년",
+            // lecture info
+            "이수구분", "학점", "성적"
     };
 
     public static boolean isValidHeader(String[] header) {

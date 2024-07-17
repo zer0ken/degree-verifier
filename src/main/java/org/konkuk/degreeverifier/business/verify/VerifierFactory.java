@@ -8,9 +8,8 @@ import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.konkuk.degreeverifier.ui.Strings.VERIFIER_LOADING_MESSAGE;
 import static org.konkuk.degreeverifier.ui.Strings.VERIFIER_SAVING_MESSAGE;
@@ -26,6 +25,8 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
     }
 
     private boolean isLoaded = false;
+
+    private List<Set<String>> aliases = new LinkedList<>();
 
     synchronized public void loadVerifiers(File directory) {
         File[] specs = directory.listFiles();
@@ -46,6 +47,13 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
         }
         tracker.finish();
         isLoaded = true;
+    }
+
+    synchronized public void loadAliases(File file) {
+        List<List<String>> table = FileUtil.fromCsvFile(file);
+        for (List<String> row : table) {
+            aliases.add(new HashSet<>(row.stream().map(String::toLowerCase).collect(Collectors.toSet())));
+        }
     }
 
     synchronized public void updateAllVerifiers(Collection<DegreeCriteria> criteriaCollection) {
@@ -70,5 +78,9 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     public boolean isLoaded() {
         return isLoaded;
+    }
+
+    public List<Set<String>> getAliases() {
+        return aliases;
     }
 }

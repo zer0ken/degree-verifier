@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT;
-import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT_DIALOG_TITLE;
 
 public class LoadTranscriptAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
@@ -28,7 +27,7 @@ public class LoadTranscriptAction extends AbstractAction {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setMultiSelectionEnabled(false);
         chooser.setCurrentDirectory(new File(DefaultPaths.TRANSCRIPT_PATH));
-        chooser.setDialogTitle(LOAD_TRANSCRIPT_DIALOG_TITLE);
+        chooser.setDialogTitle(LOAD_TRANSCRIPT);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(new FileFilter() {
             @Override

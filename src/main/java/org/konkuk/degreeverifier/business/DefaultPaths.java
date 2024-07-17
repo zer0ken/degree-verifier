@@ -7,4 +7,5 @@ public class DefaultPaths {
     public static final String VERIFIERS_PATH = ROOT_PATH + "verifiers\\";
     public static final String TRANSCRIPT_PATH = ROOT_PATH + "transcript\\";
     public static final String COMMIT_PATH = ROOT_PATH + "commit\\";
+    public static final String ALIASES_PATH = ROOT_PATH + "aliases\\";
 }

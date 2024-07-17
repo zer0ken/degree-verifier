@@ -95,12 +95,15 @@ public class DegreeSnapshot implements Snapshot {
         StringBuilder sb = new StringBuilder();
         sb.append(criteria.version).append(",")
                 .append(criteria.degreeName).append(",")
-                .append(totalCredit).append(",");
+                .append(totalCredit).append(",")
+                .append("%s,%s,%s,%s,%s,");
 
+        Set<String> usedLectures = new HashSet<>();
         for (LectureSnapshot lectureSnapshot : lectureSnapshots) {
-            if (lectureSnapshot.matched != null) {
+            if (lectureSnapshot.verified && !usedLectures.contains(lectureSnapshot.matched.name)) {
                 sb.append(lectureSnapshot.matched.name).append(",")
                         .append(lectureSnapshot.matched.credit).append(",");
+                usedLectures.add(lectureSnapshot.matched.name);
             }
         }
 

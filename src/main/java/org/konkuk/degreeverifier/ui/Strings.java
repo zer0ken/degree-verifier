@@ -34,9 +34,7 @@ public class Strings {
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";
 
     public static final String LOAD_TRANSCRIPT = "성적표 불러오기";
-    public static final String LOAD_TRANSCRIPT_DIALOG_TITLE = "성적표 파일을 선택한 후 [열기]를 누르세요.";
     public static final String LOAD_COMMIT = "기존 학위 불러오기";
-    public static final String LOAD_COMMIT_DIALOG_TITLE = "기존 학위 파일을 선택한 후 [열기], 파일이 없으면 [취소]를 누르세요.";
 
     public static final String VERIFIED_DEGREE_LIST = "검사한 학위";
     public static final String COMMIT_VERIFIED_DEGREE = "인정하기";
@@ -67,6 +65,9 @@ public class Strings {
     public static final String INFORMATION = "자세히 보기";
     public static final String FOLD_INFORMATION_TREE = "한 단계 접기";
     public static final String UNFOLD_INFORMATION_TREE = "한 단계 펼치기";
+
+    public static final String LOAD_ALIASES = "동일 교과 목록 불러오기";
+
 
     /** EditorFrame */
     public static final String EDIT_FRAME_TITLE = "검사 기준 편집하기";

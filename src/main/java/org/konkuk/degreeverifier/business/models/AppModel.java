@@ -61,7 +61,9 @@ public class AppModel extends Observable {
         submitTask(
                 () -> notify(On.TRANSCRIPT_LOAD_STARTED, students),
                 () -> {
-                    students.clear();
+                    for (Student student : students.values()) {
+                        student.clear();
+                    }
                     List<List<String>> table = FileUtil.fromCsvFile(file);
                     if (!Transcript.isValidHeader(table.get(0).toArray(new String[0]))) {
                         return;
@@ -69,13 +71,16 @@ public class AppModel extends Observable {
                     ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
                     tracker.setMaximum(table.size() - 1);
                     for (List<String> row : table.subList(1, table.size())) {
-                        Student student = new Student(row.get(0), row.get(1), row.get(2));
+                        Student student = new Student(
+                                row.get(5), row.get(6), row.get(7), row.get(8), row.get(9), row.get(10), row.get(11)
+                        );
                         if (!students.containsKey(student.toString())) {
                             students.put(student.toString(), student);
                         }
                         student = students.get(student.toString());
                         Lecture lecture = new Lecture(
-                                row.get(3), row.get(4), row.get(5), Integer.parseInt(row.get(6)), row.get(7)
+                                row.get(0), row.get(1), row.get(2), row.get(3), row.get(4),
+                                row.get(12), Integer.parseInt(row.get(13)), row.get(14)
                         );
                         student.add(lecture);
                     }
@@ -86,6 +91,14 @@ public class AppModel extends Observable {
                     notify(On.TRANSCRIPT_LOADED, students);
                     verifyAllStudents();
                 }
+        );
+    }
+
+    public void loadAliases(File file) {
+        submitTask(
+                () -> notify(On.ALIASES_LOAD_STARTED, file),
+                () -> verifierFactory.loadAliases(file),
+                () -> notify(On.ALIASES_LOADED, file    )
         );
     }
 
@@ -101,7 +114,7 @@ public class AppModel extends Observable {
                     tracker.setMaximum(table.size() - 1);
                     Map<String, SnapshotBundle> bundleMap = new HashMap<>();
                     for (List<String> row : table.subList(1, table.size())) {
-                        Student student = students.get(new Student(row.get(0), row.get(1), row.get(2)).toString());
+                        Student student = students.get(new Student(row.get(3), row.get(5), row.get(6)).toString());
                         if (student == null) {
                             continue;
                         }
@@ -113,15 +126,15 @@ public class AppModel extends Observable {
 
                         String[] lectureNames = new String[10];
                         Integer[] lectureCredits = new Integer[10];
-                        for (int i = 6, j = 0; i < row.size(); i += 2, j++) {
+                        for (int i = 8, j = 0; i < row.size(); i += 2, j++) {
                             lectureNames[j] = row.get(i);
                             lectureCredits[j] = Integer.parseInt(row.get(i + 1));
                         }
 
                         DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
-                                row.get(4),
-                                Integer.parseInt(row.get(3)),
-                                Integer.parseInt(row.get(5)),
+                                row.get(1),
+                                Integer.parseInt(row.get(0)),
+                                Integer.parseInt(row.get(2)),
                                 lectureNames,
                                 lectureCredits
                         );
@@ -186,7 +199,6 @@ public class AppModel extends Observable {
 
     public void startCommit(Student student) {
         committingStudent = student;
-        notify(On.LECTURE_UPDATED, committingStudent);
         notify(On.COMMIT_UPDATED, committingStudent);
         notify(On.COMMIT_STARTED, committingStudent);
         if (!committingStudent.isVerified()) {
@@ -339,6 +351,9 @@ public class AppModel extends Observable {
         VERIFY_STARTED,
         VERIFIED,
 
+        ALIASES_LOAD_STARTED,
+        ALIASES_LOADED,
+
         TRANSCRIPT_LOAD_STARTED,
         TRANSCRIPT_LOADED,
 
@@ -353,7 +368,5 @@ public class AppModel extends Observable {
         COMMITTED_DEGREE_SELECTED,
 
         COMMIT_UPDATED,
-
-        LECTURE_UPDATED,
     }
 }

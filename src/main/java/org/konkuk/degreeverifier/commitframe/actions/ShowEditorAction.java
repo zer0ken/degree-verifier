@@ -19,6 +19,9 @@ public class ShowEditorAction extends AbstractAction {
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/rule_thin_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
+
+        setEnabled(appModel.isVerifierLoaded());
+        appModel.observe(AppModel.On.VERIFIER_LOADED, unused -> setEnabled(appModel.isVerifierLoaded()));
     }
 
     @Override

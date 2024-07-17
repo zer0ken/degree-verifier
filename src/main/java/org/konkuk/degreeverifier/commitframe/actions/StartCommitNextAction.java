@@ -21,10 +21,10 @@ public class StartCommitNextAction extends AbstractAction {
 
         setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit());
 
-        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, students ->
+        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused ->
                 setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
         );
-        appModel.observe(AppModel.On.COMMIT_UPDATED, students ->
+        appModel.observe(AppModel.On.COMMIT_UPDATED, unused ->
                 setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
         );
     }

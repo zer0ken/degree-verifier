@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.launcherframe;
 
+import org.konkuk.degreeverifier.commitframe.actions.LoadAliasesAction;
 import org.konkuk.degreeverifier.commitframe.actions.LoadCommitAction;
 import org.konkuk.degreeverifier.commitframe.actions.LoadTranscriptAction;
 import org.konkuk.degreeverifier.commitframe.actions.LoadVerifierAction;
@@ -16,6 +17,7 @@ public class LauncherPanel extends JPanel{
         initGridBagConstraints();
         addRow("검사 기준 불러오기*:", new JButton(new LoadVerifierAction()));
         addRow("성적표 불러오기*:", new JButton(new LoadTranscriptAction()));
+        addRow("동일 교과 목록 불러오기:", new JButton(new LoadAliasesAction()));
         addRow("기존 학위 불러오기:", new JButton(new LoadCommitAction()));
     }
 
