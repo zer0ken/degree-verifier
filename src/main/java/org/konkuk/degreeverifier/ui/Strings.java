@@ -59,6 +59,8 @@ public class Strings {
     public static final String OPEN_EXPORT_DIRECTORY = "출력 위치 열기";
     public static final String CLEAR_COMMIT_DIALOG_TITLE = CLEAR_COMMITTED_DEGREE;
     public static final String CLEAR_COMMIT_DIALOG_MESSAGE = "<html><p>다음 학위의 인정을 취소하려면 [확인]을 누르세요.</p>%s</html>";
+    public static final String EARLY_COMMITTED_DEGREE = "기존 학위";
+    public static final String NEWLY_COMMITTED_DEGREE = "새로 인정한 학위";
 
     public static final String LECTURE_LIST = "수강 내역";
 

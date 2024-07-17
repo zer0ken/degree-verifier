@@ -3,7 +3,7 @@ package org.konkuk.degreeverifier.commitframe.components.verifiedlist;
 import org.konkuk.degreeverifier.commitframe.logic.informationtree.InformationTargetFocusListener;
 import org.konkuk.degreeverifier.commitframe.logic.informationtree.InformationTargetListSelectionListener;
 import org.konkuk.degreeverifier.commitframe.logic.verifiedlist.*;
-import org.konkuk.degreeverifier.commitframe.logic.verifiedlist.items.ListItem;
+import org.konkuk.degreeverifier.common.logic.VerifierListItem;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -19,7 +19,7 @@ public class VerifiedDegreePanel extends JPanel {
         setLayout(new BorderLayout());
         setMinimumSize(MINIMUM_VERIFIED_DEGREE_SIZE);
 
-        JList<ListItem> list = new JList<>();
+        JList<VerifierListItem> list = new JList<>();
         list.setBorder(new CompoundBorder(TOP_MARGIN, list.getBorder()));
         list.setModel(new VerifiedDegreeListModel());
         list.addListSelectionListener(new VerifiedDegreeListSelectionListener());

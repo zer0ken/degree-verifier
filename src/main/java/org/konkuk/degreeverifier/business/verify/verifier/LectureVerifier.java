@@ -94,6 +94,10 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
         holding = false;
     }
 
+    public boolean isHolding() {
+        return holding;
+    }
+
     @Override
     public int creditize() {
         return holding ? matchedLecture.credit : 0;

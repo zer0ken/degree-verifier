@@ -5,6 +5,8 @@ import org.konkuk.degreeverifier.business.student.LectureData;
 import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
 import org.konkuk.degreeverifier.business.verify.verifier.Creditizable;
 
+import java.util.Objects;
+
 public class LectureSnapshot implements Snapshot, Creditizable {
     public final LectureCriteria criteria;
     public final LectureData matched;
@@ -31,6 +33,15 @@ public class LectureSnapshot implements Snapshot, Creditizable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof LectureSnapshot)) {
+            return false;
+        }
+        LectureSnapshot o = (LectureSnapshot) obj;
+        return Objects.equals(matched.name, o.matched.name);
+    }
+
+    @Override
     public int creditize() {
         if (verified) {
             return matched.credit;
@@ -40,6 +51,6 @@ public class LectureSnapshot implements Snapshot, Creditizable {
 
     @Override
     public String toString() {
-        return criteria.lectureName;
+        return criteria != null ? criteria.lectureName : matched != null ? matched.name : "";
     }
 }

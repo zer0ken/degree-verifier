@@ -2,7 +2,6 @@ package org.konkuk.degreeverifier.business.verify;
 
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.Student;
-import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.business.verify.verifier.LectureVerifier;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
@@ -28,7 +27,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             exclusiveLectureVerifiers.addAll(degreeVerifier.match(lectures));
         }
 
-        List<SnapshotBundle> snapshotBundles = new LinkedList<>();
+        List<VerifierBundle> verifierBundles = new LinkedList<>();
         Map<String, List<LectureVerifier>> groupedExclusiveVerifiers = new LinkedHashMap<>();
         for (LectureVerifier lectureVerifier : exclusiveLectureVerifiers) {
             if (!groupedExclusiveVerifiers.containsKey(lectureVerifier.getMatchedLecture().toString())) {
@@ -53,14 +52,13 @@ public class Verifier extends LinkedList<DegreeVerifier> {
 
         if (groupedExclusiveVerifiers.isEmpty()) {
             // 2-1. Not Exist Exclusive Verifier
-            SnapshotBundle snapshotBundle = new SnapshotBundle();
+            VerifierBundle bundle = new VerifierBundle();
             for (DegreeVerifier degreeVerifier : this) {
                 if (degreeVerifier.verify()) {
-                    degreeVerifier.optimize();
-                    snapshotBundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
+                    bundle.put(degreeVerifier.toString(), degreeVerifier);
                 }
             }
-            snapshotBundles.add(snapshotBundle);
+            verifierBundles.add(bundle);
         } else {
             // 2-2. There Exists Exclusive Verifiers
             int size = 1;
@@ -71,66 +69,65 @@ public class Verifier extends LinkedList<DegreeVerifier> {
 
             List<List<LectureVerifier>> groups = new LinkedList<>(groupedExclusiveVerifiers.values());
 
-            snapshotBundles.addAll(pickAndVerify(groups, tracker));
-            snapshotBundles.sort((a, b) -> b.size() - a.size());
+            verifierBundles.addAll(pickAndVerify(groups, tracker));
+            verifierBundles.sort((a, b) -> b.size() - a.size());
         }
 
         // 3. Check Sufficiency
-        Map<String, List<DegreeSnapshot>> flattened = new LinkedHashMap<>();
-        for (SnapshotBundle bundle : snapshotBundles) {
-            for (DegreeSnapshot degreeInBundle : bundle.values()) {
+        Map<String, List<DegreeVerifier>> flattened = new LinkedHashMap<>();
+        for (VerifierBundle bundle : verifierBundles) {
+            for (DegreeVerifier degreeInBundle : bundle.values()) {
                 if (!flattened.containsKey(degreeInBundle.toString())) {
                     flattened.put(degreeInBundle.toString(), new LinkedList<>());
                 }
                 flattened.get(degreeInBundle.toString()).add(degreeInBundle);
             }
         }
-        for (SnapshotBundle bundle : snapshotBundles) {
-            for (DegreeSnapshot degreeInBundle : bundle.values()) {
-                for (DegreeSnapshot sufficientDegree : flattened.get(degreeInBundle.toString())) {
-                    sufficientDegree.sufficientDegrees.addAll(bundle.keySet());
+        for (VerifierBundle bundle : verifierBundles) {
+            for (DegreeVerifier degreeInBundle : bundle.values()) {
+                for (DegreeVerifier degreeVerifier : flattened.get(degreeInBundle.toString())) {
+                    degreeVerifier.sufficientDegrees.addAll(bundle.keySet());
                 }
             }
         }
-        for (List<DegreeSnapshot> groupedSnapshots : flattened.values()) {
-            DegreeSnapshot degree = groupedSnapshots.get(0);
+        for (List<DegreeVerifier> groupedVerifiers : flattened.values()) {
+            DegreeVerifier degree = groupedVerifiers.get(0);
             Set<String> insufficientDegrees = new LinkedHashSet<>(flattened.keySet());
             insufficientDegrees.removeAll(degree.sufficientDegrees);
-            for (DegreeSnapshot degreeSnapshot : groupedSnapshots) {
-                degreeSnapshot.insufficientDegrees.addAll(insufficientDegrees);
+            for (DegreeVerifier degreeVerifier : groupedVerifiers) {
+                degreeVerifier.insufficientDegrees.addAll(insufficientDegrees);
             }
         }
 
         // 4. Set
-        SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
+        VerifierBundle notVerifiedDegrees = new VerifierBundle();
         for (List<LectureVerifier> value : groupedExclusiveVerifiers.values()) {
             for (LectureVerifier lectureVerifier : value) {
                 lectureVerifier.hold();
             }
         }
         for (DegreeVerifier degreeVerifier : this) {
-            if (snapshotBundles.stream().noneMatch(snapshotBundle -> snapshotBundle.containsKey(degreeVerifier.toString()))) {
-                notVerifiedDegrees.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
+            if (verifierBundles.stream().noneMatch(snapshotBundle -> snapshotBundle.containsKey(degreeVerifier.toString()))) {
+                notVerifiedDegrees.put(degreeVerifier.toString(), degreeVerifier);
             }
         }
 
-        student.setVerifiedSnapshotBundles(snapshotBundles);
+        student.setVerifiedBundles(verifierBundles);
         student.setNotVerifiedDegrees(notVerifiedDegrees);
 
         tracker.finish();
     }
 
-    private List<SnapshotBundle> pickAndVerify(List<List<LectureVerifier>> left, ProgressTracker tracker) {
-        List<SnapshotBundle> bundles = new LinkedList<>();
+    private List<VerifierBundle> pickAndVerify(List<List<LectureVerifier>> left, ProgressTracker tracker) {
+        List<VerifierBundle> bundles = new LinkedList<>();
         for (LectureVerifier lectureVerifier : left.get(0)) {
             lectureVerifier.hold();
             if (left.size() == 1) {
                 tracker.increment();
-                SnapshotBundle bundle = new SnapshotBundle();
+                VerifierBundle bundle = new VerifierBundle();
                 for (DegreeVerifier degreeVerifier : this) {
                     if (degreeVerifier.verify()) {
-                        degreeVerifier.optimize();
-                        bundle.put(degreeVerifier.toString(), (DegreeSnapshot) degreeVerifier.takeSnapshot());
+                        bundle.put(degreeVerifier.toString(), new DegreeVerifier(degreeVerifier));
                     }
                 }
                 if (!bundle.isEmpty()) {

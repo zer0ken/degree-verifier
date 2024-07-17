@@ -1,7 +1,9 @@
 package org.konkuk.degreeverifier.commitframe.logic.verifiedlist.items;
 
-public abstract class SeparatorItem extends ListItem {
+import org.konkuk.degreeverifier.common.logic.VerifierListItem;
+
+public abstract class SeparatorItem extends VerifierListItem {
     public SeparatorItem() {
-        super(null);
+        super();
     }
 }

@@ -1,8 +1,10 @@
 package org.konkuk.degreeverifier.business.student;
 
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
+import org.konkuk.degreeverifier.business.verify.VerifierBundle;
 import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
+import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -15,11 +17,13 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
     private boolean verified = false;
 
-    private List<SnapshotBundle> verifiedSnapshotBundles = null;
-    private final SnapshotBundle committedDegrees = new SnapshotBundle();
-    private final SnapshotBundle sufficientDegrees = new SnapshotBundle();
-    private final SnapshotBundle insufficientDegrees = new SnapshotBundle();
-    private final SnapshotBundle notVerifiedDegrees = new SnapshotBundle();
+    private List<VerifierBundle> verifiedBundles = null;
+    private final VerifierBundle committedDegrees = new VerifierBundle();
+    private final VerifierBundle sufficientDegrees = new VerifierBundle();
+    private final VerifierBundle insufficientDegrees = new VerifierBundle();
+    private final VerifierBundle notVerifiedDegrees = new VerifierBundle();
+
+    private final SnapshotBundle earlyCommittedDegrees = new SnapshotBundle();
 
     public Student(String name, String id, String university) {
         this.name = name;
@@ -27,34 +31,47 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         this.university = university;
     }
 
-    synchronized public void setVerifiedSnapshotBundles(List<SnapshotBundle> verifiedSnapshotBundles) {
-        this.verifiedSnapshotBundles = verifiedSnapshotBundles;
-        verifiedSnapshotBundles.forEach(sufficientDegrees::putAll);
+    synchronized public void setVerifiedBundles(List<VerifierBundle> verifiedBundles) {
+        this.verifiedBundles = verifiedBundles;
+        verifiedBundles.forEach(sufficientDegrees::putAll);
         verified = true;
         committedDegrees.clear();
         updateSufficientInsufficientDegrees();
     }
 
-    synchronized public void setNotVerifiedDegrees(SnapshotBundle notVerifiedDegrees) {
+    synchronized public void setNotVerifiedDegrees(VerifierBundle notVerifiedDegrees) {
         this.notVerifiedDegrees.clear();
         this.notVerifiedDegrees.putAll(notVerifiedDegrees);
     }
 
-    synchronized public void commitAll(Collection<DegreeSnapshot> degrees) {
+    synchronized public void setEarlyCommittedDegrees(Collection<DegreeSnapshot> degrees) {
+        if (degrees == null || degrees.isEmpty()) {
+            earlyCommittedDegrees.clear();
+            return;
+        }
+
+        for (DegreeSnapshot degree : degrees) {
+            if (degree != null) {
+                earlyCommittedDegrees.put(degree.toString(), degree);
+            }
+        }
+        updateSufficientInsufficientDegrees();
+    }
+
+    synchronized public void commitAll(Collection<DegreeVerifier> degrees) {
         if (degrees == null || degrees.isEmpty()) {
             return;
         }
-        for (DegreeSnapshot degree : degrees) {
-            if (degree == null || !sufficientDegrees.containsKey(degree.toString())) {
-                continue;
+        for (DegreeVerifier degree : degrees) {
+            if (degree != null && sufficientDegrees.containsKey(degree.toString())) {
+                committedDegrees.put(degree.toString(), degree);
+                updateSufficientInsufficientDegrees();
             }
-            committedDegrees.put(degree.toString(), degree);
-            updateSufficientInsufficientDegrees();
         }
     }
 
     synchronized public void commitRecommendedBundle() {
-        if (verifiedSnapshotBundles.isEmpty()) {
+        if (verifiedBundles.isEmpty()) {
             return;
         }
 
@@ -66,20 +83,35 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         updateSufficientInsufficientDegrees();
     }
 
-    synchronized public SnapshotBundle getRecommendedBundle() {
-        for (SnapshotBundle bundle : verifiedSnapshotBundles) {
+    synchronized public VerifierBundle getRecommendedBundle() {
+        for (VerifierBundle bundle : verifiedBundles) {
             if (bundle.keySet().containsAll(committedDegrees.keySet())) {
                 return bundle;
             }
         }
-        return new SnapshotBundle();
+        return new VerifierBundle();
     }
 
-    synchronized public void decommitAll(Collection<DegreeSnapshot> degrees) {
+    synchronized public boolean isSufficientBundle(VerifierBundle bundle) {
+        if (!bundle.keySet().containsAll(committedDegrees.keySet())) {
+            return false;
+        }
+        for (String key : earlyCommittedDegrees.keySet()) {
+            if (!bundle.containsKey(key)) {
+                return false;
+            }
+            if (bundle.get(key).optimizeLike(earlyCommittedDegrees.get(key)) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    synchronized public void decommitAll(Collection<DegreeVerifier> degrees) {
         if (degrees == null || degrees.isEmpty()) {
             return;
         }
-        for (DegreeSnapshot degree : degrees) {
+        for (DegreeVerifier degree : degrees) {
             if (degree == null || !committedDegrees.containsKey(degree.toString())) {
                 return;
             }
@@ -97,29 +129,22 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         sufficientDegrees.clear();
         insufficientDegrees.clear();
 
-        if (committedDegrees.isEmpty()) {
-            for (SnapshotBundle bundle : verifiedSnapshotBundles) {
+        if (committedDegrees.isEmpty() && earlyCommittedDegrees.isEmpty()) {
+            for (VerifierBundle bundle : verifiedBundles) {
                 sufficientDegrees.putAll(bundle);
             }
             return;
         }
 
-        for (SnapshotBundle bundle : verifiedSnapshotBundles) {
-            boolean isSufficientBundle = true;
-            for (String key : committedDegrees.keySet()) {
-                if (!bundle.containsKey(key)) {
-                    isSufficientBundle = false;
-                    break;
-                }
-            }
-            if (isSufficientBundle) {
+        for (VerifierBundle bundle : verifiedBundles) {
+            if (isSufficientBundle(bundle)) {
                 sufficientDegrees.putAll(bundle);
             } else {
                 insufficientDegrees.putAll(bundle);
             }
         }
         for (String committedKey : committedDegrees.keySet()) {
-            committedDegrees.put(committedKey, sufficientDegrees.get(committedKey));
+            this.committedDegrees.put(committedKey, sufficientDegrees.get(committedKey));
             sufficientDegrees.remove(committedKey);
             insufficientDegrees.remove(committedKey);
         }
@@ -128,20 +153,24 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         }
     }
 
-    public SnapshotBundle getCommittedDegrees() {
+    public VerifierBundle getCommittedDegrees() {
         return committedDegrees;
     }
 
-    public SnapshotBundle getSufficientDegrees() {
+    public VerifierBundle getSufficientDegrees() {
         return sufficientDegrees;
     }
 
-    public SnapshotBundle getInsufficientDegrees() {
+    public VerifierBundle getInsufficientDegrees() {
         return insufficientDegrees;
     }
 
-    public SnapshotBundle getNotVerifiedDegrees() {
+    public VerifierBundle getNotVerifiedDegrees() {
         return notVerifiedDegrees;
+    }
+
+    public SnapshotBundle getEarlyCommittedDegrees() {
+        return earlyCommittedDegrees;
     }
 
     public boolean isVerified() {
@@ -166,11 +195,17 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     @Override
     public String toCsv() {
         SnapshotBundle exportBundle = new SnapshotBundle();
-        for (DegreeSnapshot degreeSnapshot : committedDegrees.values()) {
-            if (!exportBundle.containsKey(degreeSnapshot.criteria.degreeName) ||
-                    exportBundle.get(degreeSnapshot.criteria.degreeName).criteria.version < degreeSnapshot.criteria.version) {
-                exportBundle.put(degreeSnapshot.criteria.degreeName, degreeSnapshot);
+        for (String key : committedDegrees.keySet()) {
+            DegreeVerifier degree = committedDegrees.get(key);
+            if (earlyCommittedDegrees.containsKey(key) && degree.optimizeLike(earlyCommittedDegrees.get(key)) != null) {
+                continue;
             }
+            if (!exportBundle.containsKey(key) || exportBundle.get(key).criteria.version < degree.version) {
+                exportBundle.put(degree.degreeName, degree.optimize());
+            }
+        }
+        for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
+            exportBundle.put(snapshot.criteria.degreeName, snapshot);
         }
 
         StringBuilder sb = new StringBuilder();

@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
-import org.konkuk.degreeverifier.commitframe.logic.verifiedlist.items.ListItem;
+import org.konkuk.degreeverifier.common.logic.VerifierListItem;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,24 +25,14 @@ public class InformationModel extends Observable {
         }
         informationTargets.clear();
 
-        if (targets.get(0) instanceof DegreeSnapshot) {
-            for (Object target : targets) {
-                informationTargets.add(((DegreeSnapshot) target));
-            }
-        } else if (targets.get(0) instanceof ListItem) {
-            for (Object target : targets) {
-                ListItem item = (ListItem) target;
-                if(item.getDegreeSnapshot() != null) {
-                    informationTargets.add(item.getDegreeSnapshot());
-                }
+        for (Object target : targets) {
+            VerifierListItem item = (VerifierListItem) target;
+            if (item.getSnapshot() != null) {
+                informationTargets.add(item.getSnapshot());
             }
         }
 
         notify(On.INFORMATION_TARGET_UPDATED, informationTargets);
-    }
-
-    public List<DegreeSnapshot> getInformationTargets() {
-        return informationTargets;
     }
 
     public enum On implements Event {

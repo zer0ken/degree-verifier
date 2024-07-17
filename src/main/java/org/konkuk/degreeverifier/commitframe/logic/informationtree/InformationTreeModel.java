@@ -40,26 +40,29 @@ public class InformationTreeModel extends DefaultTreeModel {
             if (selectedDegree == null) {
                 continue;
             }
+
             DefaultMutableTreeNode degreeNode = new DefaultMutableTreeNode(selectedDegree);
-            DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode(
-                    "필요 학점: " + selectedDegree.criteria.minimumCredit + " 학점 이상"
-            );
-            degreeNode.add(minimumCreditNode);
 
-            if (!selectedDegree.insufficientDegrees.isEmpty()) {
-                DefaultMutableTreeNode insufficientRootNode = new InsufficientRootNode();
-                for (String insufficientDegree : selectedDegree.insufficientDegrees) {
-                    insufficientRootNode.add(new DefaultMutableTreeNode(insufficientDegree));
+            if (selectedDegree.recursiveSnapshot != null) {
+                DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode(
+                        "필요 학점: " + selectedDegree.criteria.minimumCredit + " 학점 이상"
+                );
+                degreeNode.add(minimumCreditNode);
+
+                if (!selectedDegree.insufficientDegrees.isEmpty()) {
+                    DefaultMutableTreeNode insufficientRootNode = new InsufficientRootNode();
+                    for (String insufficientDegree : selectedDegree.insufficientDegrees) {
+                        insufficientRootNode.add(new DefaultMutableTreeNode(insufficientDegree));
+                    }
+                    degreeNode.add(insufficientRootNode);
                 }
-                degreeNode.add(insufficientRootNode);
+                addNode(degreeNode, selectedDegree.recursiveSnapshot);
             }
-
-            addNode(degreeNode, selectedDegree.recursiveSnapshot);
 
             List<LectureSnapshot> lectures = selectedDegree.lectureSnapshots.stream().filter(l -> l.verified).collect(Collectors.toList());
             DefaultMutableTreeNode lecturesNode = new LecturesRootNode(lectures.size());
             for (LectureSnapshot lecture : lectures) {
-                lecturesNode.add(new DefaultMutableTreeNode(lecture.criteria.lectureName));
+                lecturesNode.add(new DefaultMutableTreeNode(lecture.matched.name));
             }
 
             degreeNode.add(lecturesNode);
@@ -90,7 +93,7 @@ public class InformationTreeModel extends DefaultTreeModel {
                     }
                     needPass += " " + snapshot.criteria.maximumPass;
                 }
-                if (!needPass.isEmpty()){
+                if (!needPass.isEmpty()) {
                     recursiveNode.add(new DefaultMutableTreeNode(needPassPrefix + needPass));
                 }
             }

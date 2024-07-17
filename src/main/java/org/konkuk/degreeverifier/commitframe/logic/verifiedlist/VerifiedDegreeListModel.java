@@ -3,10 +3,11 @@ package org.konkuk.degreeverifier.commitframe.logic.verifiedlist;
 import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.commitframe.logic.verifiedlist.items.*;
+import org.konkuk.degreeverifier.common.logic.VerifierListItem;
 
 import javax.swing.*;
 
-public class VerifiedDegreeListModel extends DefaultListModel<ListItem> {
+public class VerifiedDegreeListModel extends DefaultListModel<VerifierListItem> {
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListModel() {

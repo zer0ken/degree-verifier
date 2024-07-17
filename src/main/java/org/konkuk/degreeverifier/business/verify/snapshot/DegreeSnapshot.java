@@ -2,10 +2,8 @@ package org.konkuk.degreeverifier.business.verify.snapshot;
 
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DegreeSnapshot implements Snapshot {
     public final DegreeCriteria criteria;
@@ -66,6 +64,26 @@ public class DegreeSnapshot implements Snapshot {
             }
             lectureSnapshots.add(new LectureSnapshot(lectureNames[i], lectureCredits[i]));
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DegreeSnapshot)) {
+            return false;
+        }
+        DegreeSnapshot o = (DegreeSnapshot) obj;
+
+        if (!Objects.equals(criteria.degreeName, o.criteria.degreeName)) {
+            return false;
+        }
+        if(!Objects.equals(criteria.version, o.criteria.version)) {
+            return false;
+        }
+
+        Set<LectureSnapshot> l1 = lectureSnapshots.stream().filter(l -> l.verified).collect(Collectors.toSet());
+        Set<LectureSnapshot> l2 = o.lectureSnapshots.stream().filter(l -> l.verified).collect(Collectors.toSet());
+
+        return Objects.equals(l1, l2);
     }
 
     @Override

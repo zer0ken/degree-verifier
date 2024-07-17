@@ -9,6 +9,7 @@ import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
 import org.konkuk.degreeverifier.business.verify.csv.Commit;
 import org.konkuk.degreeverifier.business.verify.csv.Transcript;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
+import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
@@ -36,8 +37,8 @@ public class AppModel extends Observable {
     private final VerifierFactory verifierFactory = VerifierFactory.getInstance();
     private final NavigableMap<String, Student> students = Collections.synchronizedNavigableMap(new TreeMap<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
-    private final List<DegreeSnapshot> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
-    private final List<DegreeSnapshot> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
+    private final List<DegreeVerifier> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
+    private final List<DegreeVerifier> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
 
     public void submitTask(
             Runnable beforeSubmit,
@@ -129,7 +130,7 @@ public class AppModel extends Observable {
                     for (String key : bundleMap.keySet()) {
                         Student student = students.get(key);
                         student.clearCommit();
-                        student.commitAll(bundleMap.get(student.toString()).values());
+                        student.setEarlyCommittedDegrees(bundleMap.get(student.toString()).values());
                     }
                     transcriptLoaded = true;
                     tracker.finish();
@@ -212,13 +213,13 @@ public class AppModel extends Observable {
         }
     }
 
-    public void setSelectedVerifiedDegree(Collection<DegreeSnapshot> selectedDegrees) {
+    public void setSelectedVerifiedDegree(Collection<DegreeVerifier> selectedDegrees) {
         selectedVerifiedDegree.clear();
         selectedVerifiedDegree.addAll(selectedDegrees);
         notify(On.VERIFIED_DEGREE_SELECTED, selectedDegrees);
     }
 
-    public void setSelectedCommittedDegree(Collection<DegreeSnapshot> selectedDegrees) {
+    public void setSelectedCommittedDegree(Collection<DegreeVerifier> selectedDegrees) {
         selectedCommittedDegree.clear();
         selectedCommittedDegree.addAll(selectedDegrees);
         notify(On.COMMITTED_DEGREE_SELECTED, selectedDegrees);
@@ -307,11 +308,11 @@ public class AppModel extends Observable {
         return committingStudent;
     }
 
-    public List<DegreeSnapshot> getSelectedVerifiedDegree() {
+    public List<DegreeVerifier> getSelectedVerifiedDegree() {
         return selectedVerifiedDegree;
     }
 
-    public List<DegreeSnapshot> getSelectedCommittedDegree() {
+    public List<DegreeVerifier> getSelectedCommittedDegree() {
         return selectedCommittedDegree;
     }
 
