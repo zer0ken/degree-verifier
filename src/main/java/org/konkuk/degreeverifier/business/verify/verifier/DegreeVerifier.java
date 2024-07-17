@@ -85,6 +85,7 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
                 totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
             }
         }
+        verify();
         DegreeSnapshot snapshot = (DegreeSnapshot) takeSnapshot();
         for (LectureVerifier holdingLectureVerifier : holdingLectureVerifiers) {
             holdingLectureVerifier.hold();
@@ -113,25 +114,27 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
             }
         }
 
+        List<LectureVerifier> holdingLectureVerifiers = new ArrayList<>();
         for (LectureVerifier lectureVerifier : lectureVerifiers) {
-            if (lectureVerifier.getMatchedLecture() == null) {
+            if (!lectureVerifier.isHolding()) {
                 continue;
             }
+            holdingLectureVerifiers.add(lectureVerifier);
             lectureVerifier.release();
             if (lecturesToPreserve.contains(lectureVerifier.getMatchedLecture().name)) {
                 lectureVerifier.hold();
             }
         }
 
-        if (verify()) {
-            return (DegreeSnapshot) takeSnapshot();
+        verify();
+        DegreeSnapshot newSnapshot = (DegreeSnapshot) takeSnapshot();
+        for (LectureVerifier holdingLectureVerifier : holdingLectureVerifiers) {
+            holdingLectureVerifier.hold();
+        }
+
+        if (snapshot.verified) {
+            return newSnapshot;
         } else {
-            for (LectureVerifier lectureVerifier : lectureVerifiers) {
-                if (lectureVerifier.getMatchedLecture() == null) {
-                    continue;
-                }
-                lectureVerifier.hold();
-            }
             return null;
         }
     }

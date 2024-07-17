@@ -30,6 +30,7 @@ public class CommittedDegreeListSelectionListener implements ListSelectionListen
         }
 
         appModel.setSelectedCommittedDegree(list.getSelectedValuesList().stream()
+
                 .map(VerifierListItem::getDegreeVerifier)
                 .collect(Collectors.toList())
         );

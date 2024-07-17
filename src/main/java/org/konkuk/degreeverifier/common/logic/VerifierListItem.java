@@ -23,8 +23,8 @@ public abstract class VerifierListItem {
     }
 
     public DegreeSnapshot getSnapshot() {
-        if (snapshot == null) {
-            snapshot = (DegreeSnapshot) degreeVerifier.takeSnapshot();
+        if (snapshot == null && degreeVerifier != null) {
+            snapshot = degreeVerifier.optimize();
         }
         return snapshot;
     }
