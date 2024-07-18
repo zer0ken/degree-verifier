@@ -11,5 +11,7 @@ public class LectureTable extends JTable {
         setModel(new LectureTableModel());
         setComponentPopupMenu(new LectureListPopupMenu());
         setEnabled(false);
+
+        setAutoCreateRowSorter(true);
     }
 }
