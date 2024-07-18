@@ -1,5 +1,7 @@
 package org.konkuk.degreeverifier.launcherframe;
 
+import org.konkuk.degreeverifier.common.components.statusbar.StatusBar;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,8 +20,12 @@ public class LauncherFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.add(new ActionPanel());
+        bottom.add(new StatusBar(), BorderLayout.SOUTH);
+
         add(new LauncherPanel());
-        add(new ActionPanel(), BorderLayout.SOUTH);
+        add(bottom, BorderLayout.SOUTH);
 
         setVisible(true);
     }

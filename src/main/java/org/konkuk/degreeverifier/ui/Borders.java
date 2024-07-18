@@ -8,6 +8,7 @@ import javax.swing.border.MatteBorder;
 
 public class Borders {
     public static final Border SEPARATOR_EVERY_SIDE = new MatteBorder(1, 1, 1, 1, UIManager.getColor("Separator.foreground"));
+    public static final Border SEPARATOR_TABBED_TABLE = new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground"));
 
     public static final EmptyBorder PROGRESS_PANEL_BORDER = new EmptyBorder(0, 8, 0, 8);
     public static final EmptyBorder STATUS_BAR_PADDING = new EmptyBorder(2, 14, 2, 14);

@@ -11,6 +11,7 @@ public class Strings {
     public static final String SETTING_MENU = "설정";
 
     public static final String VERIFYING = "인정 가능한 학위를 검사하는 중... [%s]";
+    public static final String VERIFYING_ALL = "모든 학생의 인정 가능한 학위를 검사하는 중";
     public static final String VERIFIER_LOADING_MESSAGE = "검사 기준을 불러오는 중";
     public static final String TRANSCRIPT_LOADING_MESSAGE = "성적표를 불러오는 중";
     public static final String COMMIT_LOADING_MESSAGE = "인정한 학위를 불러오는 중";
@@ -18,7 +19,7 @@ public class Strings {
     public static final String NO_TASK = "진행 중인 작업 없음";
     public static final String TASKS_IN_PROGRESS = "작업 진행 중... [%d개 중 %d개 완료]";
     public static final String TASKS_IN_PROGRESS_DETAILED = "작업 진행 중... [%d개 남음]";
-    public static final String EXPORTING_COMMIT_MESSAGE = "인정한 학위 저장 중... [%s]";
+    public static final String AUTO_COMMITTING_MESSAGE = "자동으로 모든 학생의 학위를 인정하는 중";
 
     public static final String LOAD_VERIFIER_LIST = "검사 기준 불러오기";
     public static final String LOAD_VERIFIER_DIALOG_TITLE = LOAD_VERIFIER_LIST + " - 검사 기준이 위치한 폴더 선택";

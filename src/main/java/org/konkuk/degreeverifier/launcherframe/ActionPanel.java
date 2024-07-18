@@ -2,7 +2,6 @@ package org.konkuk.degreeverifier.launcherframe;
 
 import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.commitframe.CommitFrame;
-import org.konkuk.degreeverifier.commitframe.actions.ExportCommitAction;
 import org.konkuk.degreeverifier.editorframe.EditorFrame;
 
 import javax.swing.*;
@@ -35,8 +34,7 @@ public class ActionPanel extends JPanel {
         JButton autoCommitButton = new JButton("자동 검사");
         autoCommitButton.addActionListener(e -> {
             AppModel model = AppModel.getInstance();
-            model.commitAllStudentAutomatically();
-            new ExportCommitAction().actionPerformed(null);
+            model.commitAllStudentAutomaticallyAndExport(e);
         });
         autoCommitButton.setEnabled(appModel.isVerifierLoaded() && appModel.isTranscriptLoaded());
         AppModel.getInstance().observe(AppModel.On.VERIFIER_LOADED, (unused) ->

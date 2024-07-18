@@ -13,12 +13,13 @@ public class TableResizer {
         for (int column = 0; column < table.getColumnCount(); column++) {
             TableColumn tableColumn = table.getColumnModel().getColumn(column);
             int width = tableColumn.getPreferredWidth();
-            for (int row = 0; row < table.getRowCount(); ++row) {
+            for (int row = 0; row < Math.min(table.getRowCount(), 5); ++row) {
                 final Object cellValue = table.getValueAt(row, column);
                 final TableCellRenderer renderer = table.getCellRenderer(row, column);
-                final Component comp
-                        = renderer.getTableCellRendererComponent(table, cellValue, false, false, row, column);
-                width = Math.max(width, comp.getPreferredSize().width);
+                final Component comp = renderer.getTableCellRendererComponent(table, cellValue, false, false, row, column);
+                width = Math.max(width,
+                        comp.getPreferredSize().width
+                );
             }
             final TableColumn tc = table.getColumn(table.getColumnName(column));
             width += table.getIntercellSpacing().width * 2;

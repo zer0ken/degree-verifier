@@ -28,11 +28,11 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         recursiveVerifier.setDegreeName(toCopy.degreeName);
     }
 
-    public List<LectureVerifier> match(List<Lecture> lectures) {
+    public synchronized List<LectureVerifier> match(List<Lecture> lectures) {
         return recursiveVerifier.match(lectures, getMinimumSemester(), getMaximumSemester());
     }
 
-    public boolean verify() {
+    public synchronized boolean verify() {
         try {
             verified = recursiveVerifier.verify() && creditize() >= minimumCredit;
         } catch (ImportantCriteriaFailedException e) {
@@ -41,7 +41,7 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         return verified;
     }
 
-    public DegreeSnapshot optimize() {
+    public synchronized DegreeSnapshot optimize() {
         if (!verified) {
             return (DegreeSnapshot) takeSnapshot();
         }
@@ -91,7 +91,7 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         return snapshot;
     }
 
-    public DegreeSnapshot optimizeLike(DegreeSnapshot snapshot) {
+    public synchronized DegreeSnapshot optimizeLike(DegreeSnapshot snapshot) {
         if (!Objects.equals(degreeName, snapshot.criteria.degreeName) ||
                 !Objects.equals(version, snapshot.criteria.version)) {
             return null;
@@ -135,10 +135,6 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         } else {
             return null;
         }
-    }
-
-    public RecursiveVerifier getRecursiveVerifier() {
-        return recursiveVerifier;
     }
 
     @Override

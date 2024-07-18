@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business.verify.csv;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class Commit {
     public final static String[] HEADER = {
@@ -16,6 +17,6 @@ public class Commit {
     };
 
     public static boolean isValidHeader(String[] header) {
-        return Arrays.asList(HEADER).equals(Arrays.asList(header));
+        return new HashSet<>(Arrays.asList(header)).containsAll(Arrays.asList(HEADER));
     }
 }

@@ -18,9 +18,12 @@ public class Verifier extends LinkedList<DegreeVerifier> {
     }
 
     public void verify(Student student) {
+        verify(student, new ProgressTracker(String.format(VERIFYING, student)));
+    }
+
+    public void verify(Student student, ProgressTracker tracker) {
         student.clearCommit();
         List<Lecture> lectures = new LinkedList<>(student);
-        ProgressTracker tracker = new ProgressTracker(String.format(VERIFYING, student));
 
         // 1. Match and Hold Lectures
         List<LectureVerifier> exclusiveLectureVerifiers = new ArrayList<>();
@@ -62,12 +65,6 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             verifierBundles.add(bundle);
         } else {
             // 2-2. There Exists Exclusive Verifiers
-            int size = 1;
-            for (List<LectureVerifier> list : groupedExclusiveVerifiers.values()) {
-                size *= list.size();
-            }
-            tracker.setMaximum(size);
-
             List<List<LectureVerifier>> groups = new LinkedList<>(groupedExclusiveVerifiers.values());
 
             verifierBundles.addAll(pickAndVerify(groups, tracker));
@@ -116,7 +113,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
         student.setVerifiedBundles(verifierBundles);
         student.setNotVerifiedDegrees(notVerifiedDegrees);
 
-        tracker.finish();
+        tracker.increment();
     }
 
     private List<VerifierBundle> pickAndVerify(List<List<LectureVerifier>> left, ProgressTracker tracker) {

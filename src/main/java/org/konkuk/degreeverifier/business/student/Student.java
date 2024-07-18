@@ -210,7 +210,7 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     }
 
     @Override
-    public String toCsv() {
+    synchronized public String toCsv() {
         SnapshotBundle exportBundle = new SnapshotBundle();
         for (String key : committedDegrees.keySet()) {
             DegreeVerifier degree = committedDegrees.get(key);

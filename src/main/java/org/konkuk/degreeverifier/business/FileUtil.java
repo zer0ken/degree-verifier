@@ -2,7 +2,6 @@ package org.konkuk.degreeverifier.business;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 
 import java.io.*;
@@ -11,7 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import static java.nio.file.Files.newBufferedReader;
 
 /**
  * 파일로부터 데이터를 불러오는 함수들을 묶어둔 클래스입니다.
@@ -58,43 +62,6 @@ public class FileUtil {
         }
     }
 
-    synchronized public static List<String[]> fromTsvFile(String fileName) {
-        List<String[]> tokenizedLines = new ArrayList<>();
-        File file = new File(fileName);
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fis))
-        ) {
-            br.lines().forEach(line -> tokenizedLines.add(line.split("\t")));
-        } catch (Exception e) {
-            System.err.println("Exception occurred while reading TSV file: " + fileName);
-            throw new RuntimeException(e);
-        }
-        return tokenizedLines;
-    }
-
-    synchronized public static void exportCommit(String fileName, String content) {
-        try {
-            File file = new File(fileName);
-            file.createNewFile();
-            Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            System.err.println("Exception occurred while writing TXT file: " + fileName);
-            throw new RuntimeException(e);
-        }
-    }
-
-    synchronized public static SnapshotBundle loadCommit(File file) {
-        SnapshotBundle bundle = new SnapshotBundle();
-        try {
-            Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).stream()
-                    .filter(line -> !line.trim().isEmpty()).forEach(line -> bundle.put(line.trim(), null));
-        } catch (IOException e) {
-            System.err.println("Exception occurred while reading TXT file: " + file.getName());
-        }
-        return bundle;
-    }
-
     synchronized public static void toCsvFile(File file, String[] header, Collection<? extends CsvExportable> data) {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8))
@@ -112,11 +79,14 @@ public class FileUtil {
 
     synchronized public static List<List<String>> fromCsvFile(File file) {
         List<List<String>> table = new LinkedList<>();
-        try(Scanner sc = new Scanner(file, "UTF-8")) {
-            while (sc.hasNextLine()) {
-                table.add(new LinkedList<>(Arrays.asList(sc.nextLine().trim().split(","))));
+        try (BufferedReader reader = newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
+            for (; ; ) {
+                String line = reader.readLine();
+                if (line == null)
+                    break;
+                table.add(new LinkedList<>(Arrays.asList(line.trim().split(","))));
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return table;
