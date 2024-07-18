@@ -4,12 +4,12 @@ import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.models.AppModel;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
 import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT;
+import static org.konkuk.degreeverifier.ui.Strings.LOAD_TRANSCRIPT_DIALOG_TITLE;
 
 public class LoadTranscriptAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
@@ -23,24 +23,19 @@ public class LoadTranscriptAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        JFileChooser chooser = new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                if (getSelectedFile().getName().toLowerCase().endsWith(".csv")) {
+                    super.approveSelection();
+                }
+            }
+        };
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setMultiSelectionEnabled(false);
         chooser.setCurrentDirectory(new File(DefaultPaths.TRANSCRIPT_PATH));
-        chooser.setDialogTitle(LOAD_TRANSCRIPT);
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.getName().endsWith(".csv");
-            }
-
-            @Override
-            public String getDescription() {
-                return "성적표 .csv 파일";
-            }
-        });
-        int result = chooser.showOpenDialog(e != null? (Component) e.getSource() : null);
+        chooser.setDialogTitle(LOAD_TRANSCRIPT_DIALOG_TITLE);
+        int result = chooser.showOpenDialog(e != null ? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadTranscript(chooser.getSelectedFile());
             if ((e != null ? e.getSource() : null) instanceof JButton) {

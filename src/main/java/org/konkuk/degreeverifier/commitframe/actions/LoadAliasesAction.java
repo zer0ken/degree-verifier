@@ -4,12 +4,12 @@ import org.konkuk.degreeverifier.business.DefaultPaths;
 import org.konkuk.degreeverifier.business.models.AppModel;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
 import static org.konkuk.degreeverifier.ui.Strings.LOAD_ALIASES;
+import static org.konkuk.degreeverifier.ui.Strings.LOAD_ALIASES_DIALOG_TITLE;
 
 public class LoadAliasesAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
@@ -23,23 +23,18 @@ public class LoadAliasesAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        JFileChooser chooser = new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                if (getSelectedFile().getName().toLowerCase().endsWith(".csv")) {
+                    super.approveSelection();
+                }
+            }
+        };
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setMultiSelectionEnabled(false);
         chooser.setCurrentDirectory(new File(DefaultPaths.ALIASES_PATH));
-        chooser.setDialogTitle(LOAD_ALIASES);
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.getName().endsWith(".csv");
-            }
-
-            @Override
-            public String getDescription() {
-                return "동일 교과 목록 .csv 파일";
-            }
-        });
+        chooser.setDialogTitle(LOAD_ALIASES_DIALOG_TITLE);
         int result = chooser.showOpenDialog(e != null? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadAliases(chooser.getSelectedFile());
