@@ -22,6 +22,7 @@ public class Themes {
             UIManager.put("ToolBar.background", UIManager.getColor("RootPane.background"));
             UIManager.put("Component.background", UIManager.getColor("RootPane.background"));
             UIManager.put("OptionPane.background", UIManager.getColor("RootPane.background"));
+            UIManager.put("TabbedPane.background", UIManager.getColor("RootPane.background"));
 
             UIManager.put("TitlePane.embeddedForeground", new Color(0x494949));
 

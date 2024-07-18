@@ -1,15 +1,15 @@
 {
     "degree_name": "글로벌실감게임",
     "criteria": {"subcriteria": [
-        {"lecture": {"name": "ComputerGraphics1(표기법이 다른거 인정)"}},
-        {"lecture": {"name": "ComputerGraphics2(표기법이 다른거 인정)"}},
+        {"lecture": {"name": "ComputerGraphics1"}},
+        {"lecture": {"name": "ComputerGraphics2"}},
         {"lecture": {"name": "게임인공지능"}},
         {"lecture": {"name": "VR/AR게임프로그래밍"}},
         {
             "max": 1,
             "subcriteria": [
-                {"lecture": {"name": "Project1(표기법이 다른거 인정)"}},
-                {"lecture": {"name": "GameProject1(표기법이 다른거 인정)"}}
+                {"lecture": {"name": "Project1"}},
+                {"lecture": {"name": "GameProject1"}}
             ],
             "label": "택1"
         }

@@ -117,10 +117,7 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
             return false;
         }
         for (String key : earlyCommittedDegrees.keySet()) {
-            if (!bundle.containsKey(key)) {
-                return false;
-            }
-            if (bundle.get(key).optimizeLike(earlyCommittedDegrees.get(key)) == null) {
+            if (bundle.containsKey(key) && bundle.get(key).optimizeLike(earlyCommittedDegrees.get(key)) == null) {
                 return false;
             }
         }

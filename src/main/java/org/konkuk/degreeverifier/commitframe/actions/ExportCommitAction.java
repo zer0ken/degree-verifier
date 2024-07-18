@@ -7,6 +7,8 @@ import org.konkuk.degreeverifier.business.models.AppModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,9 +21,10 @@ public class ExportCommitAction extends AbstractAction {
 
     public ExportCommitAction() {
         putValue(NAME, EXPORT_COMMIT);
-        putValue(SHORT_DESCRIPTION, EXPORT_COMMIT);
+        putValue(SHORT_DESCRIPTION, EXPORT_COMMIT + " (Ctrl+S)");
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/save_icon.svg", getClass().getClassLoader()));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     }
 
     @Override

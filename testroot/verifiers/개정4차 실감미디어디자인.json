@@ -1,7 +1,7 @@
 {
     "degree_name": "실감미디어디자인",
     "criteria": {"subcriteria": [
-        {"lecture": {"name": "실감디지털드로잉**실감디지털드로잉(XR) 동일교과목"}},
+        {"lecture": {"name": "실감디지털드로잉(XR)"}},
         {"lecture": {"name": "ICT경험디자인"}},
         {"lecture": {"name": "AR/VR콘텐츠실무"}},
         {"lecture": {"name": "UI/UX디자인"}}

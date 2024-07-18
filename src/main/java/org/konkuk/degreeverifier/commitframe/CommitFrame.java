@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.commitframe;
 
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.commitframe.components.SplitPanel;
+import org.konkuk.degreeverifier.commitframe.components.TabbedPanel;
 import org.konkuk.degreeverifier.commitframe.components.menubar.MenuBar;
 import org.konkuk.degreeverifier.common.components.DegreeVerifierFrame;
 import org.konkuk.degreeverifier.common.components.statusbar.StatusBar;
@@ -30,7 +30,7 @@ public class CommitFrame extends DegreeVerifierFrame {
 
         setJMenuBar(new MenuBar());
 
-        add(new SplitPanel());
+        add(new TabbedPanel());
         add(new StatusBar(), BorderLayout.SOUTH);
 
         AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, (o) -> setTitle(String.format(COMMITTING_TITLE, o)));

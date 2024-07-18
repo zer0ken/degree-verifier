@@ -19,7 +19,7 @@ public class VerifyAllStudentAction extends AbstractAction {
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/sync_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
 
-        setEnabled(!appModel.isTranscriptLoaded());
+        setEnabled(appModel.isTranscriptLoaded());
 
         appModel.observe(AppModel.On.TRANSCRIPT_LOADED, students -> setEnabled(true));
     }

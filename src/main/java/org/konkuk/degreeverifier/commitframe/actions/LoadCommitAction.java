@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 import static org.konkuk.degreeverifier.ui.Strings.LOAD_COMMIT;
-import static org.konkuk.degreeverifier.ui.Strings.LOAD_COMMIT_DIALOG_TITLE;
 
 public class LoadCommitAction extends AbstractAction {
     private final AppModel appModel = AppModel.getInstance();
@@ -20,6 +19,9 @@ public class LoadCommitAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, LOAD_COMMIT);
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, null);
+
+        setEnabled(appModel.isTranscriptLoaded());
+        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused -> setEnabled(true));
     }
 
     @Override
@@ -28,7 +30,7 @@ public class LoadCommitAction extends AbstractAction {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setMultiSelectionEnabled(false);
         chooser.setCurrentDirectory(new File(DefaultPaths.COMMIT_PATH));
-        chooser.setDialogTitle(LOAD_COMMIT_DIALOG_TITLE);
+        chooser.setDialogTitle(LOAD_COMMIT);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(new FileFilter() {
             @Override

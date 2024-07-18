@@ -1,17 +1,16 @@
-package org.konkuk.degreeverifier.commitframe.components.lecturelist;
+package org.konkuk.degreeverifier.commitframe.components.tables;
 
-import org.konkuk.degreeverifier.commitframe.logic.lecturelist.LectureTableModel;
+import org.konkuk.degreeverifier.commitframe.logic.tables.CommitTableModel;
 import org.konkuk.degreeverifier.common.logic.TableResizer;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
-public class LectureTable extends JTable {
-    public LectureTable() {
-        super();
+public class CommitTable extends JTable {
+    public CommitTable() {
+        setModel(new CommitTableModel());
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         setAutoCreateRowSorter(true);
-        setModel(new LectureTableModel());
     }
 
     @Override

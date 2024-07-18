@@ -6,12 +6,12 @@ public class Dimensions {
     public static final Dimension MINIMUM_LAUNCHER_FRAME_SIZE = new Dimension(600, 300);
     public static final Dimension PREFFERED_LAUNCHER_FRAME_SIZE = new Dimension(600, 300);
 
-    public static final Dimension MINIMUM_COMMIT_FRAME_SIZE = new Dimension(740, 500);
+    public static final Dimension MINIMUM_COMMIT_FRAME_SIZE = new Dimension(760, 500);
     public static final Dimension PREFERRED_COMMIT_FRAME_SIZE = new Dimension(1240, 760);
 
-    public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(180, 180);
-    public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(220, 180);
-    public static final Dimension MINIMUM_VERIFIED_DEGREE_SIZE = new Dimension(220, 180);
+    public static final Dimension MINIMUM_STUDENT_LIST_SIZE = new Dimension(200, 180);
+    public static final Dimension MINIMUM_COMMITTED_DEGREE_SIZE = new Dimension(240, 180);
+    public static final Dimension MINIMUM_VERIFIED_DEGREE_SIZE = new Dimension(240, 180);
 
     public static final Dimension MINIMUM_LECTURE_LIST_SIZE = new Dimension(220, 180);
     public static final Dimension PREFERRED_LECTURE_LIST_SIZE = new Dimension(220, 280);

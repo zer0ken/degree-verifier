@@ -32,45 +32,47 @@ public class AppModel extends Observable {
 
     private Student committingStudent = null;
     private boolean transcriptLoaded = false;
+    private boolean commitLoaded = false;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final VerifierFactory verifierFactory = VerifierFactory.getInstance();
-    private final NavigableMap<String, Student> students = Collections.synchronizedNavigableMap(new TreeMap<>());
+    private NavigableMap<String, Student> students = Collections.synchronizedNavigableMap(new TreeMap<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeVerifier> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeVerifier> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
+
+    private List<List<String>> earlyCommitTable = new LinkedList<>();
+    private List<List<String>> transcriptTable = new LinkedList<>();
 
     public void submitTask(
             Runnable beforeSubmit,
             Runnable task,
             Runnable afterFinished
     ) {
-        // TODO: 2024-07-14 for debug. return this after test.
-//        beforeSubmit.run();
-//        executorService.submit(() -> {
-//            task.run();
-//            afterFinished.run();
-//        });
-
         beforeSubmit.run();
-        task.run();
-        afterFinished.run();
+        executorService.submit(() -> {
+            task.run();
+            afterFinished.run();
+        });
     }
 
     public void loadTranscript(File file) {
         submitTask(
                 () -> notify(On.TRANSCRIPT_LOAD_STARTED, students),
                 () -> {
+                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
                     for (Student student : students.values()) {
                         student.clear();
                     }
+                    NavigableMap<String, Student> newStudentMap = new TreeMap<>();
                     List<List<String>> table = FileUtil.fromCsvFile(file);
                     if (!Transcript.isValidHeader(table.get(0).toArray(new String[0]))) {
                         return;
                     }
-                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
-                    tracker.setMaximum(table.size() - 1);
-                    for (List<String> row : table.subList(1, table.size())) {
+                    table.remove(0);
+                    transcriptTable = table;
+                    tracker.setMaximum(table.size());
+                    for (List<String> row : table) {
                         Student student = new Student(
                                 row.get(5), row.get(6), row.get(7), row.get(8), row.get(9), row.get(10), row.get(11)
                         );
@@ -83,13 +85,14 @@ public class AppModel extends Observable {
                                 row.get(12), Integer.parseInt(row.get(13)), row.get(14)
                         );
                         student.add(lecture);
+                        newStudentMap.put(student.toString(), student);
                     }
+                    students = newStudentMap;
                     transcriptLoaded = true;
                     tracker.finish();
                 },
                 () -> {
                     notify(On.TRANSCRIPT_LOADED, students);
-                    verifyAllStudents();
                 }
         );
     }
@@ -98,7 +101,7 @@ public class AppModel extends Observable {
         submitTask(
                 () -> notify(On.ALIASES_LOAD_STARTED, file),
                 () -> verifierFactory.loadAliases(file),
-                () -> notify(On.ALIASES_LOADED, file    )
+                () -> notify(On.ALIASES_LOADED, file)
         );
     }
 
@@ -110,10 +113,12 @@ public class AppModel extends Observable {
                     if (!Commit.isValidHeader(table.get(0).toArray(new String[0]))) {
                         return;
                     }
+                    table.remove(0);
+                    earlyCommitTable = table;
                     ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
-                    tracker.setMaximum(table.size() - 1);
+                    tracker.setMaximum(table.size());
                     Map<String, SnapshotBundle> bundleMap = new HashMap<>();
-                    for (List<String> row : table.subList(1, table.size())) {
+                    for (List<String> row : table) {
                         Student student = students.get(new Student(row.get(3), row.get(5), row.get(6)).toString());
                         if (student == null) {
                             continue;
@@ -145,9 +150,8 @@ public class AppModel extends Observable {
                         student.clearCommit();
                         student.setEarlyCommittedDegrees(bundleMap.get(student.toString()).values());
                     }
-                    transcriptLoaded = true;
+                    commitLoaded = true;
                     tracker.finish();
-
                 },
                 () -> {
                     notify(On.COMMIT_LOADED, students);
@@ -342,6 +346,31 @@ public class AppModel extends Observable {
 
     public NavigableMap<String, Student> getStudents() {
         return students;
+    }
+
+    public List<List<String>> getEarlyCommitTable() {
+        return earlyCommitTable;
+    }
+
+    public List<List<String>> getCommitTable() {
+        List<List<String>> commitTable = new LinkedList<>();
+
+        for (Student student : students.values()) {
+            String[] rows = student.toCsv().split("\n");
+            for (String row : rows) {
+                commitTable.add(Arrays.asList(row.split(",")));
+            }
+        }
+
+        return commitTable;
+    }
+
+    public List<List<String>> getTranscriptTable() {
+        return transcriptTable;
+    }
+
+    public boolean isCommitLoaded() {
+        return commitLoaded;
     }
 
     public enum On implements Event {

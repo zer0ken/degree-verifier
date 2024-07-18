@@ -1,7 +1,6 @@
 package org.konkuk.degreeverifier.commitframe.components.menubar;
 
 import org.konkuk.degreeverifier.commitframe.actions.VerifyAllStudentAction;
-import org.konkuk.degreeverifier.commitframe.actions.VerifyStudentAction;
 
 import javax.swing.*;
 
@@ -11,7 +10,6 @@ public class VerifyMenu extends JMenu {
     public VerifyMenu() {
         super(VERIFY_MENU);
 
-        add(new VerifyStudentAction());
         add(new VerifyAllStudentAction());
     }
 }

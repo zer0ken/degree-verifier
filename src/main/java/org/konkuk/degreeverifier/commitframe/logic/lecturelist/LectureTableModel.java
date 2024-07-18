@@ -18,4 +18,9 @@ public class LectureTableModel extends DefaultTableModel {
         setRowCount(0);
         student.forEach(lecture -> addRow(lecture.inRow()));
     }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
 }

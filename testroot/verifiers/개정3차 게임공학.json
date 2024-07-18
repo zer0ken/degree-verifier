@@ -1,14 +1,8 @@
 {
     "degree_name": "게임공학",
     "criteria": {"subcriteria": [
-        {
-            "max": 1,
-            "subcriteria": [
-                {"lecture": {"name": "게임프로그래밍"}},
-                {"lecture": {"name": "게임프로그래밍입문"}}
-            ],
-            "label": "동일교과목"
-        },        {"lecture": {"name": "게임엔진기초"}},
+        {"lecture": {"name": "게임프로그래밍"}},
+        {"lecture": {"name": "게임엔진기초"}},
         {"lecture": {"name": "게임알고리즘"}},
         {
             "max": 1,

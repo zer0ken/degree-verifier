@@ -4,7 +4,7 @@ public class Strings {
     /** CommitFrame */
     public static final String APP_TITLE = "마이크로디그리 이수 검사기";
 
-    public static final String COMMITTING_TITLE = APP_TITLE + " / 검토중 - %s";
+    public static final String COMMITTING_TITLE = "%s";
     public static final String FILE_MENU = "파일";
     public static final String VERIFY_MENU = "검사";
     public static final String COMMIT_MENU = "검토";
@@ -28,7 +28,7 @@ public class Strings {
 
     public static final String STUDENT_LIST = "학생";
     public static final String VERIFY_STUDENT = "학위 검사하기";
-    public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 검사하기";
+    public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 다시 검사하기";
     public static final String START_COMMIT = "검토 시작하기";
     public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";

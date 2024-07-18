@@ -1,14 +1,7 @@
 {
     "degree_name": "XR입출력기술",
     "criteria": {"subcriteria": [
-        {
-            "max": 1,
-            "subcriteria": [
-                {"lecture": {"name": "가상현실"}},
-                {"lecture": {"name": "가상/증강현실이론및실습"}}
-            ],
-            "label": "동일교과목"
-        },
+        {"lecture": {"name": "가상현실"}},
         {"lecture": {"name": "고급컴퓨터그래픽스"}},
         {
             "max": 1,
