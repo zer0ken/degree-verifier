@@ -45,9 +45,14 @@ public class InformationTreeModel extends DefaultTreeModel {
 
             if (selectedDegree.recursiveSnapshot != null) {
                 DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode(
-                        "필요 학점: " + selectedDegree.criteria.minimumCredit + " 학점 이상"
+                        selectedDegree.criteria.getValidCreditString()
                 );
                 degreeNode.add(minimumCreditNode);
+
+                DefaultMutableTreeNode validPeriodNode = new DefaultMutableTreeNode(
+                        selectedDegree.criteria.getValidPeriodString()
+                );
+                degreeNode.add(validPeriodNode);
 
                 if (!selectedDegree.insufficientDegrees.isEmpty()) {
                     DefaultMutableTreeNode insufficientRootNode = new InsufficientRootNode();
