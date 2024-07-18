@@ -242,6 +242,10 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     @Override
     public void clear() {
         super.clear();
+        resetCommit();
+    }
+
+    public void resetCommit() {
         verifiedBundles.clear();
         notVerifiedDegrees.clear();
         sufficientDegrees.clear();

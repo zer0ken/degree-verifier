@@ -18,6 +18,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
     }
 
     public void verify(Student student) {
+        student.clearCommit();
         List<Lecture> lectures = new LinkedList<>(student);
         ProgressTracker tracker = new ProgressTracker(String.format(VERIFYING, student));
 
