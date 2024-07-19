@@ -181,13 +181,13 @@ public class AppModel extends Observable {
                 () -> {
                     notify(On.COMMIT_LOADED, students);
                     if (committingStudent != null) {
-                        notify(On.COMMIT_UPDATED, committingStudent);
+                        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
                     }
                 }
         );
     }
 
-    public void fetchFromEarlyCommitTable(){
+    public void fetchFromEarlyCommitTable() {
         Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(earlyCommitTableHeader);
         BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
             int index = nameToIndex.get(columnName);
@@ -212,9 +212,12 @@ public class AppModel extends Observable {
                 bundleMap.put(student.toString(), bundle);
             }
 
-            String[] lectureNames = new String[5];
+            String[] lectureNames = new String[10];
             for (int i = 1; i <= 5; i++) {
                 lectureNames[i - 1] = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + i));
+                if (lectureNames[i - 1].isEmpty()) {
+                    lectureNames[i - 1] = null;
+                }
             }
 
             DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
@@ -253,7 +256,7 @@ public class AppModel extends Observable {
                 () -> {
                     notify(On.VERIFIED, student);
                     if (student.equals(committingStudent)) {
-                        notify(On.COMMIT_UPDATED, student);
+                        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, student);
                     }
                 }
         );
@@ -266,9 +269,9 @@ public class AppModel extends Observable {
     }
 
     public void startCommit(Student student) {
-        executorService.submit(() ->{
+        executorService.submit(() -> {
             committingStudent = student;
-            notify(On.COMMIT_UPDATED, committingStudent);
+            notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
             notify(On.COMMIT_STARTED, committingStudent);
             if (!committingStudent.isVerified()) {
                 verifyStudent(committingStudent);
@@ -313,7 +316,8 @@ public class AppModel extends Observable {
             return;
         }
         committingStudent.commitAll(selectedVerifiedDegree);
-        notify(On.COMMIT_UPDATED, committingStudent);
+        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, null);
     }
 
     public void commitRecommendedDegrees() {
@@ -322,7 +326,8 @@ public class AppModel extends Observable {
         }
 
         committingStudent.commitRecommendedBundle();
-        notify(On.COMMIT_UPDATED, committingStudent);
+        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, null);
     }
 
     public void decommitDegrees() {
@@ -330,7 +335,8 @@ public class AppModel extends Observable {
             return;
         }
         committingStudent.decommitAll(selectedCommittedDegree);
-        notify(On.COMMIT_UPDATED, committingStudent);
+        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, null);
     }
 
     public void clearCommittedDegrees() {
@@ -338,7 +344,8 @@ public class AppModel extends Observable {
             return;
         }
         committingStudent.clearCommit();
-        notify(On.COMMIT_UPDATED, committingStudent);
+        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_UPDATED, null);
     }
 
     synchronized public void export(File file) {
@@ -399,8 +406,9 @@ public class AppModel extends Observable {
             tracker.finish();
 
             if (committingStudent != null) {
-                notify(On.COMMIT_UPDATED, committingStudent);
+                notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
             }
+            notify(On.COMMIT_UPDATED, null);
         };
     }
 
@@ -478,7 +486,11 @@ public class AppModel extends Observable {
         List<List<String>> commitTable = new LinkedList<>();
 
         for (Student student : students.values()) {
-            String[] rows = student.toCsv().split("\n");
+            String csv = student.toCsv().trim();
+            if (csv.isEmpty()) {
+                continue;
+            }
+            String[] rows = csv.split("\n");
             for (String row : rows) {
                 commitTable.add(Arrays.asList(row.split(",")));
             }
@@ -542,6 +554,7 @@ public class AppModel extends Observable {
         VERIFIED_DEGREE_SELECTED,
         COMMITTED_DEGREE_SELECTED,
 
+        SELECTED_STUDENT_COMMIT_UPDATED,
         COMMIT_UPDATED,
     }
 }

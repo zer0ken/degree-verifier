@@ -4,7 +4,7 @@
         {
             "max": 1,
             "subcriteria": [
-                {"lecture": {"name": "게임 엔진 기초:게임PX디자인"}},
+                {"lecture": {"name": "게임엔진기초"}},
                 {"lecture": {"name": "게임학기초"}}
             ],
             "label": "택1"

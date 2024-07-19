@@ -33,7 +33,7 @@ public class CommitFrame extends DegreeVerifierFrame {
         add(new TabbedPanel());
         add(new StatusBar(), BorderLayout.SOUTH);
 
-        AppModel.getInstance().observe(AppModel.On.COMMIT_UPDATED, o -> {
+        AppModel.getInstance().observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, o -> {
             if (o != null)
                 setTitle(String.format(COMMITTING_TITLE, o));
         });

@@ -47,6 +47,7 @@ public class Transcript {
         }
     }
 
+    // TODO: 2024-07-19 조절 필요한지 확인
     private static final long FILE_SIZE_LIMIT = (long) 300000.0e+6;
 //    private static final long FILE_SIZE_LIMIT = (long) 30.0e+6;
     private static final int STUDENT_PER_FILE = 10000;

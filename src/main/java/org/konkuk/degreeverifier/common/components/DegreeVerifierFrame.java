@@ -17,7 +17,6 @@ public class DegreeVerifierFrame extends JFrame {
         String[] iconNames = {
                 "/appicons/app_icon_16.png",
                 "/appicons/app_icon_24.png",
-                "/appicons/app_icon_36.png",
                 "/appicons/app_icon_48.png",
                 "/appicons/app_icon_64.png",
         };

@@ -12,23 +12,8 @@ public class CommitTableModel extends DefaultTableModel {
 
     public CommitTableModel() {
         setColumnIdentifiers(new Vector<>(Commit.ColumnName.getNames()));
-        if (appModel.isTranscriptLoaded()) {
-            update();
-            setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
-        }
         appModel.observe(AppModel.On.COMMIT_UPDATED, unused -> {
             update();
-            setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
-        });
-        appModel.observe(AppModel.On.COMMIT_LOADED, unused -> {
-            update();
-            setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
-        });
-        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused -> {
-            if (appModel.isCommitLoaded()) {
-                update();
-                setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
-            }
         });
     }
 

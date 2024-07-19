@@ -25,7 +25,7 @@ public class ClearCommitAction extends AbstractAction {
 
         setEnabled(appModel.getCommittingStudent() != null && !appModel.getCommittingStudent().getCommittedDegrees().isEmpty());
 
-        appModel.observe(AppModel.On.COMMIT_UPDATED, student ->
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, student ->
                 setEnabled(!((Student) student).getCommittedDegrees().isEmpty()));
     }
 

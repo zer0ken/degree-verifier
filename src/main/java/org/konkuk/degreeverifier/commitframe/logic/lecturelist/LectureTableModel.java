@@ -11,7 +11,7 @@ public class LectureTableModel extends DefaultTableModel {
 
     public LectureTableModel() {
         setColumnIdentifiers(LectureData.getColumns());
-        appModel.observe(AppModel.On.COMMIT_UPDATED, o -> updateTable((Student) o));
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, o -> updateTable((Student) o));
     }
 
     private void updateTable(Student student) {

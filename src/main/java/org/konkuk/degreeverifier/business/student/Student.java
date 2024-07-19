@@ -235,10 +235,7 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
             }
         }
         for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
-            exportBundle.put(snapshot.criteria.degreeName, snapshot);
-        }
-        for (DegreeSnapshot snapshot : foundEarlyCommittedDegrees.values()) {
-            exportBundle.put(snapshot.criteria.degreeName, snapshot);
+            exportBundle.remove(snapshot.criteria.degreeName);
         }
 
         StringBuilder sb = new StringBuilder();

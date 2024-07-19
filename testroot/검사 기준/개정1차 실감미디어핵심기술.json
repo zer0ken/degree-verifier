@@ -5,7 +5,7 @@
             "max": 1,
             "subcriteria": [
                 {"lecture": {"name": "가상현실"}},
-                {"lecture": {"name": "실감미디어캡스톤디자인　"}}
+                {"lecture": {"name": "실감미디어캡스톤디자인"}}
             ],
             "label": "택1"
         },
@@ -14,7 +14,7 @@
             "subcriteria": [
                 {"lecture": {"name": "컴퓨터그래픽스"}},
                 {"lecture": {"name": "HCI"}},
-                {"lecture": {"name": "UI/UX 프로그래밍"}},
+                {"lecture": {"name": "UI/UX프로그래밍"}},
                 {"lecture": {"name": "체감형기술이론및실습"}},
                 {"lecture": {"name": "실감피지컬컴퓨팅"}},
                 {"lecture": {"name": "게임인공지능"}}

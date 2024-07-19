@@ -11,7 +11,7 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifierListItem> 
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListModel() {
-        appModel.observe(AppModel.On.COMMIT_UPDATED, this::_updateTree);
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, this::_updateTree);
     }
 
     private void _updateTree(Object o) {

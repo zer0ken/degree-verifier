@@ -14,7 +14,7 @@ public class CommittedDegreeListModel extends DefaultListModel<VerifierListItem>
     private final AppModel appModel = AppModel.getInstance();
 
     public CommittedDegreeListModel() {
-        appModel.observe(AppModel.On.COMMIT_UPDATED, o -> update((Student) o));
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, o -> update((Student) o));
     }
 
     private void update(Student student) {

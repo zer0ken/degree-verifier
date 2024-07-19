@@ -15,10 +15,20 @@ public class StudentListModel extends DefaultListModel<Student> {
         if(!appModel.isStudentMapEmpty()) {
             init(appModel.getStudents());
         }
+        appModel.observe(AppModel.On.COMMIT_UPDATED, unused -> {
+            init(appModel.getStudents());
+        });
     }
 
     private void init(Map<String, Student> students) {
         this.removeAllElements();
-        students.values().forEach(this::addElement);
+        int insertAt = 0;
+        for (Student student : students.values()) {
+            if (!student.toCsv().isEmpty()) {
+                insertElementAt(student, insertAt++);
+            } else {
+                addElement(student);
+            }
+        }
     }
 }

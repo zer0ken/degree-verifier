@@ -1,10 +1,7 @@
 package org.konkuk.degreeverifier.commitframe.components.studentlist;
 
 import org.konkuk.degreeverifier.business.student.Student;
-import org.konkuk.degreeverifier.commitframe.logic.studentlist.StudentListModel;
-import org.konkuk.degreeverifier.commitframe.logic.studentlist.StudentListMouseAdapter;
-import org.konkuk.degreeverifier.commitframe.logic.studentlist.StudentListSelectionListener;
-import org.konkuk.degreeverifier.commitframe.logic.studentlist.StudentListSelectionModel;
+import org.konkuk.degreeverifier.commitframe.logic.studentlist.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +22,7 @@ public class StudentListPanel extends JPanel {
         list.setBackground(UIManager.getColor("RootPane.background"));
         list.addMouseListener(new StudentListMouseAdapter());
         list.setSelectionModel(new StudentListSelectionModel());
+        list.setCellRenderer(new StudentListCellRenderer());
 
         JScrollPane scrollPane = new JScrollPane(
                 list,

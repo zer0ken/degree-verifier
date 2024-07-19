@@ -24,7 +24,7 @@ public class StartCommitPreviousAction extends AbstractAction {
         appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused ->
                 setEnabled(appModel.hasPreviousStudentToCommit())
         );
-        appModel.observe(AppModel.On.COMMIT_UPDATED, unused ->
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, unused ->
                 setEnabled(appModel.hasPreviousStudentToCommit())
         );
     }
