@@ -25,7 +25,7 @@ public class LectureVerifier extends LectureCriteria implements Estimable, Snaps
     public final Semester maxSemester;
     public final Grade minGrade;
 
-    private Lecture matchedLecture = null;  // TODO: 2024-05-31 한 교과목 검사 기준이 여러 교과목에 대해 매치할 수 있도록 수정할 필요가 있을까?
+    private Lecture matchedLecture = null;
 
     private boolean holding = false;
 

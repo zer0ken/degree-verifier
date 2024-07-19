@@ -18,8 +18,6 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 import static org.konkuk.degreeverifier.ui.Strings.*;
@@ -38,7 +36,7 @@ public class AppModel extends Observable {
     private boolean transcriptLoaded = false;
     private boolean commitLoaded = false;
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = MyExecutorService.getInstance();
     private final VerifierFactory verifierFactory = VerifierFactory.getInstance();
     private NavigableMap<String, Student> students = Collections.synchronizedNavigableMap(new TreeMap<>());
     private final List<Student> selectedStudents = Collections.synchronizedList(new ArrayList<>());
@@ -57,13 +55,10 @@ public class AppModel extends Observable {
             Runnable afterFinished
     ) {
         beforeSubmit.run();
-        task.run();
-        afterFinished.run();
-
-//        executorService.submit(() -> {
-//            task.run();
-//            afterFinished.run();
-//        });
+        executorService.submit(() -> {
+            task.run();
+            afterFinished.run();
+        });
     }
 
     public void loadTranscript(File file) {
@@ -220,29 +215,6 @@ public class AppModel extends Observable {
         );
     }
 
-    public void verifyAllStudents() {
-        executorService.submit(() -> {
-            AtomicReference<ProgressTracker> verifyTracker = new AtomicReference<>();
-            List<Callable<Object>> verifyTasks = new ArrayList<>(students.size());
-            for (Student student : students.values()) {
-                verifyTasks.add(() -> {
-                    if (verifyTracker.get() == null) {
-                        verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
-                    }
-                    verifierFactory.createVerifier().verify(student, verifyTracker.get());
-                    return null;
-                });
-            }
-            try {
-                verifyTracker.get().setMaximum(verifyTasks.size());
-                executorService.invokeAll(verifyTasks);
-                verifyTracker.get().finish();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
     public void setSelectedStudents(Collection<Student> selectedStudents) {
         this.selectedStudents.clear();
         this.selectedStudents.addAll(selectedStudents);
@@ -250,12 +222,15 @@ public class AppModel extends Observable {
     }
 
     public void startCommit(Student student) {
-        committingStudent = student;
-        notify(On.COMMIT_UPDATED, committingStudent);
-        notify(On.COMMIT_STARTED, committingStudent);
-        if (!committingStudent.isVerified()) {
-            verifyStudent(committingStudent);
-        }
+        executorService.submit(() ->{
+            committingStudent = student;
+            notify(On.COMMIT_UPDATED, committingStudent);
+            notify(On.COMMIT_STARTED, committingStudent);
+            if (!committingStudent.isVerified()) {
+                verifyStudent(committingStudent);
+            }
+            InformationModel.getInstance().updateInformationTarget(new ArrayList<>());
+        });
     }
 
     public void startCommit() {
@@ -326,84 +301,73 @@ public class AppModel extends Observable {
         FileUtil.toCsvFile(file, Commit.HEADER, students.values());
     }
 
-    public void commitAllStudentAutomatically() {
-        executorService.submit(() -> {
-            AtomicReference<ProgressTracker> verifyTracker = new AtomicReference<>();
-            AtomicReference<ProgressTracker> commitTracker = new AtomicReference<>();
+    private Runnable getVerifyAllTask() {
+        return () -> {
+            ProgressTracker tracker = new ProgressTracker(VERIFYING_ALL);
             List<Callable<Object>> verifyTasks = new ArrayList<>(students.size());
-            List<Callable<Object>> commitTasks = new ArrayList<>(students.size());
             for (Student student : students.values()) {
                 verifyTasks.add(() -> {
-                    if (verifyTracker.get() == null) {
-                        verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
-                    }
-                    verifierFactory.createVerifier().verify(student, verifyTracker.get());
-                    return null;
-                });
-                commitTasks.add(() -> {
-                    if (commitTracker.get() == null) {
-                        commitTracker.set(new ProgressTracker(AUTO_COMMITTING_MESSAGE));
-                    }
-                    student.commitRecommendedBundle();
-                    commitTracker.get().increment();
-                    if (student.equals(committingStudent)) {
-                        notify(On.COMMIT_UPDATED, student);
-                    }
+                    verifierFactory.createVerifier().verify(student);
+                    tracker.increment();
                     return null;
                 });
             }
-            try {
-                verifyTracker.get().setMaximum(verifyTasks.size());
-                executorService.invokeAll(verifyTasks);
-                verifyTracker.get().finish();
 
-                commitTracker.get().setMaximum(commitTasks.size());
-                executorService.invokeAll(commitTasks);
-                commitTracker.get().finish();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if (!verifyTasks.isEmpty()) {
+                tracker.setMaximum(verifyTasks.size());
+                try {
+                    executorService.invokeAll(verifyTasks);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        });
+            tracker.finish();
+        };
+    }
+
+    public void verifyAllStudents() {
+        executorService.submit(getVerifyAllTask());
+    }
+
+    private Runnable getCommitAllAutomaticallyTask() {
+        return () -> {
+            getVerifyAllTask().run();
+
+            ProgressTracker tracker = new ProgressTracker(AUTO_COMMITTING_ALL);
+
+            List<Callable<Object>> commitTasks = new ArrayList<>(students.size());
+            for (Student student : students.values()) {
+                commitTasks.add(() -> {
+                    student.commitRecommendedBundle();
+                    tracker.increment();
+                    return null;
+                });
+            }
+
+            if (!commitTasks.isEmpty()) {
+                tracker.setMaximum(commitTasks.size());
+                try {
+                    executorService.invokeAll(commitTasks);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            tracker.finish();
+
+            if (committingStudent != null) {
+                notify(On.COMMIT_UPDATED, committingStudent);
+            }
+        };
+    }
+
+    public void commitAllStudentAutomatically() {
+        executorService.submit(getCommitAllAutomaticallyTask());
     }
 
     public void commitAllStudentAutomaticallyAndExport(ActionEvent event) {
         executorService.submit(() -> {
-            AtomicReference<ProgressTracker> verifyTracker = new AtomicReference<>();
-            AtomicReference<ProgressTracker> commitTracker = new AtomicReference<>();
-            List<Callable<Object>> verifyTasks = new ArrayList<>(students.size());
-            List<Callable<Object>> commitTasks = new ArrayList<>(students.size());
-            for (Student student : students.values()) {
-                verifyTasks.add(() -> {
-                    if (verifyTracker.get() == null) {
-                        verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
-                    }
-                    verifierFactory.createVerifier().verify(student, verifyTracker.get());
-                    return null;
-                });
-                commitTasks.add(() -> {
-                    if (commitTracker.get() == null) {
-                        commitTracker.set(new ProgressTracker(AUTO_COMMITTING_MESSAGE));
-                    }
-                    student.commitRecommendedBundle();
-                    commitTracker.get().increment();
-                    if (student.equals(committingStudent)) {
-                        notify(On.COMMIT_UPDATED, student);
-                    }
-                    return null;
-                });
-            }
-            try {
-                verifyTracker.get().setMaximum(verifyTasks.size());
-                executorService.invokeAll(verifyTasks);
-                verifyTracker.get().finish();
-
-                commitTracker.get().setMaximum(commitTasks.size());
-                executorService.invokeAll(commitTasks);
-                commitTracker.get().finish();
-                new ExportCommitAction().actionPerformed(event);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            getCommitAllAutomaticallyTask().run();
+            new ExportCommitAction().actionPerformed(event);
         });
     }
 

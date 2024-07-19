@@ -19,7 +19,7 @@ public class Strings {
     public static final String NO_TASK = "진행 중인 작업 없음";
     public static final String TASKS_IN_PROGRESS = "작업 진행 중... [%d개 중 %d개 완료]";
     public static final String TASKS_IN_PROGRESS_DETAILED = "작업 진행 중... [%d개 남음]";
-    public static final String AUTO_COMMITTING_MESSAGE = "자동으로 모든 학생의 학위를 인정하는 중";
+    public static final String AUTO_COMMITTING_ALL = "자동으로 모든 학생의 학위를 인정하는 중";
 
     public static final String LOAD_VERIFIER_LIST = "검사 기준 불러오기";
     public static final String LOAD_VERIFIER_DIALOG_TITLE = LOAD_VERIFIER_LIST + " - 검사 기준이 위치한 폴더 선택";

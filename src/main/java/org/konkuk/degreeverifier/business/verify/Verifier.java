@@ -4,11 +4,8 @@ import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.business.verify.verifier.LectureVerifier;
-import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.util.*;
-
-import static org.konkuk.degreeverifier.ui.Strings.VERIFYING;
 
 public class Verifier extends LinkedList<DegreeVerifier> {
     public Verifier(LinkedList<DegreeVerifier> toCopy) {
@@ -18,10 +15,6 @@ public class Verifier extends LinkedList<DegreeVerifier> {
     }
 
     public void verify(Student student) {
-        verify(student, new ProgressTracker(String.format(VERIFYING, student)));
-    }
-
-    public void verify(Student student, ProgressTracker tracker) {
         student.clearCommit();
         List<Lecture> lectures = new LinkedList<>(student);
 
@@ -67,7 +60,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
             // 2-2. There Exists Exclusive Verifiers
             List<List<LectureVerifier>> groups = new LinkedList<>(groupedExclusiveVerifiers.values());
 
-            verifierBundles.addAll(pickAndVerify(groups, tracker));
+            verifierBundles.addAll(pickAndVerify(groups));
             verifierBundles.sort((a, b) -> b.size() - a.size());
         }
 
@@ -112,16 +105,13 @@ public class Verifier extends LinkedList<DegreeVerifier> {
 
         student.setVerifiedBundles(verifierBundles);
         student.setNotVerifiedDegrees(notVerifiedDegrees);
-
-        tracker.increment();
     }
 
-    private List<VerifierBundle> pickAndVerify(List<List<LectureVerifier>> left, ProgressTracker tracker) {
+    private List<VerifierBundle> pickAndVerify(List<List<LectureVerifier>> left) {
         List<VerifierBundle> bundles = new LinkedList<>();
         for (LectureVerifier lectureVerifier : left.get(0)) {
             lectureVerifier.hold();
             if (left.size() == 1) {
-                tracker.increment();
                 VerifierBundle bundle = new VerifierBundle();
                 for (DegreeVerifier degreeVerifier : this) {
                     if (degreeVerifier.verify()) {
@@ -132,7 +122,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
                     bundles.add(bundle);
                 }
             } else {
-                bundles.addAll(pickAndVerify(left.subList(1, left.size()), tracker));
+                bundles.addAll(pickAndVerify(left.subList(1, left.size())));
             }
             lectureVerifier.release();
         }

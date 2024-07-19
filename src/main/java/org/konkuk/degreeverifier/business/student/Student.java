@@ -220,9 +220,14 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     @Override
     synchronized public String toCsv() {
         SnapshotBundle exportBundle = new SnapshotBundle();
+        SnapshotBundle foundEarlyCommittedDegrees = new SnapshotBundle();
         for (String key : committedDegrees.keySet()) {
             DegreeVerifier degree = committedDegrees.get(key);
-            if (earlyCommittedDegrees.containsKey(key) && degree.optimizeLike(earlyCommittedDegrees.get(key)) != null) {
+            if (earlyCommittedDegrees.containsKey(key)) {
+                DegreeSnapshot foundEarlyCommittedSnapshot = degree.optimizeLike(earlyCommittedDegrees.get(key));
+                if (foundEarlyCommittedSnapshot != null) {
+                    foundEarlyCommittedDegrees.put(foundEarlyCommittedSnapshot.criteria.degreeName, foundEarlyCommittedSnapshot);
+                }
                 continue;
             }
             if (!exportBundle.containsKey(key) || exportBundle.get(key).criteria.version < degree.version) {
@@ -230,6 +235,9 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
             }
         }
         for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
+            exportBundle.put(snapshot.criteria.degreeName, snapshot);
+        }
+        for (DegreeSnapshot snapshot : foundEarlyCommittedDegrees.values()) {
             exportBundle.put(snapshot.criteria.degreeName, snapshot);
         }
 
