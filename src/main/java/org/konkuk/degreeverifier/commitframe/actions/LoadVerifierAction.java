@@ -27,7 +27,9 @@ public class LoadVerifierAction extends AbstractAction {
             @Override
             public void approveSelection() {
                 if (getSelectedFile().isDirectory()) {
-                    super.approveSelection();
+                    if (getSelectedFile().exists()) {
+                        super.approveSelection();
+                    }
                 } else {
                     setSelectedFile(getCurrentDirectory());
                     super.approveSelection();
@@ -42,10 +44,6 @@ public class LoadVerifierAction extends AbstractAction {
         int result = chooser.showOpenDialog((Component) e.getSource());
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadVerifiers(chooser.getSelectedFile());
-            if ((e != null ? e.getSource() : null) instanceof JButton) {
-                ((JButton) e.getSource()).setText(chooser.getSelectedFile().getAbsolutePath());
-                ((JButton) e.getSource()).setToolTipText(chooser.getSelectedFile().getAbsolutePath());
-            }
         }
     }
 }

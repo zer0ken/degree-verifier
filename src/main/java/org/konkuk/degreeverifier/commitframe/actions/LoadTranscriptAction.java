@@ -26,7 +26,7 @@ public class LoadTranscriptAction extends AbstractAction {
         JFileChooser chooser = new JFileChooser() {
             @Override
             public void approveSelection() {
-                if (getSelectedFile().getName().toLowerCase().endsWith(".csv")) {
+                if (getSelectedFile().getName().toLowerCase().endsWith(".csv") && getSelectedFile().exists()) {
                     super.approveSelection();
                 }
             }
@@ -38,10 +38,6 @@ public class LoadTranscriptAction extends AbstractAction {
         int result = chooser.showOpenDialog(e != null ? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadTranscript(chooser.getSelectedFile());
-            if ((e != null ? e.getSource() : null) instanceof JButton) {
-                ((JButton) e.getSource()).setText(chooser.getSelectedFile().getAbsolutePath());
-                ((JButton) e.getSource()).setToolTipText(chooser.getSelectedFile().getAbsolutePath());
-            }
         }
     }
 }

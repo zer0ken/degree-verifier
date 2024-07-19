@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import org.konkuk.degreeverifier.business.csv.CsvExportable;
 
 import java.io.*;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,13 +63,14 @@ public class FileUtil {
         }
     }
 
-    synchronized public static void toCsvFile(File file, String[] header, Collection<? extends CsvExportable> data) {
+    synchronized public static void toCsvFile(File file, List<String> header, Collection<? extends CsvExportable> data) {
+        boolean exists = file.exists();
         try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8))
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))
         ) {
-            file.createNewFile();
-            writer.write(String.join(",", header) + "\n");
-
+            if (!exists) {
+                writer.write(String.join(",", header) + "\n");
+            }
             for (CsvExportable datum : data) {
                 writer.write(datum.toCsv());
             }
@@ -98,18 +98,5 @@ public class FileUtil {
             throw new RuntimeException(e);
         }
         return table;
-    }
-
-    /**
-     * 이 메소드는 테스트 목적으로만 사용됩니다.
-     */
-    synchronized public static <T> String getAbsolutePathOfResource(Class<T> requester, String resourceName) {
-        String asciiFileName = requester.getResource(resourceName).getFile();
-        try {
-            String utf8FileName = URLDecoder.decode(asciiFileName, "UTF-8");
-            return (new File(URLDecoder.decode(utf8FileName, "UTF-8"))).getPath();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

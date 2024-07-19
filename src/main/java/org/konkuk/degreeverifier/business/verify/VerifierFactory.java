@@ -26,7 +26,7 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     private boolean isLoaded = false;
 
-    private List<Set<String>> aliases = new LinkedList<>();
+    private final List<Set<String>> aliases = new LinkedList<>();
 
     synchronized public void loadVerifiers(File directory) {
         File[] specs = directory.listFiles();
@@ -34,7 +34,6 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
         if (specs == null) {
             return;
         }
-        clear();
 
         ProgressTracker tracker = new ProgressTracker(VERIFIER_LOADING_MESSAGE);
         tracker.setMaximum(specs.length);
@@ -82,5 +81,11 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     public List<Set<String>> getAliases() {
         return aliases;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        isLoaded = false;
     }
 }

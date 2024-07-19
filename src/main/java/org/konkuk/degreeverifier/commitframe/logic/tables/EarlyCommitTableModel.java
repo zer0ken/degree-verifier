@@ -11,7 +11,7 @@ public class EarlyCommitTableModel extends DefaultTableModel {
     AppModel appModel = AppModel.getInstance();
 
     public EarlyCommitTableModel() {
-        setColumnIdentifiers(Commit.HEADER);
+        setColumnIdentifiers(new Vector<>(Commit.ColumnName.getNames()));
         if (appModel.isCommitLoaded()) {
             update();
             setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));

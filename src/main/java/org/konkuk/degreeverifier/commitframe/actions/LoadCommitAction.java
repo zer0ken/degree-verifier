@@ -19,9 +19,6 @@ public class LoadCommitAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, LOAD_COMMIT);
         putValue(SMALL_ICON, null);
         putValue(LARGE_ICON_KEY, null);
-
-        setEnabled(appModel.isTranscriptLoaded());
-        appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused -> setEnabled(true));
     }
 
     @Override
@@ -29,7 +26,7 @@ public class LoadCommitAction extends AbstractAction {
         JFileChooser chooser = new JFileChooser() {
             @Override
             public void approveSelection() {
-                if (getSelectedFile().getName().toLowerCase().endsWith(".csv")) {
+                if (getSelectedFile().getName().toLowerCase().endsWith(".csv") && getSelectedFile().exists()) {
                     super.approveSelection();
                 }
             }
@@ -41,10 +38,6 @@ public class LoadCommitAction extends AbstractAction {
         int result = chooser.showOpenDialog(e != null ? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.loadCommit(chooser.getSelectedFile());
-            if ((e != null ? e.getSource() : null) instanceof JButton) {
-                ((JButton) e.getSource()).setText(chooser.getSelectedFile().getAbsolutePath());
-                ((JButton) e.getSource()).setToolTipText(chooser.getSelectedFile().getAbsolutePath());
-            }
         }
     }
 }

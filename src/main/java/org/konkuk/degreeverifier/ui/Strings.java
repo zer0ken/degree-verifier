@@ -10,10 +10,12 @@ public class Strings {
     public static final String COMMIT_MENU = "검토";
     public static final String SETTING_MENU = "설정";
 
-    public static final String VERIFYING = "인정 가능한 학위를 검사하는 중... [%s]";
     public static final String VERIFYING_ALL = "모든 학생의 인정 가능한 학위를 검사하는 중";
     public static final String VERIFIER_LOADING_MESSAGE = "검사 기준을 불러오는 중";
     public static final String TRANSCRIPT_LOADING_MESSAGE = "성적표를 불러오는 중";
+    public static final String TRANSCRIPT_SPLIT_TITLE = "성적표 파일 자동 분할";
+    public static final String TRANSCRIPT_SPLIT_MESSAGE = "<html><p>성적표 파일의 크기가 너무 커 파일을 자동으로 분할했습니다.</p>" +
+            "<p>분할된 성적표를 각각 검토해주세요.</p></html>";
     public static final String COMMIT_LOADING_MESSAGE = "인정한 학위를 불러오는 중";
 
     public static final String NO_TASK = "진행 중인 작업 없음";
@@ -28,7 +30,6 @@ public class Strings {
     public static final String EXPORT_COMMIT_DIALOG_TITLE = EXPORT_COMMIT + " - 출력 위치 선택";
 
     public static final String STUDENT_LIST = "학생";
-    public static final String VERIFY_STUDENT = "학위 검사하기";
     public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 다시 검사하기";
     public static final String START_COMMIT = "검토 시작하기";
     public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
@@ -55,9 +56,8 @@ public class Strings {
     public static final String DECOMMIT_DEGREE = "인정 취소하기";
     public static final String CLEAR_COMMITTED_DEGREE = "인정한 학위 초기화하기";
     public static final String EXPORT_COMMITTED_DEGREE = "인정한 학위 저장하기";
-    public static final String OVERWRITE_EXPORT_MESSAGE = "<html><p>이 출력은 기존 파일을 덮어씁니다.</p>" +
+    public static final String APPEND_EXPORT_MESSAGE = "<html><p>이 출력 내용은 기존 파일의 맨 뒤에 추가됩니다.</p>" +
             "<p>계속 출력하시려면 [확인]을 누르세요.</p></html>";
-    public static final String OPEN_EXPORT_DIRECTORY = "출력 위치 열기";
     public static final String CLEAR_COMMIT_DIALOG_TITLE = CLEAR_COMMITTED_DEGREE;
     public static final String CLEAR_COMMIT_DIALOG_MESSAGE = "<html><p>다음 학위의 인정을 취소하려면 [확인]을 누르세요.</p>%s</html>";
     public static final String EARLY_COMMITTED_DEGREE = "기존 학위";

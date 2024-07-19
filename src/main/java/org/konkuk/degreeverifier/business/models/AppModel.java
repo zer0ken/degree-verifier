@@ -13,6 +13,7 @@ import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.commitframe.actions.ExportCommitAction;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.*;
@@ -49,6 +50,11 @@ public class AppModel extends Observable {
     private List<String> transcriptTableHeader = new LinkedList<>();
     private List<List<String>> transcriptTable = new LinkedList<>();
 
+    private File verifierDirectory = null;
+    private File transcriptFile = null;
+    private File earlyCommitFile = null;
+    private File aliasesFile = null;
+
     public void submitTask(
             Runnable beforeSubmit,
             Runnable task,
@@ -61,16 +67,34 @@ public class AppModel extends Observable {
         });
     }
 
-    public void loadTranscript(File file) {
+    public void loadTranscript(File originalFile) {
         submitTask(
-                () -> notify(On.TRANSCRIPT_LOAD_STARTED, students),
                 () -> {
+                    transcriptLoaded = false;
+                    notify(On.TRANSCRIPT_LOAD_STARTED, students);
+                },
+                () -> {
+                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
+
                     for (Student student : students.values()) {
+                        tracker.finish();
                         student.clear();
                     }
                     NavigableMap<String, Student> newStudentMap = new TreeMap<>();
+                    List<File> files = Transcript.splitFile(originalFile);
+                    if (files == null) {
+                        tracker.finish();
+                        return;
+                    }
+                    File file = files.get(0);
+                    if (file != originalFile) {
+                        JOptionPane.showMessageDialog(null,
+                                TRANSCRIPT_SPLIT_MESSAGE, TRANSCRIPT_SPLIT_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                    }
+
                     List<List<String>> table = FileUtil.fromCsvFile(file);
-                    if (!Transcript.isValidHeader(table.get(0))) {
+                    if (Transcript.isInvalidHeader(table.get(0))) {
+                        tracker.finish();
                         return;
                     }
                     Map<Transcript.ColumnName, Integer> nameToIndex = Transcript.getColumnIndexMap(table.get(0));
@@ -80,8 +104,8 @@ public class AppModel extends Observable {
                     };
                     transcriptTableHeader = table.remove(0);
                     transcriptTable = table;
+                    transcriptFile = file;
 
-                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
                     tracker.setMaximum(table.size());
                     for (List<String> row : table) {
                         Student student = new Student(
@@ -114,10 +138,14 @@ public class AppModel extends Observable {
                         tracker.increment();
                     }
                     students = newStudentMap;
-                    transcriptLoaded = true;
                     tracker.finish();
+
+                    if (commitLoaded) {
+                        fetchFromEarlyCommitTable();
+                    }
                 },
                 () -> {
+                    transcriptLoaded = true;
                     notify(On.TRANSCRIPT_LOADED, students);
                 }
         );
@@ -126,7 +154,10 @@ public class AppModel extends Observable {
     public void loadAliases(File file) {
         submitTask(
                 () -> notify(On.ALIASES_LOAD_STARTED, file),
-                () -> verifierFactory.loadAliases(file),
+                () -> {
+                    verifierFactory.loadAliases(file);
+                    aliasesFile = file;
+                },
                 () -> notify(On.ALIASES_LOADED, file)
         );
     }
@@ -139,51 +170,13 @@ public class AppModel extends Observable {
                     if (!Commit.isValidHeader(table.get(0))) {
                         return;
                     }
-                    Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(table.get(0));
-                    BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
-                        int index = nameToIndex.get(columnName);
-                        return row.size() > index ? row.get(index) : null;
-                    };
                     earlyCommitTableHeader = table.remove(0);
                     earlyCommitTable = table;
+                    earlyCommitFile = file;
 
-                    ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
-                    tracker.setMaximum(table.size());
-                    Map<String, SnapshotBundle> bundleMap = new HashMap<>();
-                    for (List<String> row : table) {
-                        Student student = students.get(new Student(
-                                get.apply(row, Commit.ColumnName.UNIVERSITY),
-                                get.apply(row, Commit.ColumnName.STUDENT_NAME),
-                                get.apply(row, Commit.ColumnName.STUDENT_ID)
-                        ).toString());
-                        if (student == null) {
-                            continue;
-                        }
-                        SnapshotBundle bundle = bundleMap.get(student.toString());
-                        if (bundle == null) {
-                            bundle = new SnapshotBundle();
-                            bundleMap.put(student.toString(), bundle);
-                        }
+                    fetchFromEarlyCommitTable();
 
-                        String[] lectureNames = new String[5];
-                        for (int i = 1; i <= 5; i++) {
-                            lectureNames[i - 1] = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + i));
-                        }
-
-                        DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
-                                get.apply(row, Commit.ColumnName.DEGREE_NAME),
-                                Integer.parseInt(get.apply(row, Commit.ColumnName.VERSION)),
-                                lectureNames
-                        );
-                        bundle.put(degreeSnapshot.toString(), degreeSnapshot);
-                    }
-                    for (String key : bundleMap.keySet()) {
-                        Student student = students.get(key);
-                        student.clearCommit();
-                        student.setEarlyCommittedDegrees(bundleMap.get(student.toString()).values());
-                    }
                     commitLoaded = true;
-                    tracker.finish();
                 },
                 () -> {
                     notify(On.COMMIT_LOADED, students);
@@ -194,10 +187,61 @@ public class AppModel extends Observable {
         );
     }
 
+    public void fetchFromEarlyCommitTable(){
+        Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(earlyCommitTableHeader);
+        BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
+            int index = nameToIndex.get(columnName);
+            return row.size() > index ? row.get(index) : null;
+        };
+
+        ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
+        tracker.setMaximum(earlyCommitTable.size());
+        Map<String, SnapshotBundle> bundleMap = new HashMap<>();
+        for (List<String> row : earlyCommitTable) {
+            Student student = students.get(new Student(
+                    get.apply(row, Commit.ColumnName.UNIVERSITY),
+                    get.apply(row, Commit.ColumnName.STUDENT_NAME),
+                    get.apply(row, Commit.ColumnName.STUDENT_ID)
+            ).toString());
+            if (student == null) {
+                continue;
+            }
+            SnapshotBundle bundle = bundleMap.get(student.toString());
+            if (bundle == null) {
+                bundle = new SnapshotBundle();
+                bundleMap.put(student.toString(), bundle);
+            }
+
+            String[] lectureNames = new String[5];
+            for (int i = 1; i <= 5; i++) {
+                lectureNames[i - 1] = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + i));
+            }
+
+            DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
+                    get.apply(row, Commit.ColumnName.DEGREE_NAME),
+                    Integer.parseInt(get.apply(row, Commit.ColumnName.VERSION)),
+                    lectureNames
+            );
+            bundle.put(degreeSnapshot.toString(), degreeSnapshot);
+        }
+        for (String key : bundleMap.keySet()) {
+            Student student = students.get(key);
+            student.clearCommit();
+            student.setEarlyCommittedDegrees(bundleMap.get(student.toString()).values());
+        }
+        tracker.finish();
+    }
+
     public void loadVerifiers(File directory) {
         submitTask(
-                () -> notify(On.VERIFIER_LOAD_STARTED, verifierFactory),
-                () -> verifierFactory.loadVerifiers(directory),
+                () -> {
+                    verifierFactory.clear();
+                    notify(On.VERIFIER_LOAD_STARTED, verifierFactory);
+                },
+                () -> {
+                    verifierFactory.loadVerifiers(directory);
+                    verifierDirectory = directory;
+                },
                 () -> notify(On.VERIFIER_LOADED, verifierFactory)
         );
     }
@@ -298,7 +342,7 @@ public class AppModel extends Observable {
     }
 
     synchronized public void export(File file) {
-        FileUtil.toCsvFile(file, Commit.HEADER, students.values());
+        FileUtil.toCsvFile(file, Commit.ColumnName.getNames(), students.values());
     }
 
     private Runnable getVerifyAllTask() {
@@ -457,6 +501,22 @@ public class AppModel extends Observable {
 
     public List<String> getEarlyCommitTableHeader() {
         return earlyCommitTableHeader;
+    }
+
+    public File getVerifierDirectory() {
+        return verifierDirectory;
+    }
+
+    public File getAliasesFile() {
+        return aliasesFile;
+    }
+
+    public File getEarlyCommitFile() {
+        return earlyCommitFile;
+    }
+
+    public File getTranscriptFile() {
+        return transcriptFile;
     }
 
     public enum On implements Event {

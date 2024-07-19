@@ -43,6 +43,12 @@ public class ActionPanel extends JPanel {
         AppModel.getInstance().observe(AppModel.On.TRANSCRIPT_LOADED, (unused) ->
                 autoCommitButton.setEnabled(appModel.isVerifierLoaded() && appModel.isTranscriptLoaded())
         );
+        AppModel.getInstance().observe(AppModel.On.VERIFIER_LOAD_STARTED, (unused) ->
+                autoCommitButton.setEnabled(appModel.isVerifierLoaded() && appModel.isTranscriptLoaded())
+        );
+        AppModel.getInstance().observe(AppModel.On.TRANSCRIPT_LOAD_STARTED, (unused) ->
+                autoCommitButton.setEnabled(appModel.isVerifierLoaded() && appModel.isTranscriptLoaded())
+        );
 
         inner.add(Box.createGlue());
         inner.add(showEditorButton);

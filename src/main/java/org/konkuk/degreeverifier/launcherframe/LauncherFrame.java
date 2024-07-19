@@ -1,5 +1,6 @@
 package org.konkuk.degreeverifier.launcherframe;
 
+import org.konkuk.degreeverifier.common.components.DegreeVerifierFrame;
 import org.konkuk.degreeverifier.common.components.statusbar.StatusBar;
 
 import javax.swing.*;
@@ -9,9 +10,7 @@ import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_LAUNCHER_FRAME_SIZ
 import static org.konkuk.degreeverifier.ui.Dimensions.PREFFERED_LAUNCHER_FRAME_SIZE;
 import static org.konkuk.degreeverifier.ui.Strings.APP_TITLE;
 
-public class LauncherFrame extends JFrame {
-    private final GridBagConstraints gbc = new GridBagConstraints();
-
+public class LauncherFrame extends DegreeVerifierFrame {
     public LauncherFrame() {
         super();
         setTitle(APP_TITLE);

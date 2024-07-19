@@ -38,7 +38,7 @@ public class ExportCommitAction extends AbstractAction {
                 } else if (getSelectedFile().getName().endsWith(".csv")) {
                     if (getSelectedFile().exists()) {
                         int confirm = JOptionPane.showConfirmDialog((e != null ? (Component) e.getSource() : null),
-                                OVERWRITE_EXPORT_MESSAGE, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
+                                APPEND_EXPORT_MESSAGE, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
                         if (confirm == JOptionPane.OK_OPTION) {
                             super.approveSelection();
                         }
@@ -61,13 +61,10 @@ public class ExportCommitAction extends AbstractAction {
         if (result == JFileChooser.APPROVE_OPTION) {
             appModel.export(chooser.getSelectedFile());
 
-            String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("win")) {
-                try {
-                    Runtime.getRuntime().exec("Explorer.exe " + chooser.getCurrentDirectory());
-                } catch (IOException exception) {
-                    throw new RuntimeException(exception);
-                }
+            try {
+                Desktop.getDesktop().open(chooser.getCurrentDirectory());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }

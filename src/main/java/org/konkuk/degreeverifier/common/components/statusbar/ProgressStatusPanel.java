@@ -1,11 +1,8 @@
 package org.konkuk.degreeverifier.common.components.statusbar;
 
-import org.konkuk.degreeverifier.common.logic.ShowPopupMenuOnClick;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressStatusPanelModel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import static org.konkuk.degreeverifier.ui.Borders.PROGRESS_PANEL_BORDER;
 import static org.konkuk.degreeverifier.ui.Dimensions.PROGRESS_BAR_LEFT_GAP;
@@ -22,25 +19,16 @@ public class ProgressStatusPanel extends JPanel {
 
         label = new JLabel(NO_TASK);
         progressBar = new JProgressBar();
-        ProgressStatusPopupMenu popupMenu = new ProgressStatusPopupMenu();
-        setComponentPopupMenu(popupMenu);
+//        ProgressStatusPopupMenu popupMenu = new ProgressStatusPopupMenu();
+//        setComponentPopupMenu(popupMenu);
 
         add(label);
         add(Box.createHorizontalStrut(PROGRESS_BAR_LEFT_GAP));
         add(progressBar);
 
-        addMouseListener(new ShowPopupMenuOnClick());
+//        addMouseListener(new ShowPopupMenuOnClick());
 
         new ProgressStatusPanelModel(this);
-
-        progressBar.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (progressBar.getModel() != null) {
-                    progressBar.setIndeterminate(progressBar.getModel().getValueIsAdjusting());
-                }
-            }
-        });
     }
 
     public void setText(String text) {
