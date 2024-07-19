@@ -20,7 +20,7 @@ import java.util.Set;
  * @author 이현령
  * @since 2024-05-25T15:39:55.673Z
  */
-public class LectureVerifier extends LectureCriteria implements Creditizable, Estimable, Snapshotable {
+public class LectureVerifier extends LectureCriteria implements Estimable, Snapshotable {
     public final Semester minSemester;
     public final Semester maxSemester;
     public final Grade minGrade;
@@ -109,7 +109,6 @@ public class LectureVerifier extends LectureCriteria implements Creditizable, Es
         return holding;
     }
 
-    @Override
     public int creditize() {
         return holding ? matchedLecture.credit : 0;
     }

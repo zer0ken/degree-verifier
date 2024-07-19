@@ -3,6 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/testroot/학위/이수자 파일.csv" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testroot/학위/기존 학위 이수자 파일.csv" charset="UTF-8" />
   </component>
 </project>

@@ -2,7 +2,7 @@ package org.konkuk.degreeverifier.business;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
+import org.konkuk.degreeverifier.business.csv.CsvExportable;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -24,6 +24,8 @@ import static java.nio.file.Files.newBufferedReader;
  * @since 2024-05-24T23:23:06.064Z
  */
 public class FileUtil {
+    public static final String UTF8_BOM = "\uFEFF";
+
     synchronized public static <T> T fromJsonFile(String fileName, Class<T> classOfT) {
         Gson gson = new Gson();
         Path path = Paths.get(fileName);
@@ -79,12 +81,18 @@ public class FileUtil {
 
     synchronized public static List<List<String>> fromCsvFile(File file) {
         List<List<String>> table = new LinkedList<>();
+        boolean bomChecked = false;
         try (BufferedReader reader = newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             for (; ; ) {
                 String line = reader.readLine();
                 if (line == null)
                     break;
-                table.add(new LinkedList<>(Arrays.asList(line.trim().split(","))));
+                if (!bomChecked && line.startsWith(FileUtil.UTF8_BOM))
+                    line = line.substring(1);
+                bomChecked = true;
+                List<String> tokens = new LinkedList<>(Arrays.asList(line.trim().split(",")));
+                tokens.replaceAll(String::trim);
+                table.add(tokens);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

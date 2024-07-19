@@ -1,8 +1,8 @@
 package org.konkuk.degreeverifier.business.student;
 
+import org.konkuk.degreeverifier.business.csv.CsvExportable;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.VerifierBundle;
-import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 
@@ -19,6 +19,8 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
     public final String gender;
     public final String name;
     public final String year;
+    private final String birth;
+    private final String registeredSemester;
 
     private boolean verified = false;
 
@@ -30,7 +32,9 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
     private final SnapshotBundle earlyCommittedDegrees = new SnapshotBundle();
 
-    public Student(String campus, String university, String department, String id, String gender, String name, String year) {
+    public Student(String campus, String university, String department,
+                   String id, String gender, String name, String year,
+                   String birth, String registeredSemester) {
         this.campus = campus;
         this.department = department;
         this.gender = gender;
@@ -38,6 +42,8 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         this.id = id;
         this.university = university;
         this.year = year;
+        this.birth = birth;
+        this.registeredSemester = registeredSemester;
     }
 
     public Student(String university, String name, String id) {
@@ -49,6 +55,8 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         department = null;
         gender = null;
         year = null;
+        birth = null;
+        registeredSemester = null;
     }
 
     synchronized public void setVerifiedBundles(List<VerifierBundle> verifiedBundles) {
@@ -233,7 +241,9 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
                     department,
                     name,
                     id,
-                    year
+                    year,
+                    birth,
+                    registeredSemester
             )).append("\n");
         }
         return sb.toString();

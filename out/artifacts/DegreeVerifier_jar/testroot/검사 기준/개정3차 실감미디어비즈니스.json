@@ -1,0 +1,35 @@
+{
+    "degree_name": "실감미디어비즈니스",
+    "criteria": {"subcriteria": [
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "경영정보시스템"}},
+                {"lecture": {"name": "실감미디어와플랫폼전략"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "XR경영전략"}},
+                {"lecture": {"name": "경영전략"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "XR비즈니스기획(PBL)"}},
+                {"lecture": {"name": "마케팅"}}
+            ],
+            "label": "택1"
+        },
+        {"lecture": {"name": "국제경영학"}},
+        {"lecture": {"name": "스마트경영"}}
+    ]},
+    "min_credit": 9,
+    "version": 3,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

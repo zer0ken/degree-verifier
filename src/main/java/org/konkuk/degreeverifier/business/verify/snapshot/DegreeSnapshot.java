@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class DegreeSnapshot implements Snapshot {
     public final DegreeCriteria criteria;
     public final boolean verified;
-    public final int totalCredit;
+    public final Integer totalCredit;
     public final RecursiveSnapshot recursiveSnapshot;
     public final Set<String> sufficientDegrees = new LinkedHashSet<>();
     public final Set<String> insufficientDegrees = new LinkedHashSet<>();
@@ -40,9 +40,7 @@ public class DegreeSnapshot implements Snapshot {
     public DegreeSnapshot(
             String degreeName,
             int version,
-            int totalCredit,
-            String[] lectureNames,
-            Integer[] lectureCredits
+            String[] lectureNames
     ) {
         this.criteria = new DegreeCriteria(
                 degreeName,
@@ -56,13 +54,13 @@ public class DegreeSnapshot implements Snapshot {
                 null
         );
         this.verified = true;
-        this.totalCredit = totalCredit;
+        this.totalCredit = null;
         this.recursiveSnapshot = null;
         for (int i = 0; i < lectureNames.length; i++) {
             if(lectureNames[i] == null) {
                 break;
             }
-            lectureSnapshots.add(new LectureSnapshot(lectureNames[i], lectureCredits[i]));
+            lectureSnapshots.add(new LectureSnapshot(lectureNames[i]));
         }
     }
 
@@ -96,7 +94,7 @@ public class DegreeSnapshot implements Snapshot {
         sb.append(criteria.version).append(",")
                 .append(criteria.degreeName).append(",")
                 .append(totalCredit).append(",")
-                .append("%s,%s,%s,%s,%s,");
+                .append("%s,%s,%s,%s,%s,%s,%s,");
 
         Set<String> usedLectures = new HashSet<>();
         for (LectureSnapshot lectureSnapshot : lectureSnapshots) {

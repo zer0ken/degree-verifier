@@ -1,0 +1,16 @@
+{
+    "degree_name": "실감콘텐츠기획창작",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "ICT콘텐츠기획"}},
+        {"lecture": {"name": "테마파크콘텐츠기획실습"}},
+        {"lecture": {"name": "디지털헤리티지기획창작"}},
+        {"lecture": {"name": "도시문화콘텐츠기획실습"}},
+        {"lecture": {"name": "가상현실창작종합설계"}}
+    ]},
+    "min_credit": 9,
+    "version": 1,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2022,
+    "to_semester": "동계학기"
+}

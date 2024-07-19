@@ -1,7 +1,7 @@
 package org.konkuk.degreeverifier.commitframe.logic.tables;
 
+import org.konkuk.degreeverifier.business.csv.Commit;
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.business.verify.csv.Commit;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;

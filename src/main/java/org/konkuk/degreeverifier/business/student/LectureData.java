@@ -1,5 +1,7 @@
 package org.konkuk.degreeverifier.business.student;
 
+import org.konkuk.degreeverifier.business.csv.Transcript;
+
 public class LectureData {
     public final String year;
     public final String semester;
@@ -7,10 +9,10 @@ public class LectureData {
     public final String code;
     public final String name;
     public final String classification;
-    public final int credit;
+    public final Integer credit;
     public final String grade;
 
-    public LectureData(String year, String semester, String referenceNumber, String code, String name, String classification, int credit, String grade) {
+    public LectureData(String year, String semester, String referenceNumber, String code, String name, String classification, Integer credit, String grade) {
         this.year = year;
         this.semester = semester;
         this.referenceNumber = referenceNumber;
@@ -38,7 +40,10 @@ public class LectureData {
         return new Object[]{
                 year,
                 semester,
+                referenceNumber,
+                code,
                 name,
+                classification,
                 credit,
                 grade
         };
@@ -46,11 +51,14 @@ public class LectureData {
 
     public static Object[] getColumns() {
         return new Object[]{
-                "이수 년도",
-                "이수 학기",
-                "교과목명",
-                "이수 학점",
-                "이수 성적"
+                Transcript.ColumnName.COURSE_YEAR.value,
+                Transcript.ColumnName.SEMESTER.value,
+                Transcript.ColumnName.REF_NO.value,
+                Transcript.ColumnName.CODE.value,
+                Transcript.ColumnName.COURSE_NAME.value,
+                Transcript.ColumnName.CLASSIFICATION.value,
+                Transcript.ColumnName.CREDIT.value,
+                Transcript.ColumnName.GRADE.value
         };
     }
 

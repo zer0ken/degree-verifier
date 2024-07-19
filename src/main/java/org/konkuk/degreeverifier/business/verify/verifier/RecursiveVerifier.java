@@ -18,7 +18,7 @@ import java.util.List;
  * @author 이현령
  * @since 2024-05-25T15:41:30.622Z
  */
-public class RecursiveVerifier extends RecursiveCriteria implements Creditizable, Estimable, Snapshotable {
+public class RecursiveVerifier extends RecursiveCriteria implements Estimable, Snapshotable {
     private final LectureVerifier lectureVerifier;
     private final List<RecursiveVerifier> subRecursiveVerifiers;
 
@@ -66,7 +66,6 @@ public class RecursiveVerifier extends RecursiveCriteria implements Creditizable
         return verified;
     }
 
-    @Override
     public int creditize() {
         if (lectureVerifier != null) {
             return lectureVerifier.creditize();

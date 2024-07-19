@@ -1,0 +1,29 @@
+{
+    "degree_name": "실감미디어지산학협력",
+    "criteria": {"subcriteria": [
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "메타버스로열리는커리어"}},
+                {"lecture": {"name": "실감디자인씽킹**실감디자인씽킹(XR) 동일교과목"}},
+                {"lecture": {"name": "효과적인사회문제정의와아이디어"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "글로벌리빙랩프로젝트"}},
+                {"lecture": {"name": "소셜리빙랩실감미디어PBL"}},
+                {"lecture": {"name": "로컬콘텐츠실감미디어PBL"}},
+                {"lecture": {"name": "산학프로젝트1"}},
+                {"lecture": {"name": "산학프로젝트2"}}
+            ],
+            "label": "택1"
+        }
+    ]},
+    "min_credit": 9,
+    "version": 4,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

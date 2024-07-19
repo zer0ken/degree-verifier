@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author 이현령
  * @since 2024-05-24T16:51:21.363Z
  */
-public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snapshotable {
+public class DegreeVerifier extends DegreeCriteria implements Snapshotable {
     private final RecursiveVerifier recursiveVerifier;
     public final Set<String> sufficientDegrees = new LinkedHashSet<>();
     public final Set<String> insufficientDegrees = new LinkedHashSet<>();
@@ -137,7 +137,6 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         }
     }
 
-    @Override
     public int creditize() {
         return recursiveVerifier.creditize();
     }

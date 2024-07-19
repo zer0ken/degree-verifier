@@ -1,11 +1,10 @@
 package org.konkuk.degreeverifier.business.verify.snapshot;
 
 import org.konkuk.degreeverifier.business.verify.criteria.RecursiveCriteria;
-import org.konkuk.degreeverifier.business.verify.verifier.Creditizable;
 
 import java.util.Arrays;
 
-public class RecursiveSnapshot implements Snapshot, Creditizable {
+public class RecursiveSnapshot implements Snapshot {
     public final RecursiveCriteria criteria;
     public final boolean verified;
 
@@ -26,8 +25,7 @@ public class RecursiveSnapshot implements Snapshot, Creditizable {
         this.subSnapshots = null;
     }
 
-    @Override
-    public int creditize() {
+    public Integer creditize() {
         if (!verified) {
             return 0;
         }
@@ -37,10 +35,18 @@ public class RecursiveSnapshot implements Snapshot, Creditizable {
             return Arrays.stream(subSnapshots)
                     .sorted((a, b) -> b.creditize() - a.creditize())
                     .limit(criteria.maximumPass)
-                    .reduce(0, (acc, snapshot) -> acc + snapshot.creditize(), Integer::sum);
+                    .reduce(0, (acc, snapshot) -> {
+                                Integer c = snapshot.creditize();
+                                return c != null ?
+                                        acc + c :
+                                        acc;
+                            }
+                            , Integer::sum
+                    );
         } else {
             return Arrays.stream(subSnapshots).reduce(0, (acc, snapshot) -> acc + snapshot.creditize(), Integer::sum);
         }
+
     }
 
     @Override

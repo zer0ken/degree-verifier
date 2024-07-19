@@ -1,10 +1,11 @@
 package org.konkuk.degreeverifier.commitframe.logic.tables;
 
+import org.konkuk.degreeverifier.business.csv.Commit;
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.business.verify.csv.Commit;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import java.util.Vector;
 
 public class EarlyCommitTableModel extends DefaultTableModel {
     AppModel appModel = AppModel.getInstance();
@@ -13,8 +14,12 @@ public class EarlyCommitTableModel extends DefaultTableModel {
         setColumnIdentifiers(Commit.HEADER);
         if (appModel.isCommitLoaded()) {
             update();
+            setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
         }
-        appModel.observe(AppModel.On.COMMIT_LOADED, unused -> update());
+        appModel.observe(AppModel.On.COMMIT_LOADED, unused -> {
+            update();
+            setColumnIdentifiers(new Vector<>(appModel.getEarlyCommitTableHeader()));
+        });
     }
 
     private void update() {

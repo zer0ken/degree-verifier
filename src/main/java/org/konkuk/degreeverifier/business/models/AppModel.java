@@ -1,13 +1,13 @@
 package org.konkuk.degreeverifier.business.models;
 
 import org.konkuk.degreeverifier.business.FileUtil;
+import org.konkuk.degreeverifier.business.csv.Commit;
+import org.konkuk.degreeverifier.business.csv.Transcript;
 import org.konkuk.degreeverifier.business.student.Lecture;
 import org.konkuk.degreeverifier.business.student.Student;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.VerifierFactory;
 import org.konkuk.degreeverifier.business.verify.criteria.DegreeCriteria;
-import org.konkuk.degreeverifier.business.verify.csv.Commit;
-import org.konkuk.degreeverifier.business.verify.csv.Transcript;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.commitframe.actions.ExportCommitAction;
@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 
 import static org.konkuk.degreeverifier.ui.Strings.*;
 
@@ -44,7 +45,10 @@ public class AppModel extends Observable {
     private final List<DegreeVerifier> selectedVerifiedDegree = Collections.synchronizedList(new ArrayList<>());
     private final List<DegreeVerifier> selectedCommittedDegree = Collections.synchronizedList(new ArrayList<>());
 
+    private List<String> earlyCommitTableHeader = new LinkedList<>();
     private List<List<String>> earlyCommitTable = new LinkedList<>();
+
+    private List<String> transcriptTableHeader = new LinkedList<>();
     private List<List<String>> transcriptTable = new LinkedList<>();
 
     public void submitTask(
@@ -53,40 +57,62 @@ public class AppModel extends Observable {
             Runnable afterFinished
     ) {
         beforeSubmit.run();
+        task.run();
+        afterFinished.run();
 
-        executorService.submit(() -> {
-            task.run();
-            afterFinished.run();
-        });
+//        executorService.submit(() -> {
+//            task.run();
+//            afterFinished.run();
+//        });
     }
 
     public void loadTranscript(File file) {
         submitTask(
                 () -> notify(On.TRANSCRIPT_LOAD_STARTED, students),
                 () -> {
-                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
                     for (Student student : students.values()) {
                         student.clear();
                     }
                     NavigableMap<String, Student> newStudentMap = new TreeMap<>();
                     List<List<String>> table = FileUtil.fromCsvFile(file);
-                    if (!Transcript.isValidHeader(table.get(0).toArray(new String[0]))) {
+                    if (!Transcript.isValidHeader(table.get(0))) {
                         return;
                     }
-                    table.remove(0);
+                    Map<Transcript.ColumnName, Integer> nameToIndex = Transcript.getColumnIndexMap(table.get(0));
+                    BiFunction<List<String>, Transcript.ColumnName, String> get = (row, columnName) -> {
+                        int index = nameToIndex.get(columnName);
+                        return row.size() > index ? row.get(index) : null;
+                    };
+                    transcriptTableHeader = table.remove(0);
                     transcriptTable = table;
+
+                    ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
                     tracker.setMaximum(table.size());
                     for (List<String> row : table) {
                         Student student = new Student(
-                                row.get(5), row.get(6), row.get(7), row.get(8), row.get(9), row.get(10), row.get(11)
+                                get.apply(row, Transcript.ColumnName.CAMPUS),
+                                get.apply(row, Transcript.ColumnName.UNIVERSITY),
+                                get.apply(row, Transcript.ColumnName.DEPARTMENT),
+                                get.apply(row, Transcript.ColumnName.STUDENT_ID),
+                                get.apply(row, Transcript.ColumnName.GENDER),
+                                get.apply(row, Transcript.ColumnName.STUDENT_NAME),
+                                get.apply(row, Transcript.ColumnName.STUDENT_YEAR),
+                                get.apply(row, Transcript.ColumnName.BIRTH),
+                                get.apply(row, Transcript.ColumnName.REGISTERED_SEMESTER)
                         );
                         if (!students.containsKey(student.toString())) {
                             students.put(student.toString(), student);
                         }
                         student = students.get(student.toString());
                         Lecture lecture = new Lecture(
-                                row.get(0), row.get(1), row.get(2), row.get(3), row.get(4),
-                                row.get(12), Integer.parseInt(row.get(13)), row.get(14)
+                                get.apply(row, Transcript.ColumnName.COURSE_YEAR),
+                                get.apply(row, Transcript.ColumnName.SEMESTER),
+                                get.apply(row, Transcript.ColumnName.REF_NO),
+                                get.apply(row, Transcript.ColumnName.CODE),
+                                get.apply(row, Transcript.ColumnName.COURSE_NAME),
+                                get.apply(row, Transcript.ColumnName.CLASSIFICATION),
+                                Integer.parseInt(get.apply(row, Transcript.ColumnName.CREDIT)),
+                                get.apply(row, Transcript.ColumnName.GRADE)
                         );
                         student.add(lecture);
                         newStudentMap.put(student.toString(), student);
@@ -115,16 +141,26 @@ public class AppModel extends Observable {
                 () -> notify(On.COMMIT_LOAD_STARTED, students),
                 () -> {
                     List<List<String>> table = FileUtil.fromCsvFile(file);
-                    if (!Commit.isValidHeader(table.get(0).toArray(new String[0]))) {
+                    if (!Commit.isValidHeader(table.get(0))) {
                         return;
                     }
-                    table.remove(0);
+                    Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(table.get(0));
+                    BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
+                        int index = nameToIndex.get(columnName);
+                        return row.size() > index ? row.get(index) : null;
+                    };
+                    earlyCommitTableHeader = table.remove(0);
                     earlyCommitTable = table;
+
                     ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
                     tracker.setMaximum(table.size());
                     Map<String, SnapshotBundle> bundleMap = new HashMap<>();
                     for (List<String> row : table) {
-                        Student student = students.get(new Student(row.get(3), row.get(5), row.get(6)).toString());
+                        Student student = students.get(new Student(
+                                get.apply(row, Commit.ColumnName.UNIVERSITY),
+                                get.apply(row, Commit.ColumnName.STUDENT_NAME),
+                                get.apply(row, Commit.ColumnName.STUDENT_ID)
+                        ).toString());
                         if (student == null) {
                             continue;
                         }
@@ -134,19 +170,15 @@ public class AppModel extends Observable {
                             bundleMap.put(student.toString(), bundle);
                         }
 
-                        String[] lectureNames = new String[10];
-                        Integer[] lectureCredits = new Integer[10];
-                        for (int i = 8, j = 0; i < row.size(); i += 2, j++) {
-                            lectureNames[j] = row.get(i);
-                            lectureCredits[j] = Integer.parseInt(row.get(i + 1));
+                        String[] lectureNames = new String[5];
+                        for (int i = 1; i <= 5; i++) {
+                            lectureNames[i - 1] = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + i));
                         }
 
                         DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
-                                row.get(1),
-                                Integer.parseInt(row.get(0)),
-                                Integer.parseInt(row.get(2)),
-                                lectureNames,
-                                lectureCredits
+                                get.apply(row, Commit.ColumnName.DEGREE_NAME),
+                                Integer.parseInt(get.apply(row, Commit.ColumnName.VERSION)),
+                                lectureNames
                         );
                         bundle.put(degreeSnapshot.toString(), degreeSnapshot);
                     }
@@ -194,7 +226,7 @@ public class AppModel extends Observable {
             List<Callable<Object>> verifyTasks = new ArrayList<>(students.size());
             for (Student student : students.values()) {
                 verifyTasks.add(() -> {
-                    if(verifyTracker.get() == null) {
+                    if (verifyTracker.get() == null) {
                         verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
                     }
                     verifierFactory.createVerifier().verify(student, verifyTracker.get());
@@ -302,7 +334,7 @@ public class AppModel extends Observable {
             List<Callable<Object>> commitTasks = new ArrayList<>(students.size());
             for (Student student : students.values()) {
                 verifyTasks.add(() -> {
-                    if(verifyTracker.get() == null) {
+                    if (verifyTracker.get() == null) {
                         verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
                     }
                     verifierFactory.createVerifier().verify(student, verifyTracker.get());
@@ -342,7 +374,7 @@ public class AppModel extends Observable {
             List<Callable<Object>> commitTasks = new ArrayList<>(students.size());
             for (Student student : students.values()) {
                 verifyTasks.add(() -> {
-                    if(verifyTracker.get() == null) {
+                    if (verifyTracker.get() == null) {
                         verifyTracker.set(new ProgressTracker(VERIFYING_ALL));
                     }
                     verifierFactory.createVerifier().verify(student, verifyTracker.get());
@@ -453,6 +485,14 @@ public class AppModel extends Observable {
 
     public boolean isCommitLoaded() {
         return commitLoaded;
+    }
+
+    public List<String> getTranscriptTableHeader() {
+        return transcriptTableHeader;
+    }
+
+    public List<String> getEarlyCommitTableHeader() {
+        return earlyCommitTableHeader;
     }
 
     public enum On implements Event {
