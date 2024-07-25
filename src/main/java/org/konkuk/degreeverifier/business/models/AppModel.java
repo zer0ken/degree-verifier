@@ -13,7 +13,6 @@ import org.konkuk.degreeverifier.business.verify.verifier.DegreeVerifier;
 import org.konkuk.degreeverifier.commitframe.actions.ExportCommitAction;
 import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.*;
@@ -61,13 +60,13 @@ public class AppModel extends Observable {
             Runnable afterFinished
     ) {
         beforeSubmit.run();
-        executorService.submit(() -> {
-            task.run();
-            afterFinished.run();
-        });
+        task.run();
+        afterFinished.run();
+//        executorService.submit(() -> {
+//        });
     }
 
-    public void loadTranscript(File originalFile) {
+    public void loadTranscript(File file) {
         submitTask(
                 () -> {
                     transcriptLoaded = false;
@@ -80,75 +79,134 @@ public class AppModel extends Observable {
                         tracker.finish();
                         student.clear();
                     }
-                    NavigableMap<String, Student> newStudentMap = new TreeMap<>();
-                    List<File> files = Transcript.splitFile(originalFile);
-                    if (files == null) {
-                        tracker.finish();
-                        return;
-                    }
-                    File file = files.get(0);
-                    if (file != originalFile) {
-                        JOptionPane.showMessageDialog(null,
-                                TRANSCRIPT_SPLIT_MESSAGE, TRANSCRIPT_SPLIT_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                    }
 
                     List<List<String>> table = FileUtil.fromCsvFile(file);
-                    if (Transcript.isInvalidHeader(table.get(0))) {
+                    if (Transcript.isValidHeader(table.get(0))) {
+                        loadStudentsFromTranscriptTable(table, tracker);
+                    } else if (Commit.isValidHeader(table.get(0))) {
+                        loadStudentsFromCommitTable(table, tracker);
+                    } else {
                         tracker.finish();
                         return;
                     }
-                    Map<Transcript.ColumnName, Integer> nameToIndex = Transcript.getColumnIndexMap(table.get(0));
-                    BiFunction<List<String>, Transcript.ColumnName, String> get = (row, columnName) -> {
-                        int index = nameToIndex.get(columnName);
-                        return row.size() > index ? row.get(index) : null;
-                    };
-                    transcriptTableHeader = table.remove(0);
-                    transcriptTable = table;
                     transcriptFile = file;
-
-                    tracker.setMaximum(table.size());
-                    for (List<String> row : table) {
-                        Student student = new Student(
-                                get.apply(row, Transcript.ColumnName.CAMPUS),
-                                get.apply(row, Transcript.ColumnName.UNIVERSITY),
-                                get.apply(row, Transcript.ColumnName.DEPARTMENT),
-                                get.apply(row, Transcript.ColumnName.STUDENT_ID),
-                                get.apply(row, Transcript.ColumnName.GENDER),
-                                get.apply(row, Transcript.ColumnName.STUDENT_NAME),
-                                get.apply(row, Transcript.ColumnName.STUDENT_YEAR),
-                                get.apply(row, Transcript.ColumnName.BIRTH),
-                                get.apply(row, Transcript.ColumnName.REGISTERED_SEMESTER)
-                        );
-                        if (!students.containsKey(student.toString())) {
-                            students.put(student.toString(), student);
-                        }
-                        student = students.get(student.toString());
-                        Lecture lecture = new Lecture(
-                                get.apply(row, Transcript.ColumnName.COURSE_YEAR),
-                                get.apply(row, Transcript.ColumnName.SEMESTER),
-                                get.apply(row, Transcript.ColumnName.REF_NO),
-                                get.apply(row, Transcript.ColumnName.CODE),
-                                get.apply(row, Transcript.ColumnName.COURSE_NAME),
-                                get.apply(row, Transcript.ColumnName.CLASSIFICATION),
-                                Integer.parseInt(get.apply(row, Transcript.ColumnName.CREDIT)),
-                                get.apply(row, Transcript.ColumnName.GRADE)
-                        );
-                        student.add(lecture);
-                        newStudentMap.put(student.toString(), student);
-                        tracker.increment();
-                    }
-                    students = newStudentMap;
-                    tracker.finish();
-
-                    if (commitLoaded) {
-                        fetchFromEarlyCommitTable();
-                    }
                 },
                 () -> {
                     transcriptLoaded = true;
                     notify(On.TRANSCRIPT_LOADED, students);
                 }
         );
+    }
+
+    private void loadStudentsFromTranscriptTable(List<List<String>> table, ProgressTracker tracker) {
+        NavigableMap<String, Student> newStudentMap = new TreeMap<>();
+        Map<Transcript.ColumnName, Integer> nameToIndex = Transcript.getColumnIndexMap(table.get(0));
+        BiFunction<List<String>, Transcript.ColumnName, String> get = (row, columnName) -> {
+            int index = nameToIndex.get(columnName);
+            return row.size() > index ? row.get(index) : null;
+        };
+        transcriptTableHeader = table.remove(0);
+        transcriptTable = table;
+
+        tracker.setMaximum(table.size());
+        for (List<String> row : table) {
+            Student student = new Student(
+                    get.apply(row, Transcript.ColumnName.CAMPUS),
+                    get.apply(row, Transcript.ColumnName.UNIVERSITY),
+                    get.apply(row, Transcript.ColumnName.DEPARTMENT),
+                    get.apply(row, Transcript.ColumnName.STUDENT_ID),
+                    get.apply(row, Transcript.ColumnName.GENDER),
+                    get.apply(row, Transcript.ColumnName.STUDENT_NAME),
+                    get.apply(row, Transcript.ColumnName.STUDENT_YEAR),
+                    get.apply(row, Transcript.ColumnName.BIRTH),
+                    get.apply(row, Transcript.ColumnName.REGISTERED_SEMESTER)
+            );
+            if (!students.containsKey(student.toString())) {
+                students.put(student.toString(), student);
+            }
+            student = students.get(student.toString());
+            Lecture lecture = new Lecture(
+                    get.apply(row, Transcript.ColumnName.COURSE_YEAR),
+                    get.apply(row, Transcript.ColumnName.SEMESTER),
+                    get.apply(row, Transcript.ColumnName.REF_NO),
+                    get.apply(row, Transcript.ColumnName.CODE),
+                    get.apply(row, Transcript.ColumnName.COURSE_NAME),
+                    get.apply(row, Transcript.ColumnName.CLASSIFICATION),
+                    Integer.parseInt(get.apply(row, Transcript.ColumnName.CREDIT)),
+                    get.apply(row, Transcript.ColumnName.GRADE)
+            );
+            student.add(lecture);
+            newStudentMap.put(student.toString(), student);
+            tracker.increment();
+        }
+        students = newStudentMap;
+
+        if (commitLoaded) {
+            fetchFromEarlyCommitTable();
+        }
+
+        tracker.finish();
+    }
+
+    private void loadStudentsFromCommitTable(List<List<String>> table, ProgressTracker tracker) {
+        NavigableMap<String, Student> newStudentMap = new TreeMap<>();
+        Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(table.get(0));
+        BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
+            int index = nameToIndex.get(columnName);
+            return row.size() > index && !row.get(index).isEmpty()
+                    ? row.get(index)
+                    : null;
+        };
+        transcriptTableHeader = Transcript.ColumnName.getNames();
+        transcriptTable = table;
+        table.remove(0);
+
+        tracker.setMaximum(table.size());
+        for (List<String> row : table) {
+            Student student = new Student(
+                    null,
+                    get.apply(row, Commit.ColumnName.UNIVERSITY),
+                    get.apply(row, Commit.ColumnName.DEPARTMENT),
+                    get.apply(row, Commit.ColumnName.STUDENT_ID),
+                    null,
+                    get.apply(row, Commit.ColumnName.STUDENT_NAME),
+                    get.apply(row, Commit.ColumnName.STUDENT_YEAR),
+                    get.apply(row, Commit.ColumnName.BIRTH),
+                    get.apply(row, Commit.ColumnName.REGISTERED_SEMESTER)
+            );
+            if (!newStudentMap.containsKey(student.toString())) {
+                newStudentMap.put(student.toString(), student);
+            }
+            student = newStudentMap.get(student.toString());
+            for (int i = 0; i < 5; i++) {
+                String courseName = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + (i+1)));
+                if (courseName == null) {
+                    break;
+                }
+                String courseCredit = get.apply(row, Commit.ColumnName.valueOf("COURSE_CREDIT_" + (i+1)));
+                Lecture lecture = new Lecture(
+                        null,
+                        null,
+                        null,
+                        null,
+                        courseName,
+                        null,
+                        courseCredit == null ? 0 : Integer.parseInt(courseCredit),
+                        null
+                );
+                student.add(lecture);
+            }
+            newStudentMap.put(student.toString(), student);
+            tracker.increment();
+        }
+
+        students = newStudentMap;
+
+        if (commitLoaded) {
+            fetchFromEarlyCommitTable();
+        }
+
+        tracker.finish();
     }
 
     public void loadAliases(File file) {

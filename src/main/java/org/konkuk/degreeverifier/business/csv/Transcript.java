@@ -48,12 +48,12 @@ public class Transcript {
     }
 
     // TODO: 2024-07-19 조절 필요한지 확인
-    private static final long FILE_SIZE_LIMIT = (long) 300000.0e+6;
+    private static final long FILE_SIZE_LIMIT = (long) 300.0e+6;
 //    private static final long FILE_SIZE_LIMIT = (long) 30.0e+6;
     private static final int STUDENT_PER_FILE = 10000;
 
-    public static boolean isInvalidHeader(Collection<String> header) {
-        return !new HashSet<>(header).containsAll(
+    public static boolean isValidHeader(Collection<String> header) {
+        return new HashSet<>(header).containsAll(
                 ColumnName.getNames()
         );
     }
@@ -105,7 +105,7 @@ public class Transcript {
                 row.replaceAll(String::trim);
 
                 if (lineCount == 0) {
-                    if (isInvalidHeader(row)) {
+                    if (isValidHeader(row)) {
                         return null;
                     }
                     header = row;

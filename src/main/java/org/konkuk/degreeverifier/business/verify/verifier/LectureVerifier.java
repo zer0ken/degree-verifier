@@ -72,29 +72,36 @@ public class LectureVerifier extends LectureCriteria implements Estimable, Snaps
                 return false;
             }
         }
-        Semester lectureSemester = new Semester(
-                Integer.parseInt(lecture.year),
-                lecture.semester
-        );
-        if (minSemester != null && minSemester.compareTo(lectureSemester) > 0) {
-            return false;
+        if (lecture.year != null && lecture.semester != null) {
+            Semester lectureSemester = new Semester(
+                    Integer.parseInt(lecture.year),
+                    lecture.semester
+            );
+            if (minSemester != null && minSemester.compareTo(lectureSemester) > 0) {
+                return false;
+            }
+            if (maxSemester != null && maxSemester.compareTo(lectureSemester) < 0) {
+                return false;
+            }
+            if (minSemester == null
+                    && defaultMinimumSemester != null
+                    && defaultMinimumSemester.compareTo(lectureSemester) > 0) {
+                return false;
+            }
+            if (maxSemester == null
+                    && defaultMaximumSemester != null
+                    && defaultMaximumSemester.compareTo(lectureSemester) < 0) {
+                return false;
+            }
         }
-        if (maxSemester != null && maxSemester.compareTo(lectureSemester) < 0) {
-            return false;
+        if (lecture.grade != null) {
+            Grade lectureGrade = Grade.fromString(lecture.grade);
+            lectureGrade = lectureGrade != null ? lectureGrade : Grade.A_PLUS;
+            if (getMinimumGrade().compareTo(lectureGrade) > 0) {
+                return false;
+            }
         }
-        if (minSemester == null
-                && defaultMinimumSemester != null
-                && defaultMinimumSemester.compareTo(lectureSemester) > 0) {
-            return false;
-        }
-        if (maxSemester == null
-                && defaultMaximumSemester != null
-                && defaultMaximumSemester.compareTo(lectureSemester) < 0) {
-            return false;
-        }
-        Grade lectureGrade = Grade.fromString(lecture.grade);
-        lectureGrade = lectureGrade != null ? lectureGrade : Grade.A_PLUS;
-        return getMinimumGrade().compareTo(lectureGrade) <= 0;
+        return true;
     }
 
     public void hold() {

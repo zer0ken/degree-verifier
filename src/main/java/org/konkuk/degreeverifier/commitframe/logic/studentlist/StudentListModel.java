@@ -22,13 +22,8 @@ public class StudentListModel extends DefaultListModel<Student> {
 
     private void init(Map<String, Student> students) {
         this.removeAllElements();
-        int insertAt = 0;
         for (Student student : students.values()) {
-            if (!student.toCsv().isEmpty()) {
-                insertElementAt(student, insertAt++);
-            } else {
-                addElement(student);
-            }
+            addElement(student);
         }
     }
 }
