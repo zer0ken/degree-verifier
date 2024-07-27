@@ -15,5 +15,8 @@ public class FileMenu extends ActionMenu {
         add(new LoadCommitAction());
         addSeparator();
         add(new ExportCommitAction());
+        add(new ExportCommitValidateOldAction());
+        add(new ExportCommitNewOnlyAction());
+        add(new ExportCommitNewAndOldAction());
     }
 }

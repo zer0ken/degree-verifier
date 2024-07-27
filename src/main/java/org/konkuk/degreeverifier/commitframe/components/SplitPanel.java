@@ -44,7 +44,8 @@ public class SplitPanel extends JPanel {
                 withLectureList,
                 new InformationPanel()
         );
-        withInformation.setResizeWeight(1);
+        withInformation.setResizeWeight(1.0);
+        withInformation.setDividerLocation(0.5);
 
         JSplitPane totalPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,

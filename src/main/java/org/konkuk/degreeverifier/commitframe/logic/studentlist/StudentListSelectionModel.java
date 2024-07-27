@@ -9,9 +9,7 @@ public class StudentListSelectionModel extends DefaultListSelectionModel {
     private final AppModel appModel = AppModel.getInstance();
 
     public StudentListSelectionModel() {
-        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, (student)-> {
-            resetSelection();
-        });
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, unused -> resetSelection());
 
         instance = this;
     }

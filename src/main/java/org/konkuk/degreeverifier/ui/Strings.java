@@ -27,10 +27,16 @@ public class Strings {
     public static final String LOAD_VERIFIER_DIALOG_TITLE = LOAD_VERIFIER_LIST + " - 검사 기준이 위치한 폴더 선택";
 
     public static final String EXPORT_COMMIT = "인정한 학위 저장하기";
+    public static final String EXPORT_COMMIT_VALIDATE_OLD = "기존 학위 유효성 저장하기";
+    public static final String EXPORT_COMMIT_NEW_ONLY = "새로 인정한 학위 저장하기";
+    public static final String EXPORT_COMMIT_NEW_AND_OLD = "전체 학위 저장하기";
+    public static final String EXPORT_COMMIT_VALIDATE_OLD_TOOLTIP = "성적표를 토대로 기존 학위의 유효성을 검증하고 출력합니다.";
+    public static final String EXPORT_COMMIT_NEW_ONLY_TOOLTIP = "기존 학위를 제외하고 새로 인정한 학위만 출력합니다.";
+    public static final String EXPORT_COMMIT_NEW_AND_OLD_TOOLTIP = "기존 학위를 포함하여 인정한 학위를 모두 출력합니다.";
     public static final String EXPORT_COMMIT_DIALOG_TITLE = EXPORT_COMMIT + " - 출력 위치 선택";
 
     public static final String STUDENT_LIST = "학생";
-    public static final String VERIFY_ALL_STUDENT = "모든 학생의 학위 다시 검사하기";
+    public static final String VERIFY_ALL_STUDENT = "초기화 후 다시 검사하기";
     public static final String START_COMMIT = "검토 시작하기";
     public static final String START_COMMIT_NEXT = "다음 학생 검토하기";
     public static final String START_COMMIT_PREVIOUS = "이전 학생 검토하기";

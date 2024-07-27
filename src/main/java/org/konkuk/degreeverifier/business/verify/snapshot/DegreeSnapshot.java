@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class DegreeSnapshot implements Snapshot {
     public final DegreeCriteria criteria;
-    public final boolean verified;
+    public boolean verified;
     public final Integer totalCredit;
     public final RecursiveSnapshot recursiveSnapshot;
     public final Set<String> sufficientDegrees = new LinkedHashSet<>();
@@ -40,7 +40,8 @@ public class DegreeSnapshot implements Snapshot {
     public DegreeSnapshot(
             String degreeName,
             int version,
-            String[] lectureNames
+            String[] lectureNames,
+            Integer[] lectureCredits
     ) {
         this.criteria = new DegreeCriteria(
                 degreeName,
@@ -53,14 +54,14 @@ public class DegreeSnapshot implements Snapshot {
                 null,
                 null
         );
-        this.verified = true;
+        this.verified = false;
         this.totalCredit = null;
         this.recursiveSnapshot = null;
         for (int i = 0; i < lectureNames.length; i++) {
-            if(lectureNames[i] == null) {
+            if (lectureNames[i] == null) {
                 break;
             }
-            lectureSnapshots.add(new LectureSnapshot(lectureNames[i]));
+            lectureSnapshots.add(new LectureSnapshot(lectureNames[i], lectureCredits[i]));
         }
     }
 
@@ -74,7 +75,7 @@ public class DegreeSnapshot implements Snapshot {
         if (!Objects.equals(criteria.degreeName, o.criteria.degreeName)) {
             return false;
         }
-        if(!Objects.equals(criteria.version, o.criteria.version)) {
+        if (!Objects.equals(criteria.version, o.criteria.version)) {
             return false;
         }
 
@@ -89,11 +90,10 @@ public class DegreeSnapshot implements Snapshot {
         return criteria.toString();
     }
 
-    public String toCsv() {
+    public String toCsv(boolean forceVerified) {
         StringBuilder sb = new StringBuilder();
         sb.append(criteria.version).append(",")
                 .append(criteria.degreeName).append(",")
-                .append(totalCredit).append(",")
                 .append("%s,%s,%s,%s,%s,%s,%s,");
 
         Set<String> usedLectures = new HashSet<>();
@@ -104,7 +104,18 @@ public class DegreeSnapshot implements Snapshot {
                 usedLectures.add(lectureSnapshot.matched.name);
             }
         }
+        for (int i = usedLectures.size(); i < 5; i++) {
+            sb.append(",,");
+        }
+
+        sb.append(totalCredit == null ? "" : totalCredit).append(",")
+                .append(criteria.minimumCredit == null ? "" : criteria.minimumCredit).append(",")
+                .append(forceVerified || verified ? "YES" : "NO").append(",");
 
         return sb.toString();
+    }
+
+    public String toCsv() {
+        return toCsv(false);
     }
 }

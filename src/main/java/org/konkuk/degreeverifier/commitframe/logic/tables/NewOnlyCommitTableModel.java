@@ -7,10 +7,10 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Vector;
 
-public class CommitTableModel extends DefaultTableModel {
+public class NewOnlyCommitTableModel extends DefaultTableModel {
     AppModel appModel = AppModel.getInstance();
 
-    public CommitTableModel() {
+    public NewOnlyCommitTableModel() {
         setColumnIdentifiers(new Vector<>(Commit.ColumnName.getNames()));
         appModel.observe(AppModel.On.COMMIT_UPDATED, unused -> {
             update();
@@ -19,7 +19,7 @@ public class CommitTableModel extends DefaultTableModel {
 
     private void update() {
         setRowCount(0);
-        for (List<String> row : appModel.getCommitTable()) {
+        for (List<String> row : appModel.getCommitTableNewOnly()) {
             addRow(row.toArray());
         }
     }

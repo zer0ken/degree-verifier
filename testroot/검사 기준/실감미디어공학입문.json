@@ -1,0 +1,13 @@
+{
+  "degree_name": "실감문화콘텐츠기획",
+  "criteria": {"subcriteria": [
+    {"lecture": {"name": "JAVA프로그래밍"}},
+    {"lecture": {"name": "ICT경험디자인"}},
+    {"lecture": {"name": "가상현실"}},
+    {"lecture": {"name": "실감미디어컴퓨팅기초"}}
+  ]},
+  "min_credit": 9,
+  "from_year": 2021,
+  "from_semester": "2학기",
+  "version": 1
+}

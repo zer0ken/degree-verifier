@@ -16,7 +16,9 @@ public class LectureTableModel extends DefaultTableModel {
 
     private void updateTable(Student student) {
         setRowCount(0);
-        student.forEach(lecture -> addRow(lecture.inRow()));
+        if (student != null) {
+            student.forEach(lecture -> addRow(lecture.inRow()));
+        }
     }
 
     @Override

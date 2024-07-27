@@ -23,9 +23,9 @@ public class LectureSnapshot implements Snapshot {
         this.duplicatedDegrees = duplicatedDegrees;
     }
 
-    public LectureSnapshot(String lectureName) {
+    public LectureSnapshot(String lectureName, Integer lectureCredit) {
         criteria = null;
-        matched = new LectureData(null, null, null, null, lectureName, null, null, null);
+        matched = new LectureData(null, null, null, null, lectureName, null, lectureCredit, null);
         verified = true;
         degreeName = null;
         duplicatedDegrees = null;

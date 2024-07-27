@@ -12,12 +12,12 @@ public class QuickToolbar extends SizedToolbar {
     public QuickToolbar() {
         super(MENU_TOOLBAR_BUTTON_SIZE, MENU_TOOLBAR_ICON_SCALE);
         add(new ExportCommitAction());
-        add(new VerifyAllStudentAction());
-        add(Box.createHorizontalStrut(20));
         add(new CommitAllStudentAction());
-        add(Box.createHorizontalStrut(10));
+        add(Box.createHorizontalStrut(20));
         add(new StartCommitPreviousAction());
         add(new CommitRecommendedDegreesAction());
         add(new StartCommitNextAction());
+        add(Box.createHorizontalStrut(20));
+        add(new VerifyAllStudentAction());
     }
 }
