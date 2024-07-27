@@ -9,7 +9,7 @@ package org.konkuk.degreeverifier.business.student;
 public class Lecture extends LectureData {
     public Lecture(String year, String semester, String referenceNumber,
                    String code, String name, String classification,
-                   int credit, String grade) {
+                   Integer credit, String grade) {
         super(year, semester, referenceNumber, code, name, classification, credit, grade);
     }
 

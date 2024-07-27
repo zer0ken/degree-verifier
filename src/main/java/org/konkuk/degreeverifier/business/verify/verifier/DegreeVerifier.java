@@ -130,7 +130,7 @@ public class DegreeVerifier extends DegreeCriteria implements Snapshotable {
             holdingLectureVerifier.hold();
         }
 
-        if (snapshot.verified) {
+        if (newSnapshot.verified) {
             return newSnapshot;
         } else {
             return null;

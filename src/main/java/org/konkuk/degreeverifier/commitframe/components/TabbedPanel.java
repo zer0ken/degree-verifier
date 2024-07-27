@@ -1,8 +1,6 @@
 package org.konkuk.degreeverifier.commitframe.components;
 
-import org.konkuk.degreeverifier.commitframe.components.tables.CommitTable;
-import org.konkuk.degreeverifier.commitframe.components.tables.EarlyCommitTable;
-import org.konkuk.degreeverifier.commitframe.components.tables.TranscriptTable;
+import org.konkuk.degreeverifier.commitframe.components.tables.*;
 import org.konkuk.degreeverifier.common.components.ScrollPaneWrapper;
 
 import javax.swing.*;
@@ -16,24 +14,21 @@ public class TabbedPanel extends JPanel {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        JPanel inner1 = new JPanel(new BorderLayout());
-        inner1.setBorder(SEPARATOR_TABBED_TABLE);
-        inner1.add(ScrollPaneWrapper.wrapTable(new TranscriptTable()));
-
-        JPanel inner2 = new JPanel(new BorderLayout());
-        inner2.setBorder(SEPARATOR_TABBED_TABLE);
-        inner2.add(ScrollPaneWrapper.wrapTable(new EarlyCommitTable()));
-
-        JPanel inner3 = new JPanel(new BorderLayout());
-        inner3.setBorder(SEPARATOR_TABBED_TABLE);
-        inner3.add(ScrollPaneWrapper.wrapTable(new CommitTable()));
-
         tabbedPane.addTab("검토하기", new SplitPanel());
-        tabbedPane.addTab("성적표", inner1);
-        tabbedPane.addTab("기존 학위", inner2);
-        tabbedPane.addTab("인정한 학위", inner3);
+        tabbedPane.addTab("성적표", getWrappedTable(new TranscriptTable()));
+        tabbedPane.addTab("기존 학위", getWrappedTable(new EarlyCommitTable()));
+        tabbedPane.addTab("기존 학위 유효성", getWrappedTable(new ValidateOldCommitTable()));
+        tabbedPane.addTab("새로 인정한 학위", getWrappedTable(new NewOnlyCommitTable()));
+        tabbedPane.addTab("전체 학위", getWrappedTable(new NewAndOldCommitTable()));
         tabbedPane.setTabPlacement(JTabbedPane.LEFT);
 
         add(tabbedPane);
+    }
+
+    private JPanel getWrappedTable(JTable table) {
+        JPanel wrapped = new JPanel(new BorderLayout());
+        wrapped.setBorder(SEPARATOR_TABBED_TABLE);
+        wrapped.add(ScrollPaneWrapper.wrapTable(table));
+        return wrapped;
     }
 }

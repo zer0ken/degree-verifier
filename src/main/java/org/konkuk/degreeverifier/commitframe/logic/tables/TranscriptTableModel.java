@@ -13,12 +13,12 @@ public class TranscriptTableModel extends DefaultTableModel {
     public TranscriptTableModel() {
         setColumnIdentifiers(new Vector<>(Transcript.ColumnName.getNames()));
         if (appModel.isTranscriptLoaded()) {
-            update();
             setColumnIdentifiers(new Vector<>(appModel.getTranscriptTableHeader()));
+            update();
         }
         appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused ->{
-            update();
             setColumnIdentifiers(new Vector<>(appModel.getTranscriptTableHeader()));
+            update();
         });
     }
 

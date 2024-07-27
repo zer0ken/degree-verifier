@@ -19,13 +19,13 @@ public class StartCommitNextAction extends AbstractAction {
         putValue(LARGE_ICON_KEY, new FlatSVGIcon("icons/skip_next_icon.svg", getClass().getClassLoader()));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
 
-        setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit());
+        setEnabled(appModel.getNextStudentToCommit() != null);
 
         appModel.observe(AppModel.On.TRANSCRIPT_LOADED, unused ->
-                setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
+                setEnabled(appModel.getNextStudentToCommit() != null)
         );
         appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, unused ->
-                setEnabled(appModel.isTranscriptLoaded() && appModel.hasNextStudentToCommit())
+                setEnabled(appModel.getNextStudentToCommit() != null)
         );
     }
 

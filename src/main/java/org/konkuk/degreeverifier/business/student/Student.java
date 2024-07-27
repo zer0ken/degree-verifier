@@ -1,6 +1,7 @@
 package org.konkuk.degreeverifier.business.student;
 
 import org.konkuk.degreeverifier.business.csv.CsvExportable;
+import org.konkuk.degreeverifier.business.models.AppModel;
 import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
 import org.konkuk.degreeverifier.business.verify.VerifierBundle;
 import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
@@ -113,7 +114,7 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
 
     synchronized public VerifierBundle getRecommendedBundle() {
         for (VerifierBundle bundle : verifiedBundles) {
-            if (bundle.keySet().containsAll(committedDegrees.keySet())) {
+            if (isSufficientBundle(bundle)) {
                 return bundle;
             }
         }
@@ -125,7 +126,8 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
             return false;
         }
         for (String key : earlyCommittedDegrees.keySet()) {
-            if (bundle.containsKey(key) && bundle.get(key).optimizeLike(earlyCommittedDegrees.get(key)) == null) {
+            if (bundle.containsKey(key) &&
+                    bundle.get(key).optimizeLike(earlyCommittedDegrees.get(key)) == null) {
                 return false;
             }
         }
@@ -217,8 +219,33 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         return id.equals(other.id) && name.equals(other.name);
     }
 
+    synchronized public String toCsv(AppModel.ExportMode exportMode) {
+        // set bundle
+        SnapshotBundle exportBundle = getExportBundle(exportMode);
+
+        // build csv string
+        StringBuilder sb = new StringBuilder();
+        for (DegreeSnapshot degreeSnapshot : exportBundle.values()) {
+            sb.append(String.format(
+                    degreeSnapshot.toCsv(exportMode == AppModel.ExportMode.NEW_AND_OLD),
+                    university,
+                    department,
+                    name,
+                    id,
+                    year,
+                    birth,
+                    registeredSemester
+            )).append("\n");
+        }
+        return sb.toString();
+    }
+
     @Override
     synchronized public String toCsv() {
+        return toCsv(AppModel.getInstance().getExportMode());
+    }
+
+    public SnapshotBundle getExportBundle(AppModel.ExportMode exportMode) {
         SnapshotBundle exportBundle = new SnapshotBundle();
         SnapshotBundle foundEarlyCommittedDegrees = new SnapshotBundle();
         for (String key : committedDegrees.keySet()) {
@@ -230,28 +257,34 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
                 }
                 continue;
             }
-            if (!exportBundle.containsKey(key) || exportBundle.get(key).criteria.version < degree.version) {
+            if (!exportBundle.containsKey(degree.degreeName) ||
+                    exportBundle.get(degree.degreeName).criteria.version < degree.version) {
                 exportBundle.put(degree.degreeName, degree.optimize());
             }
         }
-        for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
-            exportBundle.remove(snapshot.criteria.degreeName);
+        // set bundle
+        switch (exportMode) {
+            case NEW_AND_OLD:
+                for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
+                    exportBundle.put(snapshot.criteria.degreeName, snapshot);
+                }
+                break;
+            case NEW_ONLY:
+                for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
+                    exportBundle.remove(snapshot.criteria.degreeName);
+                }
+                break;
+            case VALIDATE_OLD:
+                exportBundle = new SnapshotBundle();
+                for (DegreeSnapshot snapshot : earlyCommittedDegrees.values()) {
+                    exportBundle.put(snapshot.criteria.degreeName, snapshot);
+                }
+                for (DegreeSnapshot snapshot : foundEarlyCommittedDegrees.values()) {
+                    exportBundle.put(snapshot.criteria.degreeName, snapshot);
+                }
+                break;
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (DegreeSnapshot degreeSnapshot : exportBundle.values()) {
-            sb.append(String.format(
-                    degreeSnapshot.toCsv(),
-                    university,
-                    department,
-                    name,
-                    id,
-                    year,
-                    birth,
-                    registeredSemester
-            )).append("\n");
-        }
-        return sb.toString();
+        return exportBundle;
     }
 
     @Override

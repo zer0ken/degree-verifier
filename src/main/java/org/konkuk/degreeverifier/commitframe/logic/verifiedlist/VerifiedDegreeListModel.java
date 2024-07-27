@@ -15,6 +15,9 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifierListItem> 
     }
 
     private void _updateTree(Object o) {
+        if (o == null) {
+            return;
+        }
         Student student = (Student) o;
         if (student.isVerified()) {
             updateTree(student);
@@ -23,7 +26,7 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifierListItem> 
 
     private void updateTree(Student student) {
         removeAllElements();
-        if (!student.getSufficientDegrees().isEmpty()){
+        if (!student.getSufficientDegrees().isEmpty()) {
             addElement(new SufficientSeparatorItem());
         }
         student.getSufficientDegrees().values()

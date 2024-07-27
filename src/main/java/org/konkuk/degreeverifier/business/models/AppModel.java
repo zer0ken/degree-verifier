@@ -54,16 +54,24 @@ public class AppModel extends Observable {
     private File earlyCommitFile = null;
     private File aliasesFile = null;
 
+    private ExportMode exportMode = ExportMode.VALIDATE_OLD;
+
+    public enum ExportMode {
+        NEW_AND_OLD,
+        NEW_ONLY,
+        VALIDATE_OLD,
+    }
+
     public void submitTask(
             Runnable beforeSubmit,
             Runnable task,
             Runnable afterFinished
     ) {
         beforeSubmit.run();
-        task.run();
-        afterFinished.run();
-//        executorService.submit(() -> {
-//        });
+        executorService.submit(() -> {
+            task.run();
+            afterFinished.run();
+        });
     }
 
     public void loadTranscript(File file) {
@@ -94,6 +102,7 @@ public class AppModel extends Observable {
                 () -> {
                     transcriptLoaded = true;
                     notify(On.TRANSCRIPT_LOADED, students);
+                    startCommit(null);
                 }
         );
     }
@@ -155,11 +164,10 @@ public class AppModel extends Observable {
             int index = nameToIndex.get(columnName);
             return row.size() > index && !row.get(index).isEmpty()
                     ? row.get(index)
-                    : null;
+                    : "";
         };
-        transcriptTableHeader = Transcript.ColumnName.getNames();
+        transcriptTableHeader = table.remove(0);
         transcriptTable = table;
-        table.remove(0);
 
         tracker.setMaximum(table.size());
         for (List<String> row : table) {
@@ -179,11 +187,12 @@ public class AppModel extends Observable {
             }
             student = newStudentMap.get(student.toString());
             for (int i = 0; i < 5; i++) {
-                String courseName = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + (i+1)));
-                if (courseName == null) {
+                String courseName = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + (i + 1)));
+                if (courseName.isEmpty()) {
                     break;
                 }
-                String courseCredit = get.apply(row, Commit.ColumnName.valueOf("COURSE_CREDIT_" + (i+1)));
+                String courseCredit = get.apply(row, Commit.ColumnName.valueOf("COURSE_CREDIT_" + (i + 1)));
+
                 Lecture lecture = new Lecture(
                         null,
                         null,
@@ -191,7 +200,9 @@ public class AppModel extends Observable {
                         null,
                         courseName,
                         null,
-                        courseCredit == null ? 0 : Integer.parseInt(courseCredit),
+                        courseCredit.isEmpty()
+                                ? null
+                                : Integer.parseInt(courseCredit),
                         null
                 );
                 student.add(lecture);
@@ -216,7 +227,10 @@ public class AppModel extends Observable {
                     verifierFactory.loadAliases(file);
                     aliasesFile = file;
                 },
-                () -> notify(On.ALIASES_LOADED, file)
+                () -> {
+                    notify(On.ALIASES_LOADED, file);
+                    startCommit(null);
+                }
         );
     }
 
@@ -238,9 +252,7 @@ public class AppModel extends Observable {
                 },
                 () -> {
                     notify(On.COMMIT_LOADED, students);
-                    if (committingStudent != null) {
-                        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
-                    }
+                    startCommit(null);
                 }
         );
     }
@@ -249,7 +261,7 @@ public class AppModel extends Observable {
         Map<Commit.ColumnName, Integer> nameToIndex = Commit.getColumnIndexMap(earlyCommitTableHeader);
         BiFunction<List<String>, Commit.ColumnName, String> get = (row, columnName) -> {
             int index = nameToIndex.get(columnName);
-            return row.size() > index ? row.get(index) : null;
+            return row.size() > index ? row.get(index) : "";
         };
 
         ProgressTracker tracker = new ProgressTracker(COMMIT_LOADING_MESSAGE);
@@ -271,17 +283,23 @@ public class AppModel extends Observable {
             }
 
             String[] lectureNames = new String[10];
+            Integer[] lectureCredits = new Integer[10];
             for (int i = 1; i <= 5; i++) {
                 lectureNames[i - 1] = get.apply(row, Commit.ColumnName.valueOf("COURSE_" + i));
                 if (lectureNames[i - 1].isEmpty()) {
                     lectureNames[i - 1] = null;
+                    lectureCredits[i - 1] = null;
+                    break;
                 }
+                String courseCredit = get.apply(row, Commit.ColumnName.valueOf("COURSE_CREDIT_" + i));
+                lectureCredits[i - 1] = courseCredit.isEmpty() ? null : Integer.parseInt(courseCredit);
             }
 
             DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
                     get.apply(row, Commit.ColumnName.DEGREE_NAME),
                     Integer.parseInt(get.apply(row, Commit.ColumnName.VERSION)),
-                    lectureNames
+                    lectureNames,
+                    lectureCredits
             );
             bundle.put(degreeSnapshot.toString(), degreeSnapshot);
         }
@@ -327,15 +345,13 @@ public class AppModel extends Observable {
     }
 
     public void startCommit(Student student) {
-        executorService.submit(() -> {
-            committingStudent = student;
-            notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
-            notify(On.COMMIT_STARTED, committingStudent);
-            if (!committingStudent.isVerified()) {
-                verifyStudent(committingStudent);
-            }
-            InformationModel.getInstance().updateInformationTarget(new ArrayList<>());
-        });
+        committingStudent = student;
+        InformationModel.getInstance().updateInformationTarget(new ArrayList<>());
+        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+        notify(On.COMMIT_STARTED, committingStudent);
+        if (committingStudent != null && !committingStudent.isVerified()) {
+            executorService.submit(() -> verifyStudent(committingStudent));
+        }
     }
 
     public void startCommit() {
@@ -343,18 +359,11 @@ public class AppModel extends Observable {
     }
 
     public void startCommitNext() {
-        if (committingStudent == null) {
-            startCommit(students.firstEntry().getValue());
-        } else {
-            startCommit(students.higherEntry(committingStudent.toString()).getValue());
-        }
+        startCommit(getNextStudentToCommit());
     }
 
     public void startCommitPrevious() {
-        Student previousStudent = students.lowerEntry(committingStudent.toString()).getValue();
-        if (previousStudent != null) {
-            startCommit(previousStudent);
-        }
+        startCommit(getPreviousStudentToCommit());
     }
 
     public void setSelectedVerifiedDegree(Collection<DegreeVerifier> selectedDegrees) {
@@ -496,12 +505,44 @@ public class AppModel extends Observable {
         return students.isEmpty();
     }
 
-    public boolean hasNextStudentToCommit() {
-        return committingStudent == null || students.higherEntry(committingStudent.toString()) != null;
+    public Student getNextStudentToCommit() {
+        if (!isTranscriptLoaded()) {
+            return null;
+        }
+        Student current = committingStudent;
+        if (current == null) {
+            current = students.firstEntry().getValue();
+        } else {
+            current = students.higherEntry(current.toString()) != null
+                    ? students.higherEntry(current.toString()).getValue()
+                    : null;
+        }
+        while (current != null && current.getCommittedDegrees().isEmpty() && current.getEarlyCommittedDegrees().isEmpty()) {
+            current = students.higherEntry(current.toString()) != null
+                    ? students.higherEntry(current.toString()).getValue()
+                    : null;
+        }
+        return current;
     }
 
-    public boolean hasPreviousStudentToCommit() {
-        return committingStudent != null && students.lowerEntry(committingStudent.toString()) != null;
+    public Student getPreviousStudentToCommit() {
+        if (!isTranscriptLoaded()) {
+            return null;
+        }
+        Student current = committingStudent;
+        if (current == null) {
+            current = students.lastEntry().getValue();
+        } else {
+            current = students.lowerEntry(current.toString()) != null
+                    ? students.lowerEntry(current.toString()).getValue()
+                    : null;
+        }
+        while (current != null && current.getCommittedDegrees().isEmpty() && current.getEarlyCommittedDegrees().isEmpty()) {
+            current = students.lowerEntry(current.toString()) != null
+                    ? students.lowerEntry(current.toString()).getValue()
+                    : null;
+        }
+        return current;
     }
 
     public List<Student> getSelectedStudents() {
@@ -540,11 +581,45 @@ public class AppModel extends Observable {
         return earlyCommitTable;
     }
 
-    public List<List<String>> getCommitTable() {
+    public List<List<String>> getCommitTableNewAndOld() {
         List<List<String>> commitTable = new LinkedList<>();
 
         for (Student student : students.values()) {
-            String csv = student.toCsv().trim();
+            String csv = student.toCsv(ExportMode.NEW_AND_OLD).trim();
+            if (csv.isEmpty()) {
+                continue;
+            }
+            String[] rows = csv.split("\n");
+            for (String row : rows) {
+                commitTable.add(Arrays.asList(row.split(",")));
+            }
+        }
+
+        return commitTable;
+    }
+
+    public List<List<String>> getCommitTableNewOnly() {
+        List<List<String>> commitTable = new LinkedList<>();
+
+        for (Student student : students.values()) {
+            String csv = student.toCsv(ExportMode.NEW_ONLY).trim();
+            if (csv.isEmpty()) {
+                continue;
+            }
+            String[] rows = csv.split("\n");
+            for (String row : rows) {
+                commitTable.add(Arrays.asList(row.split(",")));
+            }
+        }
+
+        return commitTable;
+    }
+
+    public List<List<String>> getCommitTableValidateOld() {
+        List<List<String>> commitTable = new LinkedList<>();
+
+        for (Student student : students.values()) {
+            String csv = student.toCsv(ExportMode.VALIDATE_OLD).trim();
             if (csv.isEmpty()) {
                 continue;
             }
@@ -587,6 +662,14 @@ public class AppModel extends Observable {
 
     public File getTranscriptFile() {
         return transcriptFile;
+    }
+
+    public void setExportMode(ExportMode exportMode) {
+        this.exportMode = exportMode;
+    }
+
+    public ExportMode getExportMode() {
+        return exportMode;
     }
 
     public enum On implements Event {

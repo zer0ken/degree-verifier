@@ -16,5 +16,6 @@ public class StudentListSelectionListener implements ListSelectionListener {
         }
         JList<Student> list = (JList) e.getSource();
         appModel.setSelectedStudents(list.getSelectedValuesList());
+        list.ensureIndexIsVisible(list.getSelectedIndex());
     }
 }

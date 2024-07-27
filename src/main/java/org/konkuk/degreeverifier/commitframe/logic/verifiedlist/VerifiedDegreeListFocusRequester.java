@@ -9,6 +9,6 @@ public class VerifiedDegreeListFocusRequester {
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListFocusRequester(JList<VerifierListItem> list) {
-        appModel.observe(AppModel.On.COMMIT_STARTED, (student) -> list.requestFocus());
+        appModel.observe(AppModel.On.COMMIT_STARTED, unused -> list.requestFocus());
     }
 }

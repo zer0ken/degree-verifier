@@ -19,6 +19,9 @@ public class CommittedDegreeListModel extends DefaultListModel<VerifierListItem>
 
     private void update(Student student) {
         removeAllElements();
+        if (student == null) {
+            return;
+        }
         if (!student.getCommittedDegrees().isEmpty()) {
             addElement(new NewlyCommittedSeparatorItem());
             student.getCommittedDegrees().values().forEach(degree -> addElement(new NewlyCommittedItem(degree)));

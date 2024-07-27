@@ -2,7 +2,6 @@ package org.konkuk.degreeverifier.commitframe.actions;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.konkuk.degreeverifier.business.models.AppModel;
-import org.konkuk.degreeverifier.business.student.Student;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +24,8 @@ public class ClearCommitAction extends AbstractAction {
 
         setEnabled(appModel.getCommittingStudent() != null && !appModel.getCommittingStudent().getCommittedDegrees().isEmpty());
 
-        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, student ->
-                setEnabled(!((Student) student).getCommittedDegrees().isEmpty()));
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, unused ->
+                setEnabled(appModel.getCommittingStudent() != null && !appModel.getCommittingStudent().getCommittedDegrees().isEmpty()));
     }
 
     @Override

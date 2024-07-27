@@ -27,8 +27,30 @@ public class ExportCommitAction extends AbstractAction {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     }
 
+    private AppModel.ExportMode getMode(ActionEvent e) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        panel.add(new JLabel("test1"), gbc);
+        gbc.gridy++;
+        panel.add(new JLabel("test2"), gbc);
+        gbc.gridy++;
+        panel.add(new JLabel("test3"), gbc);
+        gbc.gridy++;
+
+        int confirm = JOptionPane.showConfirmDialog((e != null ? (Component) e.getSource() : null),
+                panel, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
+        if (confirm == JOptionPane.OK_OPTION) {
+            return AppModel.ExportMode.NEW_ONLY;
+        }
+        return null;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println(getMode(e));
+
         JFileChooser chooser = new JFileChooser() {
             @Override
             public void approveSelection() {
