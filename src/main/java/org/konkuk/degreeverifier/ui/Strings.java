@@ -1,6 +1,9 @@
 package org.konkuk.degreeverifier.ui;
 
 public class Strings {
+    /** LauncherFrame */
+    public static final String LAUNCHER_TITLE = "빠른 검사 도구";
+
     /** CommitFrame */
     public static final String APP_TITLE = "마이크로디그리 이수 검사기";
 
