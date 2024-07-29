@@ -8,9 +8,8 @@ import org.konkuk.degreeverifier.common.logic.statusbar.ProgressTracker;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.konkuk.degreeverifier.ui.Strings.VERIFIER_LOADING_MESSAGE;
 import static org.konkuk.degreeverifier.ui.Strings.VERIFIER_SAVING_MESSAGE;
@@ -27,27 +26,14 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     private boolean isLoaded = false;
 
-    synchronized public void loadLatestVerifiers() {
-        File root = new File(DefaultPaths.VERIFIERS_PATH);
-        long latest = 0;
-        File target = null;
-        for (File file : root.listFiles()) {
-            if (file.isDirectory() && file.lastModified() > latest) {
-                latest = file.lastModified();
-                target = file;
-            }
-        }
-        loadVerifiers(target == null ? DefaultPaths.VERIFIERS_PATH : target.getAbsolutePath());
-    }
+    private final List<Set<String>> aliases = new LinkedList<>();
 
-    synchronized public void loadVerifiers(String directory) {
-        File dir = new File(directory);
-        File[] specs = dir.listFiles();
+    synchronized public void loadVerifiers(File directory) {
+        File[] specs = directory.listFiles();
 
         if (specs == null) {
             return;
         }
-        clear();
 
         ProgressTracker tracker = new ProgressTracker(VERIFIER_LOADING_MESSAGE);
         tracker.setMaximum(specs.length);
@@ -60,6 +46,13 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
         }
         tracker.finish();
         isLoaded = true;
+    }
+
+    synchronized public void loadAliases(File file) {
+        List<List<String>> table = FileUtil.fromCsvFile(file);
+        for (List<String> row : table) {
+            aliases.add(new HashSet<>(row.stream().map(String::toLowerCase).collect(Collectors.toSet())));
+        }
     }
 
     synchronized public void updateAllVerifiers(Collection<DegreeCriteria> criteriaCollection) {
@@ -84,5 +77,15 @@ public class VerifierFactory extends LinkedList<DegreeVerifier> {
 
     public boolean isLoaded() {
         return isLoaded;
+    }
+
+    public List<Set<String>> getAliases() {
+        return aliases;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        isLoaded = false;
     }
 }

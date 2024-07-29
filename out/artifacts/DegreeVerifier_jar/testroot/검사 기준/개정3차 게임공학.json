@@ -1,0 +1,30 @@
+{
+    "degree_name": "게임공학",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "게임프로그래밍"}},
+        {"lecture": {"name": "게임엔진기초"}},
+        {"lecture": {"name": "게임알고리즘"}},
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "게임공학"}},
+                {"lecture": {"name": "컴퓨터그래픽스"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "게임프로젝트"}},
+                {"lecture": {"name": "게임캡스톤디자인"}}
+            ],
+            "label": "택1"
+        }
+    ]},
+    "min_credit": 9,
+    "version": 3,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2024,
+    "to_semester": "2학기"
+}

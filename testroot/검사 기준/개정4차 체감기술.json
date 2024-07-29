@@ -1,0 +1,27 @@
+{
+    "degree_name": "체감기술",
+    "criteria": {"subcriteria": [
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "실감디바이스기술"}},
+                {"lecture": {"name": "실감피지컬컴퓨팅"}}
+            ],
+            "label": "택1"
+        },
+        {"lecture": {"name": "게임인터렉티브테크놀로지"}},
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "HCI"}},
+                {"lecture": {"name": "HCI특론"}}
+            ],
+            "label": "택1"
+        },
+        {"lecture": {"name": "혼합현실특론"}}
+    ]},
+    "min_credit": 12,
+    "version": 4,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

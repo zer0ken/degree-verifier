@@ -1,0 +1,13 @@
+{
+    "degree_name": "실감미디어글로벌이노베이터",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "글로벌학제간프로젝트기획"}},
+        {"lecture": {"name": "글로벌학제간융합프로젝트"}},
+        {"lecture": {"name": "글로벌리빙랩프로젝트"}},
+        {"lecture": {"name": "컴퓨터공학산학연구프로젝트"}}
+    ]},
+    "min_credit": 9,
+    "version": 4,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

@@ -9,6 +9,7 @@ public class DegreeNode extends DefaultMutableTreeNode {
     private final EditableDegreeCriteria degree;
 
     private final DefaultMutableTreeNode minimumCreditNode = new DefaultMutableTreeNode();
+    private final DefaultMutableTreeNode validPeriodnode = new DefaultMutableTreeNode();
     private final RecursiveNode recursiveNode;
 
     public DegreeNode(EditableDegreeCriteria degree) {
@@ -17,7 +18,10 @@ public class DegreeNode extends DefaultMutableTreeNode {
         recursiveNode = new RecursiveNode(degree.getEditableRecursiveCriteria());
 
         minimumCreditNode.setUserObject(degree.getValidCreditString());
+        validPeriodnode.setUserObject(degree.getValidPeriodString());
+
         add(minimumCreditNode);
+        add(validPeriodnode);
         add(recursiveNode);
     }
 
@@ -27,6 +31,9 @@ public class DegreeNode extends DefaultMutableTreeNode {
 
         minimumCreditNode.setUserObject(degree.getValidCreditString());
         model.nodeChanged(minimumCreditNode);
+
+        validPeriodnode.setUserObject(degree.getValidPeriodString());
+        model.nodeChanged(validPeriodnode);
 
         recursiveNode.update(model);
     }

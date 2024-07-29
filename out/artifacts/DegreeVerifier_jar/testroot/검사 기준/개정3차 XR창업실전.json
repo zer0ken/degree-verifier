@@ -1,0 +1,15 @@
+{
+    "degree_name": "XR창업실전",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "XRProjectManagement"}},
+        {"lecture": {"name": "XR공유대학창업캠프(PBL)"}},
+        {"lecture": {"name": "글로벌사회적가치와창업사례"}},
+        {"lecture": {"name": "기업가정신과벤처경영"}}
+    ]},
+    "min_credit": 9,
+    "version": 3,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2024,
+    "to_semester": "2학기"
+}

@@ -1,8 +1,5 @@
 package org.konkuk.degreeverifier.common.components;
 
-import org.konkuk.degreeverifier.mainframe.logic.informationtree.InformationTreeCellRenderer;
-import org.konkuk.degreeverifier.mainframe.logic.informationtree.InformationTreeModel;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;

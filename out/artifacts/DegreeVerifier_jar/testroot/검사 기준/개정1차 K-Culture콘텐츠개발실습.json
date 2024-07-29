@@ -1,0 +1,15 @@
+{
+    "degree_name": "K-Culture콘텐츠개발실습",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "K-콘텐츠(한류)의이해"}},
+        {"lecture": {"name": "디지털스토리텔링실습"}},
+        {"lecture": {"name": "대중예술콘텐츠실무기획"}},
+        {"lecture": {"name": "대중예술콘텐츠창작실습"}}
+    ]},
+    "min_credit": 9,
+    "version": 1,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2022,
+    "to_semester": "동계학기"
+}

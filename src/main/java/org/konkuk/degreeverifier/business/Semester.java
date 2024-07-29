@@ -19,6 +19,12 @@ public class Semester implements Comparable<Semester> {
                     return type;
                 }
             }
+            if (value.equals("하계 계절학기")){
+                return Type.SUMMER;
+            }
+            if (value.equals("동계 계절학기")){
+                return Type.WINTER;
+            }
             return null;
         }
 

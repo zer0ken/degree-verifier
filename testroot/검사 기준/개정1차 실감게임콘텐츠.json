@@ -1,0 +1,44 @@
+{
+    "degree_name": "실감게임콘텐츠",
+    "criteria": {"subcriteria": [
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "게임엔진기초"}},
+                {"lecture": {"name": "게임학기초"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "가상현실"}},
+                {"lecture": {"name": "메타버스의이해"}},
+                {"lecture": {"name": "게임디자인"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "3D게임그래픽"}},
+                {"lecture": {"name": "체감형게임제작"}}
+            ],
+            "label": "택1"
+        },
+        {
+            "max": 1,
+            "subcriteria": [
+                {"lecture": {"name": "메타버스프로젝트기획(1)"}},
+                {"lecture": {"name": "3D게임프로젝트"}}
+            ],
+            "label": "택1"
+        }
+    ]},
+    "min_credit": 9,
+    "version": 1,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2022,
+    "to_semester": "동계학기"
+}

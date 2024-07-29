@@ -1,0 +1,14 @@
+{
+    "degree_name": "실감영상제작",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "영상특수효과론"}},
+        {"lecture": {"name": "영상촬영과연출"}},
+        {"lecture": {"name": "영상문법기초"}},
+        {"lecture": {"name": "XR스튜디오"}},
+        {"lecture": {"name": "XR콘텐츠프로듀싱"}}
+    ]},
+    "min_credit": 9,
+    "version": 3,
+    "from_year": 2021,
+    "from_semester": "2학기"
+}

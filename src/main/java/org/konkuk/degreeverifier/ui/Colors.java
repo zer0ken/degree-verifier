@@ -7,6 +7,7 @@ public class Colors {
 
     public static final Color DEFAULT_BACKGROUND = new Color(0xf7f8fa);
 
+    public static final Color COMMON_BLACK = new Color(0x000000);
     public static final Color COMMON_GRAY = new Color(0x857f7f);
     public static final Color COMMON_WHITE = new Color(0xFFFFFF);
     public static final Color COMMON_RED = new Color(0xFF6262);
@@ -27,4 +28,7 @@ public class Colors {
     public static final Color NOT_PASSED_NODE_FOREGROUND = COMMON_GRAY;
     public static final Color DUPLICATED_NODE_FOREGROUND = COMMON_ORANGE;
     public static final Color PASSED_NODE_FOREGROUND = COMMON_GREEN;
+
+    public static final Color EARLY_COMMITTED_SEPARATOR_FOREGROUND = COMMON_GRAY;
+    public static final Color NEWLY_COMMITTED_SEPARATOR_FOREGROUND = COMMON_GREEN;
 }

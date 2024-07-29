@@ -2,16 +2,19 @@ package org.konkuk.degreeverifier.business;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.konkuk.degreeverifier.business.verify.SnapshotBundle;
-import org.konkuk.degreeverifier.business.verify.csv.CsvExportable;
+import org.konkuk.degreeverifier.business.csv.CsvExportable;
 
 import java.io.*;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import static java.nio.file.Files.newBufferedReader;
 
 /**
  * 파일로부터 데이터를 불러오는 함수들을 묶어둔 클래스입니다.
@@ -20,6 +23,8 @@ import java.util.*;
  * @since 2024-05-24T23:23:06.064Z
  */
 public class FileUtil {
+    public static final String UTF8_BOM = "\uFEFF";
+
     synchronized public static <T> T fromJsonFile(String fileName, Class<T> classOfT) {
         Gson gson = new Gson();
         Path path = Paths.get(fileName);
@@ -58,50 +63,14 @@ public class FileUtil {
         }
     }
 
-    synchronized public static List<String[]> fromTsvFile(String fileName) {
-        List<String[]> tokenizedLines = new ArrayList<>();
-        File file = new File(fileName);
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fis))
-        ) {
-            br.lines().forEach(line -> tokenizedLines.add(line.split("\t")));
-        } catch (Exception e) {
-            System.err.println("Exception occurred while reading TSV file: " + fileName);
-            throw new RuntimeException(e);
-        }
-        return tokenizedLines;
-    }
-
-    synchronized public static void exportCommit(String fileName, String content) {
-        try {
-            File file = new File(fileName);
-            file.createNewFile();
-            Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            System.err.println("Exception occurred while writing TXT file: " + fileName);
-            throw new RuntimeException(e);
-        }
-    }
-
-    synchronized public static SnapshotBundle loadCommit(File file) {
-        SnapshotBundle bundle = new SnapshotBundle();
-        try {
-            Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).stream()
-                    .filter(line -> !line.trim().isEmpty()).forEach(line -> bundle.put(line.trim(), null));
-        } catch (IOException e) {
-            System.err.println("Exception occurred while reading TXT file: " + file.getName());
-        }
-        return bundle;
-    }
-
-    synchronized public static void toCsvFile(File file, String[] header, Collection<? extends CsvExportable> data) {
+    synchronized public static void toCsvFile(File file, List<String> header, Collection<? extends CsvExportable> data) {
+        boolean exists = file.exists();
         try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8))
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))
         ) {
-            file.createNewFile();
-            writer.write(String.join(",", header) + "\n");
-
+            if (!exists) {
+                writer.write(String.join(",", header) + "\n");
+            }
             for (CsvExportable datum : data) {
                 writer.write(datum.toCsv());
             }
@@ -112,26 +81,22 @@ public class FileUtil {
 
     synchronized public static List<List<String>> fromCsvFile(File file) {
         List<List<String>> table = new LinkedList<>();
-        try(Scanner sc = new Scanner(file, "UTF-8")) {
-            while (sc.hasNextLine()) {
-                table.add(new LinkedList<>(Arrays.asList(sc.nextLine().trim().split(","))));
+        boolean bomChecked = false;
+        try (BufferedReader reader = newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
+            for (; ; ) {
+                String line = reader.readLine();
+                if (line == null)
+                    break;
+                if (!bomChecked && line.startsWith(FileUtil.UTF8_BOM))
+                    line = line.substring(1);
+                bomChecked = true;
+                List<String> tokens = new LinkedList<>(Arrays.asList(line.trim().split(",")));
+                tokens.replaceAll(String::trim);
+                table.add(tokens);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return table;
-    }
-
-    /**
-     * 이 메소드는 테스트 목적으로만 사용됩니다.
-     */
-    synchronized public static <T> String getAbsolutePathOfResource(Class<T> requester, String resourceName) {
-        String asciiFileName = requester.getResource(resourceName).getFile();
-        try {
-            String utf8FileName = URLDecoder.decode(asciiFileName, "UTF-8");
-            return (new File(URLDecoder.decode(utf8FileName, "UTF-8"))).getPath();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -6,10 +6,8 @@ import org.konkuk.degreeverifier.business.verify.snapshot.DegreeSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.RecursiveSnapshot;
 import org.konkuk.degreeverifier.business.verify.snapshot.Snapshot;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 이 클래스는 주어진 상태에서 특정 학위를 인정받을 수 있는지 검증합니다.
@@ -17,8 +15,10 @@ import java.util.List;
  * @author 이현령
  * @since 2024-05-24T16:51:21.363Z
  */
-public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snapshotable {
+public class DegreeVerifier extends DegreeCriteria implements Snapshotable {
     private final RecursiveVerifier recursiveVerifier;
+    public final Set<String> sufficientDegrees = new LinkedHashSet<>();
+    public final Set<String> insufficientDegrees = new LinkedHashSet<>();
 
     private boolean verified = false;
 
@@ -28,11 +28,11 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         recursiveVerifier.setDegreeName(toCopy.degreeName);
     }
 
-    public List<LectureVerifier> match(List<Lecture> lectures) {
+    public synchronized List<LectureVerifier> match(List<Lecture> lectures) {
         return recursiveVerifier.match(lectures, getMinimumSemester(), getMaximumSemester());
     }
 
-    public boolean verify() {
+    public synchronized boolean verify() {
         try {
             verified = recursiveVerifier.verify() && creditize() >= minimumCredit;
         } catch (ImportantCriteriaFailedException e) {
@@ -41,30 +41,33 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
         return verified;
     }
 
-    public void optimize() {
+    public synchronized DegreeSnapshot optimize() {
         if (!verified) {
-            return;
+            return (DegreeSnapshot) takeSnapshot();
         }
-
         List<LectureVerifier> lectureVerifiers = new ArrayList<>();
+        List<LectureVerifier> holdingLectureVerifiers = new ArrayList<>();
 
         LinkedList<RecursiveVerifier> queue = new LinkedList<>();
         queue.add(recursiveVerifier);
         while (!queue.isEmpty()) {
             RecursiveVerifier cur = queue.pop();
             if (cur.getLectureVerifier() != null && cur.getLectureVerifier().getMatchedLecture() != null) {
-                LectureVerifier lectureVerifier = cur.getLectureVerifier();
-                lectureVerifiers.add(lectureVerifier);
+                lectureVerifiers.add(cur.getLectureVerifier());
             } else {
                 queue.addAll(cur.getSubRecursiveVerifiers());
             }
         }
         lectureVerifiers.sort(Comparator.comparingInt(LectureVerifier::creditize));
 
-        int totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
-        while (totalCredit >= minimumCredit + lectureVerifiers.get(0).creditize()) {
+        while (creditize() > minimumCredit) {
             LectureVerifier discarded = null;
             for (LectureVerifier lectureVerifier : lectureVerifiers) {
+                if (lectureVerifier.isHolding()) {
+                    holdingLectureVerifiers.add(lectureVerifier);
+                } else {
+                    continue;
+                }
                 lectureVerifier.release();
                 if (!verify()) {
                     lectureVerifier.hold();
@@ -77,12 +80,63 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
                 break;
             } else {
                 lectureVerifiers.remove(discarded);
-                totalCredit = lectureVerifiers.stream().reduce(0, (acc, lecture) -> acc + lecture.creditize(), Integer::sum);
+                holdingLectureVerifiers.add(discarded);
             }
+        }
+        verify();
+        DegreeSnapshot snapshot = (DegreeSnapshot) takeSnapshot();
+        for (LectureVerifier holdingLectureVerifier : holdingLectureVerifiers) {
+            holdingLectureVerifier.hold();
+        }
+        return snapshot;
+    }
+
+    public synchronized DegreeSnapshot optimizeLike(DegreeSnapshot snapshot) {
+        if (!Objects.equals(degreeName, snapshot.criteria.degreeName) ||
+                !Objects.equals(version, snapshot.criteria.version)) {
+            return null;
+        }
+
+        List<LectureVerifier> lectureVerifiers = new ArrayList<>();
+        Set<String> lecturesToPreserve = snapshot.lectureSnapshots.stream()
+                .map(l -> l.matched.name).collect(Collectors.toSet());
+
+        LinkedList<RecursiveVerifier> queue = new LinkedList<>();
+        queue.add(recursiveVerifier);
+        while (!queue.isEmpty()) {
+            RecursiveVerifier cur = queue.pop();
+            if (cur.getLectureVerifier() != null && cur.getLectureVerifier().getMatchedLecture() != null) {
+                lectureVerifiers.add(cur.getLectureVerifier());
+            } else {
+                queue.addAll(cur.getSubRecursiveVerifiers());
+            }
+        }
+
+        List<LectureVerifier> holdingLectureVerifiers = new ArrayList<>();
+        for (LectureVerifier lectureVerifier : lectureVerifiers) {
+            if (!lectureVerifier.isHolding()) {
+                continue;
+            }
+            holdingLectureVerifiers.add(lectureVerifier);
+            lectureVerifier.release();
+            if (lecturesToPreserve.contains(lectureVerifier.getMatchedLecture().name)) {
+                lectureVerifier.hold();
+            }
+        }
+
+        verify();
+        DegreeSnapshot newSnapshot = (DegreeSnapshot) takeSnapshot();
+        for (LectureVerifier holdingLectureVerifier : holdingLectureVerifiers) {
+            holdingLectureVerifier.hold();
+        }
+
+        if (newSnapshot.verified) {
+            return newSnapshot;
+        } else {
+            return null;
         }
     }
 
-    @Override
     public int creditize() {
         return recursiveVerifier.creditize();
     }
@@ -95,9 +149,5 @@ public class DegreeVerifier extends DegreeCriteria implements Creditizable, Snap
                 creditize(),
                 (RecursiveSnapshot) recursiveVerifier.takeSnapshot()
         );
-    }
-
-    public RecursiveVerifier getRecursiveVerifier() {
-        return recursiveVerifier;
     }
 }

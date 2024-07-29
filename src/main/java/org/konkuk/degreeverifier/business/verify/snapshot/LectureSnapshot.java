@@ -3,9 +3,10 @@ package org.konkuk.degreeverifier.business.verify.snapshot;
 
 import org.konkuk.degreeverifier.business.student.LectureData;
 import org.konkuk.degreeverifier.business.verify.criteria.LectureCriteria;
-import org.konkuk.degreeverifier.business.verify.verifier.Creditizable;
 
-public class LectureSnapshot implements Snapshot, Creditizable {
+import java.util.Objects;
+
+public class LectureSnapshot implements Snapshot {
     public final LectureCriteria criteria;
     public final LectureData matched;
     public final boolean verified;
@@ -24,22 +25,30 @@ public class LectureSnapshot implements Snapshot, Creditizable {
 
     public LectureSnapshot(String lectureName, Integer lectureCredit) {
         criteria = null;
-        matched = new LectureData(null, null, lectureName, lectureCredit, null);
+        matched = new LectureData(null, null, null, null, lectureName, null, lectureCredit, null);
         verified = true;
         degreeName = null;
         duplicatedDegrees = null;
     }
 
     @Override
-    public int creditize() {
+    public boolean equals(Object obj) {
+        if (!(obj instanceof LectureSnapshot)) {
+            return false;
+        }
+        LectureSnapshot o = (LectureSnapshot) obj;
+        return Objects.equals(matched.name, o.matched.name);
+    }
+
+    public Integer creditize() {
         if (verified) {
             return matched.credit;
         }
-        return 0;
+        return null;
     }
 
     @Override
     public String toString() {
-        return criteria.lectureName;
+        return criteria != null ? criteria.lectureName : matched != null ? matched.name : "";
     }
 }

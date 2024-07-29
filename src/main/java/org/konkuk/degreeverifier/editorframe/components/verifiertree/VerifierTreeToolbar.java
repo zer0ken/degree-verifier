@@ -2,7 +2,6 @@ package org.konkuk.degreeverifier.editorframe.components.verifiertree;
 
 import org.konkuk.degreeverifier.common.components.InnerFoldableTreeToolbar;
 import org.konkuk.degreeverifier.editorframe.actions.CreateRecursiveVerifierAction;
-import org.konkuk.degreeverifier.editorframe.actions.OpenVerifierFileAction;
 import org.konkuk.degreeverifier.editorframe.actions.RemoveRecursiveVerifierAction;
 import org.konkuk.degreeverifier.editorframe.actions.RollbackSelectedNodeAction;
 
@@ -15,7 +14,5 @@ public class VerifierTreeToolbar extends InnerFoldableTreeToolbar {
         add(new CreateRecursiveVerifierAction());
         add(new RemoveRecursiveVerifierAction());
         add(new RollbackSelectedNodeAction());
-        addSeparator();
-        add(new OpenVerifierFileAction());
     }
 }
