@@ -8,12 +8,12 @@ import java.awt.*;
 
 import static org.konkuk.degreeverifier.ui.Dimensions.MINIMUM_LAUNCHER_FRAME_SIZE;
 import static org.konkuk.degreeverifier.ui.Dimensions.PREFFERED_LAUNCHER_FRAME_SIZE;
-import static org.konkuk.degreeverifier.ui.Strings.APP_TITLE;
+import static org.konkuk.degreeverifier.ui.Strings.LAUNCHER_TITLE;
 
 public class LauncherFrame extends DegreeVerifierFrame {
     public LauncherFrame() {
         super();
-        setTitle(APP_TITLE);
+        setTitle(LAUNCHER_TITLE);
         setMinimumSize(MINIMUM_LAUNCHER_FRAME_SIZE);
         setPreferredSize(PREFFERED_LAUNCHER_FRAME_SIZE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

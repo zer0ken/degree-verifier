@@ -31,7 +31,7 @@ public class ActionPanel extends JPanel {
                 CommitFrame.getInstance().setVisible(true)
         );
 
-        JButton autoCommitButton = new JButton("자동 검사");
+        JButton autoCommitButton = new JButton("자동 검사 및 검토");
         autoCommitButton.addActionListener(e -> {
             AppModel model = AppModel.getInstance();
             model.commitAllStudentAutomaticallyAndExport(e);

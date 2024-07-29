@@ -6,7 +6,6 @@ public class MenuBar extends JMenuBar {
     public MenuBar() {
         add(new FileMenu());
         add(new VerifyMenu());
-        add(new CommitMenu());
         add(new SettingMenu());
 
         add(Box.createHorizontalStrut(30));
