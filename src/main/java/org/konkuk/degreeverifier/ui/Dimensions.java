@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Dimensions {
     public static final Dimension MINIMUM_LAUNCHER_FRAME_SIZE = new Dimension(600, 300);
-    public static final Dimension PREFFERED_LAUNCHER_FRAME_SIZE = new Dimension(800, 300);
+    public static final Dimension PREFFERED_LAUNCHER_FRAME_SIZE = new Dimension(900, 340);
 
     public static final Dimension MINIMUM_COMMIT_FRAME_SIZE = new Dimension(760, 500);
     public static final Dimension PREFERRED_COMMIT_FRAME_SIZE = new Dimension(1240, 760);
@@ -16,8 +16,8 @@ public class Dimensions {
     public static final Dimension MINIMUM_LECTURE_LIST_SIZE = new Dimension(220, 180);
     public static final Dimension PREFERRED_LECTURE_LIST_SIZE = new Dimension(220, 280);
 
-    public static final Dimension MINIMUM_INFORMATION_PANEL_SIZE = new Dimension(200, 180);
-    public static final Dimension PREFERRED_INFORMATION_PANEL_SIZE = new Dimension(340, 0);
+    public static final Dimension MINIMUM_INFORMATION_PANEL_SIZE = new Dimension(300, 180);
+    public static final Dimension PREFERRED_INFORMATION_PANEL_SIZE = new Dimension(380, 0);
 
     public static final Dimension STATUS_BAR_SIZE = new Dimension(0, 24);
 

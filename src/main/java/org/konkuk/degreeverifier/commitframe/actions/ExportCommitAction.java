@@ -27,30 +27,61 @@ public class ExportCommitAction extends AbstractAction {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     }
 
-    private AppModel.ExportMode getMode(ActionEvent e) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+    private AppModel.ExportMode inputMode(ActionEvent e) {
+        JRadioButton validOldButton = new JRadioButton(EXPORT_COMMIT_VALIDATE_OLD);
+        JRadioButton newOnlyButton = new JRadioButton(EXPORT_COMMIT_NEW_ONLY);
+        JRadioButton newAndOldButton = new JRadioButton(EXPORT_COMMIT_NEW_AND_OLD);
+        validOldButton.setToolTipText(EXPORT_COMMIT_VALIDATE_OLD_TOOLTIP);
+        newOnlyButton.setToolTipText(EXPORT_COMMIT_NEW_ONLY_TOOLTIP);
+        newAndOldButton.setToolTipText(EXPORT_COMMIT_NEW_AND_OLD_TOOLTIP);
 
-        panel.add(new JLabel("test1"), gbc);
-        gbc.gridy++;
-        panel.add(new JLabel("test2"), gbc);
-        gbc.gridy++;
-        panel.add(new JLabel("test3"), gbc);
-        gbc.gridy++;
+        switch (appModel.getExportMode()){
+            case NEW_AND_OLD:
+                newAndOldButton.setSelected(true);
+                break;
+            case NEW_ONLY:
+                newOnlyButton.setSelected(true);
+                break;
+            case VALIDATE_OLD:
+                validOldButton.setSelected(true);
+                break;
+        }
+
+        validOldButton.addActionListener(e_ -> appModel.setExportMode(AppModel.ExportMode.VALIDATE_OLD));
+        newOnlyButton.addActionListener(e_ -> appModel.setExportMode(AppModel.ExportMode.NEW_ONLY));
+        newAndOldButton.addActionListener(e_ -> appModel.setExportMode(AppModel.ExportMode.NEW_AND_OLD));
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(validOldButton);
+        buttonGroup.add(newOnlyButton);
+        buttonGroup.add(newAndOldButton);
+
+        JPanel inner = new JPanel();
+        inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
+        inner.add(new JLabel("파일 출력 설정을 선택하세요."));
+        inner.add(Box.createVerticalStrut(12));
+        inner.add(validOldButton);
+        inner.add(newOnlyButton);
+        inner.add(newAndOldButton);
 
         int confirm = JOptionPane.showConfirmDialog((e != null ? (Component) e.getSource() : null),
-                panel, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
+                inner, EXPORT_COMMITTED_DEGREE, JOptionPane.OK_CANCEL_OPTION);
         if (confirm == JOptionPane.OK_OPTION) {
-            return AppModel.ExportMode.NEW_ONLY;
+            return appModel.getExportMode();
         }
         return null;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(getMode(e));
+        AppModel.ExportMode mode=  inputMode(e);
+        if (mode == null){
+            return;
+        }
+        ExportCommitAction.defaultActionPerformed(e, mode);
+    }
 
+    public static void defaultActionPerformed(ActionEvent e, AppModel.ExportMode mode) {
         JFileChooser chooser = new JFileChooser() {
             @Override
             public void approveSelection() {
@@ -81,8 +112,8 @@ public class ExportCommitAction extends AbstractAction {
         chooser.setDialogTitle(EXPORT_COMMIT_DIALOG_TITLE);
         int result = chooser.showSaveDialog(e != null ? (Component) e.getSource() : null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            appModel.export(chooser.getSelectedFile());
-
+            AppModel.getInstance().setExportMode(mode);
+            AppModel.getInstance().export(chooser.getSelectedFile());
             try {
                 Desktop.getDesktop().open(chooser.getCurrentDirectory());
             } catch (IOException ex) {
