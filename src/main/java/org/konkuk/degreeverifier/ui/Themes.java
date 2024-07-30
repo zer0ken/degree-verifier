@@ -7,11 +7,14 @@ import org.konkuk.degreeverifier.common.components.OutlinedFlatTextBorder;
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
+import java.util.Locale;
 
 import static org.konkuk.degreeverifier.ui.Colors.DEFAULT_BACKGROUND;
 
 public class Themes {
     public static boolean setup() {
+        Locale.setDefault(Locale.KOREA);
+
         boolean succeed = FlatLightLaf.setup();
 
         if (succeed) {

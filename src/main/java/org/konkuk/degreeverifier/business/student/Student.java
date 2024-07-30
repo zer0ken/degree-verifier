@@ -147,7 +147,7 @@ public class Student extends LinkedHashSet<Lecture> implements CsvExportable, Co
         updateSufficientInsufficientDegrees();
     }
 
-    synchronized public void clearCommit() {
+    synchronized public void decommitAll() {
         committedDegrees.clear();
         updateSufficientInsufficientDegrees();
     }

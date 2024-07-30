@@ -15,7 +15,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
     }
 
     public void verify(Student student) {
-        student.clearCommit();
+        student.resetCommit();
         List<Lecture> lectures = new LinkedList<>(student);
 
         // 1. Match and Hold Lectures
@@ -102,7 +102,7 @@ public class Verifier extends LinkedList<DegreeVerifier> {
                 notVerifiedDegrees.put(degreeVerifier.toString(), degreeVerifier);
             }
         }
-
+        verifierBundles.sort((o1, o2) -> o2.size() - o1.size());
         student.setVerifiedBundles(verifierBundles);
         student.setNotVerifiedDegrees(notVerifiedDegrees);
     }

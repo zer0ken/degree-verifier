@@ -68,9 +68,9 @@ public class AppModel extends Observable {
             Runnable afterFinished
     ) {
         beforeSubmit.run();
+        task.run();
+        afterFinished.run();
         executorService.submit(() -> {
-            task.run();
-            afterFinished.run();
         });
     }
 
@@ -229,7 +229,7 @@ public class AppModel extends Observable {
                 },
                 () -> {
                     notify(On.ALIASES_LOADED, file);
-                    startCommit(null);
+                    verifyAllStudents();
                 }
         );
     }
@@ -295,9 +295,15 @@ public class AppModel extends Observable {
                 lectureCredits[i - 1] = courseCredit.isEmpty() ? null : Integer.parseInt(courseCredit);
             }
 
+            String version = get.apply(row, Commit.ColumnName.VERSION);
+            String totalCredit = get.apply(row, Commit.ColumnName.TOTAL_CREDIT);
+            String requiredCredit = get.apply(row, Commit.ColumnName.REQUIRED_CREDIT);
+
             DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
                     get.apply(row, Commit.ColumnName.DEGREE_NAME),
-                    Integer.parseInt(get.apply(row, Commit.ColumnName.VERSION)),
+                    Integer.parseInt(version),
+                    totalCredit.isEmpty() ? null : Integer.parseInt(totalCredit),
+                    requiredCredit.isEmpty() ? null : Integer.parseInt(requiredCredit),
                     lectureNames,
                     lectureCredits
             );
@@ -305,7 +311,7 @@ public class AppModel extends Observable {
         }
         for (String key : bundleMap.keySet()) {
             Student student = students.get(key);
-            student.clearCommit();
+            student.decommitAll();
             student.setEarlyCommittedDegrees(bundleMap.get(student.toString()).values());
         }
         tracker.finish();
@@ -349,7 +355,7 @@ public class AppModel extends Observable {
         InformationModel.getInstance().updateInformationTarget(new ArrayList<>());
         notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
         notify(On.COMMIT_STARTED, committingStudent);
-        if (committingStudent != null && !committingStudent.isVerified()) {
+        if (committingStudent != null && !committingStudent.isVerified() && verifierFactory.isLoaded()) {
             executorService.submit(() -> verifyStudent(committingStudent));
         }
     }
@@ -410,7 +416,7 @@ public class AppModel extends Observable {
         if (committingStudent == null || !committingStudent.isVerified()) {
             return;
         }
-        committingStudent.clearCommit();
+        committingStudent.decommitAll();
         notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
         notify(On.COMMIT_UPDATED, null);
     }
@@ -425,6 +431,7 @@ public class AppModel extends Observable {
             List<Callable<Object>> verifyTasks = new ArrayList<>(students.size());
             for (Student student : students.values()) {
                 verifyTasks.add(() -> {
+                    student.resetCommit();
                     verifierFactory.createVerifier().verify(student);
                     tracker.increment();
                     return null;
@@ -444,7 +451,16 @@ public class AppModel extends Observable {
     }
 
     public void verifyAllStudents() {
-        executorService.submit(getVerifyAllTask());
+        submitTask(
+                () -> {
+                },
+                getVerifyAllTask(),
+                () -> {
+                    if (committingStudent != null) {
+                        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+                    }
+                }
+        );
     }
 
     private Runnable getCommitAllAutomaticallyTask() {
@@ -480,7 +496,16 @@ public class AppModel extends Observable {
     }
 
     public void commitAllStudentAutomatically() {
-        executorService.submit(getCommitAllAutomaticallyTask());
+        submitTask(
+                () -> {
+                },
+                getCommitAllAutomaticallyTask(),
+                () -> {
+                    if (committingStudent != null) {
+                        notify(On.SELECTED_STUDENT_COMMIT_UPDATED, committingStudent);
+                    }
+                }
+        );
     }
 
     public void commitAllStudentAutomaticallyAndExport(ActionEvent event) {

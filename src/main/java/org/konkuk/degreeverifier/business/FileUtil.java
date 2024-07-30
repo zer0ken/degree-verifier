@@ -29,7 +29,7 @@ public class FileUtil {
         Gson gson = new Gson();
         Path path = Paths.get(fileName);
         try {
-            String json = new String(Files.readAllBytes(path));
+            String json = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
             return gson.fromJson(json, classOfT);
         } catch (Exception e) {
             System.err.println("Exception occurred while reading json file: " + fileName);

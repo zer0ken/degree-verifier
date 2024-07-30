@@ -40,6 +40,8 @@ public class DegreeSnapshot implements Snapshot {
     public DegreeSnapshot(
             String degreeName,
             int version,
+            Integer totalCredit,
+            Integer requiredCredit,
             String[] lectureNames,
             Integer[] lectureCredits
     ) {
@@ -47,7 +49,7 @@ public class DegreeSnapshot implements Snapshot {
                 degreeName,
                 version,
                 null,
-                null,
+                requiredCredit,
                 null,
                 null,
                 null,
@@ -55,7 +57,7 @@ public class DegreeSnapshot implements Snapshot {
                 null
         );
         this.verified = false;
-        this.totalCredit = null;
+        this.totalCredit = totalCredit;
         this.recursiveSnapshot = null;
         for (int i = 0; i < lectureNames.length; i++) {
             if (lectureNames[i] == null) {

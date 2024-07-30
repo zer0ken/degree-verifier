@@ -11,21 +11,14 @@ public class VerifiedDegreeListModel extends DefaultListModel<VerifierListItem> 
     private final AppModel appModel = AppModel.getInstance();
 
     public VerifiedDegreeListModel() {
-        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, this::_updateTree);
-    }
-
-    private void _updateTree(Object o) {
-        if (o == null) {
-            return;
-        }
-        Student student = (Student) o;
-        if (student.isVerified()) {
-            updateTree(student);
-        }
+        appModel.observe(AppModel.On.SELECTED_STUDENT_COMMIT_UPDATED, o -> updateTree((Student) o));
     }
 
     private void updateTree(Student student) {
         removeAllElements();
+        if (student == null || !student.isVerified()) {
+            return;
+        }
         if (!student.getSufficientDegrees().isEmpty()) {
             addElement(new SufficientSeparatorItem());
         }
