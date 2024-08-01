@@ -1,0 +1,18 @@
+{
+    "degree_name": "실감미디어비즈니스",
+    "criteria": {"subcriteria": [
+        {"lecture": {"name": "경영정보시스템"}},
+        {"lecture": {"name": "XR경영전략"}},
+        {"lecture": {"name": "경영전략"}},
+        {"lecture": {"name": "XR비즈니스기획(PBL)"}},
+        {"lecture": {"name": "마케팅"}},
+        {"lecture": {"name": "스마트경영"}},
+        {"lecture": {"name": "XR비즈니스입문"}}
+    ]},
+    "min_credit": 9,
+    "version": 1,
+    "from_year": 2021,
+    "from_semester": "2학기",
+    "to_year": 2022,
+    "to_semester": "동계학기"
+}
