@@ -68,9 +68,9 @@ public class AppModel extends Observable {
             Runnable afterFinished
     ) {
         beforeSubmit.run();
-        task.run();
-        afterFinished.run();
         executorService.submit(() -> {
+            task.run();
+            afterFinished.run();
         });
     }
 
@@ -83,10 +83,7 @@ public class AppModel extends Observable {
                 () -> {
                     ProgressTracker tracker = new ProgressTracker(TRANSCRIPT_LOADING_MESSAGE);
 
-                    for (Student student : students.values()) {
-                        tracker.finish();
-                        student.clear();
-                    }
+                    students = new TreeMap<>();
 
                     List<List<String>> table = FileUtil.fromCsvFile(file);
                     if (Transcript.isValidHeader(table.get(0))) {
@@ -98,6 +95,10 @@ public class AppModel extends Observable {
                         return;
                     }
                     transcriptFile = file;
+
+                    if (commitLoaded) {
+                        fetchFromEarlyCommitTable();
+                    }
                 },
                 () -> {
                     transcriptLoaded = true;
@@ -301,7 +302,7 @@ public class AppModel extends Observable {
 
             DegreeSnapshot degreeSnapshot = new DegreeSnapshot(
                     get.apply(row, Commit.ColumnName.DEGREE_NAME),
-                    Integer.parseInt(version),
+                        Integer.parseInt(version),
                     totalCredit.isEmpty() ? null : Integer.parseInt(totalCredit),
                     requiredCredit.isEmpty() ? null : Integer.parseInt(requiredCredit),
                     lectureNames,
