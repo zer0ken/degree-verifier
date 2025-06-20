@@ -13,4 +13,4 @@
 ## 사용 매뉴얼
 
 자세한 사용법은 아래 문서를 참고해 주세요:  
-[사용 매뉴얼 바로가기](https://docs.google.com/document/d/1yZo9Q0u3S91iT54Bt6DJhsJ-gH68TB3GLHLNMzgXe88/edit?usp=sharing)
+[사용 매뉴얼 바로가기](https://docs.google.com/document/d/1uphCcfSx3I9BsFtND1j_Zdrpr7z4f6oaqQJ1UkAjnTU/edit?usp=sharing)
